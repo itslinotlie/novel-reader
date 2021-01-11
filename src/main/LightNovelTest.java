@@ -4,29 +4,54 @@ import objects.Novel;
 import tools.WebScraping;
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.Arrays;
 import java.util.Scanner;
 
 import javax.swing.*;
 
 public class LightNovelTest extends JFrame {
-    static String information = "";
-    static String summary = "";
-    static String description = "";
-    static int WIDTH=600, HEIGHT = 800;
-    static int maxChap = 0, minChap = 0x3f3f3f3f;
-    public LightNovelTest() {
+    private int WIDTH = 600, HEIGHT = 800;
+    private Novel novel;
+
+    private JTextArea text;
+    private JScrollPane scroll;
+
+    static LightNovelTest x;
+
+    public LightNovelTest(Novel novel) {
+        this.novel = novel;
         setupLabel();
+        setupListeners();
         setupFrame();
     }
     private void setupFrame() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(WIDTH, HEIGHT);
+        setResizable(false);
         setVisible(true);
         setLayout(new BorderLayout());
     }
+    private void setupListeners() {
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent key) {
+                if(key.getKeyChar()=='d') {
+                    novel.setLastReadChapter(novel.getLastReadChapter()+1);
+                    x.refreshScreen();
+                } else if(key.getKeyChar()=='a') {
+                    novel.setLastReadChapter(novel.getLastReadChapter()-1);
+                    x.refreshScreen();
+                }
+            }
+            @Override
+            public void keyTyped(KeyEvent key) {}
+            @Override
+            public void keyReleased(KeyEvent key) {}
+        });
+    }
     private void setupLabel() {
-
         JPanel bot = new JPanel();
         bot.setBackground(Color.RED);
         bot.setPreferredSize(new Dimension(WIDTH, 100));
@@ -48,7 +73,7 @@ public class LightNovelTest extends JFrame {
         add(right, BorderLayout.EAST);
 
 
-        JTextArea text = new JTextArea(information);
+        text = new JTextArea(WebScraping.getChapterContent(novel, novel.getLastReadChapter()));
         text.setBackground(Color.GREEN);
         text.setWrapStyleWord(true);
         text.setLineWrap(true);
@@ -57,11 +82,17 @@ public class LightNovelTest extends JFrame {
 //        text.setOpaque(false);
         add(text);
 
-        JScrollPane scroll = new JScrollPane(text);
+        scroll = new JScrollPane(text);
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.getVerticalScrollBar().setUnitIncrement(15);
         add(scroll);
+    }
+    public void refreshScreen() {
+        text.setText(WebScraping.getChapterContent(novel, novel.getLastReadChapter()));
+        text.setSelectionStart(0);
+        text.setSelectionEnd(0);
+        repaint();
     }
 
     public static void main(String[] args) {
@@ -69,15 +100,17 @@ public class LightNovelTest extends JFrame {
         String title[] = {"overgeared", "the-kings-avatar"};
 
         Novel novel = new Novel(website, title[1]);
+        System.out.println(novel);
+
+        x = new LightNovelTest(novel);
 
         Scanner in = new Scanner(System.in);
-        int x = in.nextInt();
-        while(x!=-1) {
-            System.out.println(novel);
-            System.out.println(WebScraping.getChapterName(novel, x));
-            System.out.println(WebScraping.getChapterContent(novel, x));
-            x = in.nextInt();
+        int chapterCount = 1;
+        while(chapterCount!=-1) {
+            System.out.println(WebScraping.getChapterName(novel, novel.getLastReadChapter()));
+            chapterCount = in.nextInt();
+            novel.setLastReadChapter(novel.getLastReadChapter()+chapterCount);
+            x.refreshScreen();
         }
-//        new LightNovelTest();
     }
 }

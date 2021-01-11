@@ -50,7 +50,8 @@ public class WebScraping {
         try {
             Document doc = Jsoup.connect(url).get();
             for(Element row:doc.getElementsByTag("p")) { //this is the light novel text
-                content += row.text()+"\n";
+                if(row.text().equals("")) continue;
+                content += row.text()+"\n\n";
             }
         } catch (IOException e) {
             e.printStackTrace();

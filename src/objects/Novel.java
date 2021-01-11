@@ -10,12 +10,13 @@ import java.util.Arrays;
 public class Novel {
     private String website, novelName;
     private String author, summary, thumbnail;
-    private String[] genreList;
-    private int[] chapterRange;
+    private String genreList[];
+    private int lastReadChapter, chapterRange[];
 
     public Novel(String website, String novelName) {
         this.website = website;
         this.novelName = novelName;
+        lastReadChapter = 1;
         loadInformation();
     }
 
@@ -70,6 +71,18 @@ public class Novel {
         ret+=String.format("Thumbnail: %s\n", thumbnail);
         ret+=String.format("Summary: %s\n", summary);
         return ret;
+    }
+
+    public int getLastReadChapter() {
+        return lastReadChapter;
+    }
+
+    public void setLastReadChapter(int chapter) {
+        if(chapter<chapterRange[0] || chapter>chapterRange[1]) {
+            System.out.println(">>>>>>>>>> Chapter out of bounds <<<<<<<<<<");
+            return;
+        }
+        lastReadChapter = chapter;
     }
 
     public String getNovelName() {
