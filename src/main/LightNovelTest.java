@@ -1,14 +1,11 @@
 package main;
 
+import objects.Novel;
 import tools.WebScraping;
 
 import java.awt.*;
-import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Scanner;
-
-import tools.WebScraping;
 
 import javax.swing.*;
 
@@ -71,16 +68,14 @@ public class LightNovelTest extends JFrame {
         String website = "https://novelfull.com";
         String title[] = {"overgeared", "the-kings-avatar"};
 
+        Novel novel = new Novel(website, title[1]);
+
         Scanner in = new Scanner(System.in);
         int x = in.nextInt();
         while(x!=-1) {
-            System.out.println(WebScraping.getChapterName(website, title[1], x));
-            System.out.println(WebScraping.getAuthorName(website, title[1]));
-            System.out.println(Arrays.toString(WebScraping.getGenre(website, title[1])));
-            System.out.println(WebScraping.getSummary(website, title[1]));
-            System.out.println(website+WebScraping.getThumbnail(website, title[1]));
-            System.out.println(Arrays.toString(WebScraping.getChapterRange(website, title[1])));
-            System.out.println(WebScraping.getChapterContent(website, title[1], x));
+            System.out.println(novel);
+            System.out.println(WebScraping.getChapterName(novel, x));
+            System.out.println(WebScraping.getChapterContent(novel, x));
             x = in.nextInt();
         }
 //        new LightNovelTest();
