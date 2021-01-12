@@ -68,6 +68,7 @@ public class Novel {
         ret+=String.format("Author name: %s\n", author);
         ret+=String.format("Genre(s): %s\n", Arrays.toString(genreList));
         ret+=String.format("Chapter range: %s\n", Arrays.toString(chapterRange));
+        ret+=String.format("Last read chapter: %d\n", lastReadChapter);
         ret+=String.format("Thumbnail: %s\n", thumbnail);
         ret+=String.format("Summary: %s\n", summary);
         return ret;

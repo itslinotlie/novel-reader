@@ -1,11 +1,15 @@
 package main;
 
 import objects.Novel;
+import tools.Design;
 import tools.WebScraping;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -79,6 +83,7 @@ public class LightNovelTest extends JFrame {
         text.setLineWrap(true);
         text.setEditable(false);
         text.setFocusable(false);
+        text.setFont(Design.novelTextFont);
 //        text.setOpaque(false);
         add(text);
 
@@ -104,13 +109,38 @@ public class LightNovelTest extends JFrame {
 
         x = new LightNovelTest(novel);
 
+//        for(int i=1;i<=novel.getChapterRange()[1];i++) {
+//            System.out.println(WebScraping.getChapterName(novel, novel.getLastReadChapter()+1));
+//            novel.setLastReadChapter(i);
+//
+//            x.refreshScreen();
+////            try {
+////                Thread.sleep(1);
+////            } catch (InterruptedException e) {
+////                e.printStackTrace();
+////            }
+//        }
         Scanner in = new Scanner(System.in);
         int chapterCount = 1;
         while(chapterCount!=-1) {
             System.out.println(WebScraping.getChapterName(novel, novel.getLastReadChapter()));
             chapterCount = in.nextInt();
-            novel.setLastReadChapter(novel.getLastReadChapter()+chapterCount);
+            novel.setLastReadChapter(chapterCount);
             x.refreshScreen();
         }
     }
+//    public void getFont() {
+//        try {
+//            Font f = Font.createFont(Font.TRUETYPE_FONT, new File("Raleway-Light.ttf")).deriveFont(12f);
+//            GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+//            ge.registerFont(f);
+////            InputStream is = new FileInputStream("Raleway-Light.ttf");
+////            Font f = Font.createFont(Font.TRUETYPE_FONT, is);
+////            return f;
+//        } catch (Exception e) {
+//
+////            return null;
+//        }
+//
+//    }
 }
