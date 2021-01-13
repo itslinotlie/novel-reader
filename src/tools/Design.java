@@ -14,7 +14,7 @@ public class Design {
             //path to the font library
             String root = "res/font-raleway/";
             novelTextFont = Font.createFont(Font.TRUETYPE_FONT, new File(root+"Raleway-Medium.ttf")).deriveFont(16f);
-            buttonTextFont = Font.createFont(Font.TRUETYPE_FONT, new File(root+"Raleway-SemiBold.ttf")).deriveFont(16f);
+            buttonTextFont = Font.createFont(Font.TRUETYPE_FONT, new File(root+"Raleway-SemiBold.ttf")).deriveFont(24f);
             //adding fonts to the graphics environment, which will allow
             //them to be used throughout the project
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -28,7 +28,7 @@ public class Design {
     //colours
     public static Color novelBackground = Color.decode("#f4f4f4"); //newspaper
     public static Color novelButtonBackground = Color.decode("#5cb85c"); //green
-    public static Color novelButtonBackgroundDark = Color.decode("#449d44");
+    public static Color novelButtonBackgroundDark = Color.decode("#449d44"); //dark green
     public static Color novelText = Color.decode("#455d72"); //grey
     public static Color novelButtonForeground = Color.decode("#fff4c0"); //white
 

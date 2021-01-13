@@ -102,7 +102,7 @@ public class WebScraping {
 
         if(url.contains(errorMessage)) {
             content = String.format("The novel \"%s\" chapter %d that you requested for is currently unavailable. " +
-                    "Reasons can include the chapter does not exist (i.e. the-kings-avatar chapter 1234) or there was an error " +
+                    "Reasons can include the chapter does not exist (i.e. the-kings-avatar chapter 1234 --> # is not hardcoded :/) or there was an error " +
                     "in parsing the information. Thank you for your understanding.", novel.getNovelName(), targetChapter);
         } else {
             try {
@@ -122,7 +122,7 @@ public class WebScraping {
 
     //some chapters such as https://novelfull.com/the-kings-avatar/chapter-1729end-final-update-thoughts-on-completion.html
     //have letters beside numbers. Need to make sure parsed string is an integer or else exception occurs
-    private static boolean isInteger(String str) {
+    public static boolean isInteger(String str) {
         if(str==null || str.length()==0
             || (str.length()==1 && str.charAt(0)=='-')) {
             return false;
