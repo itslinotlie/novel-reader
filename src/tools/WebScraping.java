@@ -1,162 +1,138 @@
 package tools;
 
+import objects.Novel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 public class WebScraping {
-    public static String errorMessage = "-1";
+    public static String errorMessage = ">>>>>>>>>> -1 <<<<<<<<<<";
 
-    //website in the form of | "https://novelfull.com"
-    //novel in the form of | overgeared
-    //does not contain .html ending
-    public static String getChapterName(String website, String novel, int targetChapter) {
+    //returns the url of a given chapter, if possilbe
+    public static String getChapterUrl(Novel novel, int targetChapter) {
         //this is the way novelfull.com queries/displays pages
-        String url = website + "/" + novel + ".html?page=" + ((targetChapter + 49) / 50) + "&per-page=50";
-        String fullUrl = errorMessage;
+        String url = novel.getWebsite() + "/" + novel.getNovelName() + ".html?page=" + ((targetChapter + 49) / 50) + "&per-page=50";
+        String chapterName = "", chapterUrl="";
         boolean found = false;
 
         try {
-            //connecting to the url and getting html
-            Document doc = Jsoup.connect(url).get();
-            //chapter titles are in the ".list-chapter" div and the element is in a <a> tag
-            for (Element row : doc.select(".list-chapter").select("a")) {
-                //within the <a> tag, the attribute "title" is where the chapter name is
-                fullUrl = row.attr("title");
-                //massaging the information to be url friendly
-                fullUrl = fullUrl.trim().replaceAll("[^a-zA-Z0-9 ]", ""); //replaces everything except for Alphanumeric + space to nothing
-                fullUrl = fullUrl.replaceAll(" +", "-"); //replaces all consecutive spaces with a dash
+            //due to chapter being missing, the logic gets messed up
+            //so by going +/- 1 chapter, the target chapter should be found
+            for(int i=-50;i<=50;i+=50) {
+                if (found) break;
+                url = novel.getWebsite() + "/" + novel.getNovelName() + ".html?page=" + ((targetChapter + 49 + i) / 50) + "&per-page=50";
+                //connecting to the url and getting html
+                Document doc = Jsoup.connect(url).get();
+                //chapter titles are in the ".list-chapter" div and the element is in a <a> tag
+                for (Element row : doc.select(".list-chapter").select("a")) {
+                    chapterUrl = row.attr("href");
+                    //within the <a> tag, the attribute "title" is where the chapter name is
+                    chapterName = row.attr("title");
+                    //massaging the information to be url friendly
+                    chapterName = chapterName.trim().replaceAll("[^a-zA-Z0-9 ]", ""); //replaces everything except for Alphanumeric + space to nothing
+                    chapterName = chapterName.replaceAll(" +", "-"); //replaces all consecutive spaces with a dash
 
-                int currentChapter = Integer.parseInt(fullUrl.split("-")[1]); //url is in the form of Chapter x, where x is chapter #
-                if (currentChapter==targetChapter) {
-                    found = true;
-                    break;
+                    int currentChapter = -1;
+                    if(isInteger(chapterName.split("-")[1])) {
+                        currentChapter = Integer.parseInt(chapterName.split("-")[1]); //url is in the form of Chapter x, where x is chapter #
+                    }
+                    if(chapterName.split("-")[1].contains(Integer.toString(targetChapter))
+                        || currentChapter==targetChapter) {
+                        found = true;
+                        break;
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
             System.out.println("Had issue getting chapter name");
         }
-        return found? fullUrl:errorMessage;
+        return found? chapterUrl:errorMessage;
     }
 
-    public static String getAuthorName(String website, String novel) {
-        String url = website + "/" + novel + ".html";
-        String description = "", descriptionInfo[] = null;
-        String authorName = errorMessage;
+    //pretty much the same code as getChapterUrl except the
+    //original untampered chapter name is returned here
+    public static String getChapterName(Novel novel, int targetChapter) {
+        //this is the way novelfull.com queries/displays pages
+        String url = novel.getWebsite() + "/" + novel.getNovelName() + ".html?page=" + ((targetChapter + 49) / 50) + "&per-page=50";
+        String chapterName = "", chapterUrl="";
+        boolean found = false;
 
         try {
-            Document doc = Jsoup.connect(url).get();
-            //since there is only one .info div, there is no need for a for-each loop
-            description = doc.select(".info").text();
-            descriptionInfo = description.split("\\s+(?=(Genre|Source|Status))"); //splits by the keywords: Genre, Source, and Status
+            //due to chapter being missing, the logic gets messed up
+            //so by going +/- 1 chapter, the target chapter should be found
+            for(int i=-50;i<=50;i+=50) {
+                if (found) break;
+                url = novel.getWebsite() + "/" + novel.getNovelName() + ".html?page=" + ((targetChapter + 49 + i) / 50) + "&per-page=50";
+                //connecting to the url and getting html
+                Document doc = Jsoup.connect(url).get();
+                //chapter titles are in the ".list-chapter" div and the element is in a <a> tag
+                for (Element row : doc.select(".list-chapter").select("a")) {
+                    chapterUrl = row.attr("href");
+                    //within the <a> tag, the attribute "title" is where the chapter name is
+                    chapterName = row.attr("title");
+                    //massaging the information to be url friendly
+                    chapterName = chapterName.trim().replaceAll("[^a-zA-Z0-9 ]", ""); //replaces everything except for Alphanumeric + space to nothing
+                    chapterName = chapterName.replaceAll(" +", "-"); //replaces all consecutive spaces with a dash
 
-            for(int i=0;i<descriptionInfo.length;i++) {
-                if (descriptionInfo[i].startsWith("Author")) {
-//                    authorName = descriptionInfo[i].replaceAll("\\bAuthor:\\b", "");
-                    authorName = descriptionInfo[i].replace("Author:", "");
+                    int currentChapter = -1;
+                    if(isInteger(chapterName.split("-")[1])) {
+                        currentChapter = Integer.parseInt(chapterName.split("-")[1]); //url is in the form of Chapter x, where x is chapter #
+                    }
+                    if(chapterName.split("-")[1].contains(Integer.toString(targetChapter))
+                            || currentChapter==targetChapter) {
+                        found = true;
+                        chapterName = row.attr("title");;
+                        break;
+                    }
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("Had issue getting author name");
+            System.out.println("Had issue getting chapter name");
         }
-        return authorName;
+        return found? chapterName:errorMessage;
     }
 
-    public static String[] getGenre(String website, String novel) {
-        String url = website + "/" + novel + ".html";
-        String description = "", descriptionInfo[] = null;
-        String genreList[] = null;
-
-        try {
-            Document doc = Jsoup.connect(url).get();
-            //since there is only one .info div, there is no need for a for-each loop
-            description = doc.select(".info").text();
-            descriptionInfo = description.split("\\s+(?=(Genre|Source|Status))"); //splits by the keywords: Genre, Source, and Status
-
-            for(int i=0;i<descriptionInfo.length;i++) {
-                if (descriptionInfo[i].startsWith("Genre")) {
-                    genreList = descriptionInfo[i].replace("Genre:", "").split("[,]");
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Had issue getting genre(s)");
-        }
-        return genreList;
-    }
-
-    public static String getSummary(String website, String novel) {
-        String url = website + "/" + novel + ".html";
-        String summary = "";
-
-        try {
-            Document doc = Jsoup.connect(url).get();
-            //since there is only one .desc-text, there is no need for a for-each loop
-            summary = doc.select(".desc-text").text();
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Had issue getting summary");
-        }
-        return summary;
-    }
-
-    //does not contain website root
-    public static String getThumbnail(String website, String novel) {
-        String url = website + "/" + novel + ".html";
-        String thumbnail = "";
-
-        try {
-            Document doc = Jsoup.connect(url).get();
-            //since there is only one .div.book, there is no need for a for-each loop
-            thumbnail = doc.select("div.book").first().select("img").attr("src"); //selects the <img> tag and gets the src attribute
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Had issue getting thumbnail");
-        }
-        return thumbnail;
-    }
-
-    public static int[] getChapterRange(String website, String novel) {
-        String url = website + "/" + novel + ".html";
-        int minChap = 0x3f3f3f3f, maxChap = -1;
-
-
-        try {
-            Document doc = Jsoup.connect(url).get();
-            //searching for elements with the <li> tag
-            for(Element row:doc.getElementsByTag("li")) {
-                String chapterName = row.select("a").attr("title");
-                if(!chapterName.startsWith("Chapter")) continue; //first row is hidden/blank, need to filter it out
-                //ReGeX to replace everything but numbers and spaces (spaces because sometimes numbers
-                //are in the chapter name and it needs to be separated to find the chapter number)
-                maxChap = Math.max(maxChap, Integer.parseInt(chapterName.replaceAll("[^0-9 ]", "").split("[ ]")[1]));
-                minChap = Math.min(minChap, Integer.parseInt(chapterName.replaceAll("[^0-9 ]", "").split("[ ]")[1]));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Had issue getting chapter range");
-        }
-        return new int[]{minChap, maxChap};
-    }
-
-    public static String getChapterContent(String website, String novel, int chapter) {
-        String url = website + "/" + novel + "/" + getChapterName(website, novel, chapter) + ".html";
+    //returns the text from a chapter
+    public static String getChapterContent(Novel novel, int targetChapter) {
+        String url = novel.getWebsite() + getChapterUrl(novel, targetChapter);
         String content = "";
-        System.out.println(url);
 
-        try {
-            Document doc = Jsoup.connect(url).get();
-            for(Element row:doc.getElementsByTag("p")) { //this is the light novel text
-                content += row.text()+"\n";
+        if(url.contains(errorMessage)) {
+            content = String.format("The novel \"%s\" chapter %d that you requested for is currently unavailable. " +
+                    "Reasons can include the chapter does not exist (i.e. the-kings-avatar chapter 1234 --> # is not hardcoded :/) or there was an error " +
+                    "in parsing the information. Thank you for your understanding.", novel.getNovelName(), targetChapter);
+        } else {
+            try {
+                Document doc = Jsoup.connect(url).get();
+                //the light novel content are all in the <p> tag
+                for(Element row:doc.getElementsByTag("p")) {
+                    if(row.text().equals("")) continue;
+                    content += row.text()+"\n\n";
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                System.out.println("Had issue getting chapter content");
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("Had issue getting chapter content");
         }
         return content;
+    }
+
+    //some chapters such as https://novelfull.com/the-kings-avatar/chapter-1729end-final-update-thoughts-on-completion.html
+    //have letters beside numbers. Need to make sure parsed string is an integer or else exception occurs
+    public static boolean isInteger(String str) {
+        if(str==null || str.length()==0
+            || (str.length()==1 && str.charAt(0)=='-')) {
+            return false;
+        }
+        for(int i=1;i<str.length();i++) {
+            char c = str.charAt(i);
+            if(c<'0' || c>'9') {
+                return false;
+            }
+        }
+        return true;
     }
 }
