@@ -1,32 +1,27 @@
 package main;
 
 import objects.Novel;
+import tools.ButtonStyle;
 import tools.Design;
 import tools.TextAreaLimit;
 import tools.WebScraping;
 
 import java.awt.*;
-import java.awt.event.*;
-import java.util.Scanner;
-
 import javax.swing.*;
-import javax.swing.border.BevelBorder;
 
-public class DisplayNovel implements MouseListener {
-    private JFrame frame; //testing purposes, delete once more GUI is complete
-    private JPanel content = new JPanel();
+public class NovelDisplay {
+    private JFrame frame;
+    private JPanel content = new JPanel(), novelInfo;
 
-    private Novel novel;
-
-    private JButton back, next, go;
-
+    private JButton goBack, back, next, go;
     private JTextArea text, skip;
     private JScrollPane scroll;
 
-//    static DisplayNovel x;
+    private Novel novel;
 
-    public DisplayNovel(JFrame frame, Novel novel) {
+    public NovelDisplay(JFrame frame, JPanel novelInfo, Novel novel) {
         this.frame = frame;
+        this.novelInfo = novelInfo;
         this.novel = novel;
         setupPanel();
         setupContent();
@@ -61,11 +56,11 @@ public class DisplayNovel implements MouseListener {
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.getVerticalScrollBar().setUnitIncrement(15);
         scroll.setBorder(BorderFactory.createCompoundBorder( //compound borders are sick
-                BorderFactory.createLineBorder(Design.novelButtonBackground, 2, true),
-                BorderFactory.createCompoundBorder(
-                        BorderFactory.createRaisedBevelBorder(),
-                        BorderFactory.createLoweredBevelBorder()
-                )
+            BorderFactory.createLineBorder(Design.novelButtonBackground, 2, true),
+            BorderFactory.createCompoundBorder(
+                BorderFactory.createRaisedBevelBorder(),
+                BorderFactory.createLoweredBevelBorder()
+            )
         ));
         content.add(scroll);
     }
@@ -77,10 +72,23 @@ public class DisplayNovel implements MouseListener {
         content.setLayout(new BorderLayout());
         frame.add(content);
 
+        //closes the current novel and displays novelInfo screen
+        goBack = new JButton(">");
+        goBack.setFont(Design.buttonTextFont.deriveFont(24f));
+        goBack.setBounds(20, 20, 50, 50);
+        goBack.setBackground(Design.novelButtonBackground);
+        goBack.setForeground(Design.foreground);
+        goBack.addMouseListener(new ButtonStyle());
+        goBack.addActionListener(e -> {
+            content.setVisible(false);
+            novelInfo.setVisible(true);
+            frame.setTitle(String.format("Viewing %s", novel.getNovelName()));
+        });
+
         //text area to skip to a chapter
         skip = new JTextArea();
         skip.setBackground(Design.novelButtonBackground);
-        skip.setForeground(Design.novelButtonForeground);
+        skip.setForeground(Design.foreground);
         skip.setFont(Design.buttonTextFont);
         skip.setDocument(new TextAreaLimit());
         skip.setText("1234");
@@ -91,8 +99,8 @@ public class DisplayNovel implements MouseListener {
         go.setFont(Design.buttonTextFont);
         go.setBounds(275, 30, 100, 40);
         go.setBackground(Design.novelButtonBackground);
-        go.setForeground(Design.novelButtonForeground);
-        go.addMouseListener(this);
+        go.setForeground(Design.foreground);
+        go.addMouseListener(new ButtonStyle());
         go.addActionListener(e -> { //logic to check if you can skip to a chapter
             skip.setText(skip.getText().trim());
             int targetChapter = WebScraping.isInteger(skip.getText())? Integer.parseInt(skip.getText()):-1;
@@ -104,23 +112,25 @@ public class DisplayNovel implements MouseListener {
             }
         });
 
+        //go back one chapter
         back = new JButton("< Back");
         back.setFont(Design.buttonTextFont);
         back.setBackground(Design.novelButtonBackground);
-        back.setForeground(Design.novelButtonForeground);
+        back.setForeground(Design.foreground);
         back.setBounds(125, 30, 150, 40);
-        back.addMouseListener(this);
+        back.addMouseListener(new ButtonStyle());
         back.addActionListener(e -> {
             novel.setLastReadChapter(novel.getLastReadChapter()-1);
             refreshScreen();
         });
 
+        //go forward one chapter
         next = new JButton("Next >");
         next.setFont(Design.buttonTextFont);
         next.setBackground(Design.novelButtonBackground);
-        next.setForeground(Design.novelButtonForeground);
+        next.setForeground(Design.foreground);
         next.setBounds(325, 30, 150, 40);
-        next.addMouseListener(this);
+        next.addMouseListener(new ButtonStyle());
         next.addActionListener(e -> {
             novel.setLastReadChapter(novel.getLastReadChapter()+1);
             refreshScreen();
@@ -131,6 +141,7 @@ public class DisplayNovel implements MouseListener {
         top.setBackground(Design.novelBackground);
         top.setPreferredSize(new Dimension(Design.WIDTH, 100));
         top.setLayout(null);
+        top.add(goBack);
         top.add(skip);
         top.add(go);
 
@@ -171,38 +182,7 @@ public class DisplayNovel implements MouseListener {
         next.setEnabled(novel.getLastReadChapter()!=novel.getChapterRange()[1]);
     }
 
-    public static void main(String[] args) {
-        String website = "https://novelfull.com";
-        String title[] = {"overgeared", "the-kings-avatar"};
-
-        Novel novel = new Novel(website, title[1]);
-        System.out.println(novel);
-
-        new DisplayNovel(new JFrame(), novel);
-//        x.refreshScreen();
-    }
-
     public JPanel getPanel() {
         return content;
     }
-
-    //button hover styling
-    @Override
-    public void mouseEntered(MouseEvent e) {
-        JButton button = (JButton) e.getSource();
-        button.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
-        button.setBackground(Design.novelButtonBackgroundDark);
-    }
-    @Override
-    public void mouseExited(MouseEvent e) {
-        JButton button = (JButton) e.getSource();
-        button.setBorder(new BevelBorder(BevelBorder.RAISED, null, null, null, null));
-        button.setBackground(Design.novelButtonBackground);
-    }
-    @Override
-    public void mouseClicked(MouseEvent e) {}
-    @Override
-    public void mousePressed(MouseEvent e) {}
-    @Override
-    public void mouseReleased(MouseEvent e) {}
 }
