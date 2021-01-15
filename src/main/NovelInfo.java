@@ -21,7 +21,7 @@ public class NovelInfo {
         String website = "https://novelfull.com";
         String title[] = {"overgeared", "the-kings-avatar"};
 
-        Novel novel = new Novel(website, title[1]);
+        Novel novel = new Novel(website, title[0]);
         System.out.println(novel);
 
         JFrame frame = new JFrame();
@@ -170,15 +170,14 @@ public class NovelInfo {
         //rather than creating a new instance of novelDisplay everytime a button click
         //having a boolean flag will allow only one instance per novel
         if(firstOpen) {
-            content.setVisible(false);
             novelDisplay = new NovelDisplay(frame, content, novel);
-            novelDisplay.refreshScreen();
             firstOpen = false;
         } else {
             content.setVisible(false);
-            novel.setLastReadChapter(targetChapter);
-            novelDisplay.refreshScreen();
             novelDisplay.getPanel().setVisible(true);
         }
+        content.setVisible(false);
+        novel.setLastReadChapter(targetChapter);
+        novelDisplay.refreshScreen();
     }
 }
