@@ -4,14 +4,20 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Arrays;
 
 public class Novel {
     private String website, novelName;
-    private String author, summary, thumbnail;
+    private String author, summary, thumbnailLink;
     private String genreList[];
     private int lastReadChapter, chapterRange[];
+    private ImageIcon thumbnail;
 
     public Novel(String website, String novelName) {
         this.website = website;
@@ -30,7 +36,8 @@ public class Novel {
             Document doc = Jsoup.connect(url).get();
             //there are only one of these divs, so no need for a for-each loop
             summary = doc.select(".desc-text").text();
-            thumbnail = website + doc.select("div.book").first().select("img").attr("src"); //selects the <img> tag in a div called book and gets the src attribute
+            thumbnailLink = website + doc.select("div.book").first().select("img").attr("src"); //selects the <img> tag in a div called book and gets the src attribute
+            thumbnail = new ImageIcon(ImageIO.read(new URL(thumbnailLink)));
             description = doc.select(".info").text();
             descriptionInfo = description.split("\\s+(?=(Genre|Source|Status))"); //splits description by the keywords: Genre, Source, and Status
 
@@ -69,9 +76,13 @@ public class Novel {
         ret+=String.format("Genre(s): %s\n", Arrays.toString(genreList));
         ret+=String.format("Chapter range: %s\n", Arrays.toString(chapterRange));
         ret+=String.format("Last read chapter: %d\n", lastReadChapter);
-        ret+=String.format("Thumbnail: %s\n", thumbnail);
+        ret+=String.format("Thumbnail: %s\n", thumbnailLink);
         ret+=String.format("Summary: %s\n", summary);
         return ret;
+    }
+
+    public String getAuthor() {
+        return author;
     }
 
     public int getLastReadChapter() {
@@ -102,8 +113,20 @@ public class Novel {
         return chapterRange;
     }
 
-    public String getThumbnail() {
+    public String getThumbnailLink() {
+        return thumbnailLink;
+    }
+
+    public ImageIcon getThumbnail() {
         return thumbnail;
+    }
+
+    public int getThumbnailHeight() {
+        return thumbnail.getIconHeight();
+    }
+
+    public int getThumbnailWidth() {
+        return thumbnail.getIconWidth();
     }
 
     public String getSummary() {
