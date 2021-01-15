@@ -3,25 +3,19 @@ package main;
 import objects.Novel;
 import tools.ButtonStyle;
 import tools.Design;
-import tools.TextAreaLimit;
 import tools.WebScraping;
 
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
 import javax.swing.*;
 
 public class NovelInfo {
-
     private JFrame frame;
     private JPanel content = new JPanel(), top, center, bot;
+
     private Novel novel;
-
-    private JLabel thumbnail;
-
     private NovelDisplay novelDisplay;
+
+    private boolean firstOpen = true;
 
     public static void main(String args[]) {
         String website = "https://novelfull.com";
@@ -49,12 +43,12 @@ public class NovelInfo {
         frame.setBounds(0, 0, Design.WIDTH, Design.HEIGHT);
         frame.setResizable(false);
         frame.setVisible(true);
-        frame.setTitle(String.format("Viewing %s", novel.getNovelName()));
+        frame.setTitle(String.format("Current novel: %s", novel.getNovelName()));
     }
 
     private void setupContent() {
         //novel information
-        thumbnail = new JLabel();
+        JLabel thumbnail = new JLabel();
         thumbnail.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(
                 novel.getThumbnailWidth()/2, novel.getThumbnailHeight()/2, 0)));
         thumbnail.setBounds(50, 50, novel.getThumbnailWidth()/2, novel.getThumbnailHeight()/2);
@@ -65,7 +59,6 @@ public class NovelInfo {
         JLabel title = new JLabel(novel.getNovelName());
         title.setForeground(Design.foreground);
         title.setFont(Design.buttonTextFont.deriveFont(28f));
-        title.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         title.setBounds(200, 50, 250, 50);
         top.add(title);
 
@@ -73,7 +66,6 @@ public class NovelInfo {
         JLabel author = new JLabel(novel.getAuthor());
         author.setForeground(Design.foreground);
         author.setFont(Design.buttonTextFont.deriveFont(18f));
-        author.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         author.setBounds(200, 100, 200, 30);
         top.add(author);
 
@@ -81,7 +73,6 @@ public class NovelInfo {
         JLabel summary = new JLabel("Novel Summary");
         summary.setForeground(Design.foreground);
         summary.setFont(Design.buttonTextFont.deriveFont(24f));
-        summary.setBorder(BorderFactory.createLineBorder(Color.WHITE));
         summary.setBounds(200, 200, 200, 50);
         top.add(summary);
 
@@ -109,8 +100,7 @@ public class NovelInfo {
         JLabel chapterList = new JLabel(String.format("Chapter List (Total of %d)", novel.getChapterRange()[1]));
         chapterList.setForeground(Design.foreground);
         chapterList.setFont(Design.buttonTextFont.deriveFont(24f));
-        chapterList.setBounds(50, 10, 350, 50);
-        chapterList.setBorder(BorderFactory.createLineBorder(Color.white));
+        chapterList.setBounds(50, 0, 350, 50);
         bot.add(chapterList);
 
         //displaying chapters
@@ -121,19 +111,25 @@ public class NovelInfo {
             chapter[i].setForeground(Design.screenBackground);
             chapter[i].setBackground(Design.novelButtonBackground);
             chapter[i].setFont(Design.buttonTextFont.deriveFont(12f));
-            chapter[i].setBounds(50, 35+40*i, 300, 30);
-            chapter[i].setBorder(BorderFactory.createLineBorder(Color.WHITE));
+            chapter[i].setBounds(50, 10+40*i+(i<=3? 0:30), 300, 30);
             chapter[i].addMouseListener(new ButtonStyle());
             int finalI = i;
             chapter[i].addActionListener(e -> refreshScreen(finalI<=3? finalI:novel.getChapterRange()[1]+finalI-6));
             bot.add(chapter[i]);
         }
 
+        //gap between first and last 3 chapters
+        JLabel dots = new JLabel(". . .");
+        dots.setForeground(Design.foreground);
+        dots.setFont(Design.buttonTextFont.deriveFont(24f));
+        dots.setBounds(185, 10+150, 50, 30);
+        bot.add(dots);
+
         //resume to last read chapter
         JButton resume = new JButton("Resume");
         resume.setFont(Design.buttonTextFont.deriveFont(24f));
         resume.setBounds(400, 250, 150, 50);
-        resume.setForeground(Design.foreground);
+        resume.setForeground(Design.screenBackground);
         resume.setBackground(Design.novelButtonBackground);
         resume.addMouseListener(new ButtonStyle());
         resume.addActionListener(e -> refreshScreen(novel.getLastReadChapter()));
@@ -153,23 +149,36 @@ public class NovelInfo {
         top.setPreferredSize(new Dimension(Design.WIDTH, 250));
         top.setLayout(null);
 
+        //novel summary
         center = new JPanel();
         center.setBackground(Design.screenLightBackground);
         center.setLayout(null);
 
+        //novel chapter list
         bot = new JPanel();
         bot.setBackground(Design.screenBackground);
         bot.setPreferredSize(new Dimension(Design.WIDTH, 325));
         bot.setLayout(null);
 
+        //panel containing everything
         content.add(top, BorderLayout.NORTH);
         content.add(center, BorderLayout.CENTER);
         content.add(bot, BorderLayout.SOUTH);
     }
 
     private void refreshScreen(int targetChapter) {
-        novel.setLastReadChapter(targetChapter);
-        content.setVisible(false);
-        novelDisplay = new NovelDisplay(frame, content, novel);
+        //rather than creating a new instance of novelDisplay everytime a button click
+        //having a boolean flag will allow only one instance per novel
+        if(firstOpen) {
+            content.setVisible(false);
+            novelDisplay = new NovelDisplay(frame, content, novel);
+            novelDisplay.refreshScreen();
+            firstOpen = false;
+        } else {
+            content.setVisible(false);
+            novel.setLastReadChapter(targetChapter);
+            novelDisplay.refreshScreen();
+            novelDisplay.getPanel().setVisible(true);
+        }
     }
 }

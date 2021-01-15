@@ -7,19 +7,17 @@ import tools.TextAreaLimit;
 import tools.WebScraping;
 
 import java.awt.*;
-
 import javax.swing.*;
 
 public class NovelDisplay {
     private JFrame frame;
     private JPanel content = new JPanel(), novelInfo;
 
-    private Novel novel;
-
     private JButton goBack, back, next, go;
-
     private JTextArea text, skip;
     private JScrollPane scroll;
+
+    private Novel novel;
 
     public NovelDisplay(JFrame frame, JPanel novelInfo, Novel novel) {
         this.frame = frame;
@@ -58,11 +56,11 @@ public class NovelDisplay {
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.getVerticalScrollBar().setUnitIncrement(15);
         scroll.setBorder(BorderFactory.createCompoundBorder( //compound borders are sick
-                BorderFactory.createLineBorder(Design.novelButtonBackground, 2, true),
-                BorderFactory.createCompoundBorder(
-                        BorderFactory.createRaisedBevelBorder(),
-                        BorderFactory.createLoweredBevelBorder()
-                )
+            BorderFactory.createLineBorder(Design.novelButtonBackground, 2, true),
+            BorderFactory.createCompoundBorder(
+                BorderFactory.createRaisedBevelBorder(),
+                BorderFactory.createLoweredBevelBorder()
+            )
         ));
         content.add(scroll);
     }
@@ -76,7 +74,7 @@ public class NovelDisplay {
 
         //closes the current novel and displays novelInfo screen
         goBack = new JButton(">");
-        goBack.setFont(Design.boldText);
+        goBack.setFont(Design.buttonTextFont.deriveFont(24f));
         goBack.setBounds(20, 20, 50, 50);
         goBack.setBackground(Design.novelButtonBackground);
         goBack.setForeground(Design.foreground);
@@ -114,6 +112,7 @@ public class NovelDisplay {
             }
         });
 
+        //go back one chapter
         back = new JButton("< Back");
         back.setFont(Design.buttonTextFont);
         back.setBackground(Design.novelButtonBackground);
@@ -125,6 +124,7 @@ public class NovelDisplay {
             refreshScreen();
         });
 
+        //go forward one chapter
         next = new JButton("Next >");
         next.setFont(Design.buttonTextFont);
         next.setBackground(Design.novelButtonBackground);
