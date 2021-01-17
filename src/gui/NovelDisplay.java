@@ -1,4 +1,4 @@
-package main;
+package gui;
 
 import objects.Novel;
 import tools.ButtonStyle;

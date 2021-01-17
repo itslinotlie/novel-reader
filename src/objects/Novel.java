@@ -13,21 +13,22 @@ import java.net.URL;
 import java.util.Arrays;
 
 public class Novel {
-    private String website, novelName;
+    private final String website = "https://novelfull.com";
+    private String novelLink, novelName;
     private String author, summary, thumbnailLink;
     private String genreList[];
     private int lastReadChapter, chapterRange[];
     private ImageIcon thumbnail;
 
-    public Novel(String website, String novelName) {
-        this.website = website;
+    public Novel(String novelName, String novelLink) {
         this.novelName = novelName;
+        this.novelLink = novelLink;
         lastReadChapter = 1;
         loadInformation();
     }
 
     private void loadInformation() {
-        String url = website + "/" + novelName + ".html";
+        String url = website + novelLink;
         String description = "", descriptionInfo[] = null;
         int minChap = 0x3f3f3f3f, maxChap = -1;
 
@@ -71,7 +72,7 @@ public class Novel {
     @Override
     public String toString() {
         String ret = "";
-        ret+=String.format("Novel name: %s | Website name: %s\n", novelName, website);
+        ret+=String.format("Novel name: %s | Novel Link: %s\n", novelName, novelLink);
         ret+=String.format("Author name: %s\n", author);
         ret+=String.format("Genre(s): %s\n", Arrays.toString(genreList));
         ret+=String.format("Chapter range: %s\n", Arrays.toString(chapterRange));
@@ -99,6 +100,10 @@ public class Novel {
 
     public String getNovelName() {
         return novelName;
+    }
+
+    public String getNovelLink() {
+        return novelLink;
     }
 
     public String getWebsite() {

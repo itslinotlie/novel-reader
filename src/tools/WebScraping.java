@@ -12,7 +12,7 @@ public class WebScraping {
     //returns the url of a given chapter, if possilbe
     public static String getChapterUrl(Novel novel, int targetChapter) {
         //this is the way novelfull.com queries/displays pages
-        String url = novel.getWebsite() + "/" + novel.getNovelName() + ".html?page=" + ((targetChapter + 49) / 50) + "&per-page=50";
+        String url = "";
         String chapterName = "", chapterUrl="";
         boolean found = false;
 
@@ -21,7 +21,7 @@ public class WebScraping {
             //so by going +/- 1 chapter, the target chapter should be found
             for(int i=-50;i<=50;i+=50) {
                 if (found) break;
-                url = novel.getWebsite() + "/" + novel.getNovelName() + ".html?page=" + ((targetChapter + 49 + i) / 50) + "&per-page=50";
+                url = novel.getWebsite() + novel.getNovelLink() +"?page=" + ((targetChapter + 49 + i) / 50) + "&per-page=50";
                 //connecting to the url and getting html
                 Document doc = Jsoup.connect(url).get();
                 //chapter titles are in the ".list-chapter" div and the element is in a <a> tag
@@ -55,8 +55,8 @@ public class WebScraping {
     //original untampered chapter name is returned here
     public static String getChapterName(Novel novel, int targetChapter) {
         //this is the way novelfull.com queries/displays pages
-        String url = novel.getWebsite() + "/" + novel.getNovelName() + ".html?page=" + ((targetChapter + 49) / 50) + "&per-page=50";
-        String chapterName = "", chapterUrl="";
+        String url = "";
+        String chapterName = "";
         boolean found = false;
 
         try {
@@ -64,12 +64,11 @@ public class WebScraping {
             //so by going +/- 1 chapter, the target chapter should be found
             for(int i=-50;i<=50;i+=50) {
                 if (found) break;
-                url = novel.getWebsite() + "/" + novel.getNovelName() + ".html?page=" + ((targetChapter + 49 + i) / 50) + "&per-page=50";
+                url = novel.getWebsite() + novel.getNovelLink() +"?page=" + ((targetChapter + 49 + i) / 50) + "&per-page=50";
                 //connecting to the url and getting html
                 Document doc = Jsoup.connect(url).get();
                 //chapter titles are in the ".list-chapter" div and the element is in a <a> tag
                 for (Element row : doc.select(".list-chapter").select("a")) {
-                    chapterUrl = row.attr("href");
                     //within the <a> tag, the attribute "title" is where the chapter name is
                     chapterName = row.attr("title");
                     //massaging the information to be url friendly

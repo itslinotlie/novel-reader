@@ -1,4 +1,4 @@
-package main;
+package gui;
 
 import objects.Novel;
 import tools.ButtonStyle;
@@ -18,10 +18,9 @@ public class NovelInfo {
     private boolean firstOpen = true;
 
     public static void main(String args[]) {
-        String website = "https://novelfull.com";
-        String title[] = {"overgeared", "the-kings-avatar"};
+        String title[] = {"/overgeared.html", "/the-kings-avatar.html"};
 
-        Novel novel = new Novel(website, title[0]);
+        Novel novel = new Novel("Overgeared", title[0]);
         System.out.println(novel);
 
         JFrame frame = new JFrame();
@@ -49,10 +48,13 @@ public class NovelInfo {
     private void setupContent() {
         //novel information
         JLabel thumbnail = new JLabel();
-        thumbnail.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(
-                novel.getThumbnailWidth()/2, novel.getThumbnailHeight()/2, 0)));
-        thumbnail.setBounds(50, 50, novel.getThumbnailWidth()/2, novel.getThumbnailHeight()/2);
-        thumbnail.setBorder(BorderFactory.createLineBorder(Design.screenPop, 4));
+        double scaleFactor = 1/2f;
+        int novelWidth = (int)(novel.getThumbnailWidth()*scaleFactor);
+        int novelHeight = (int)(novel.getThumbnailHeight()*scaleFactor);
+        int thickness = 4;
+        thumbnail.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
+        thumbnail.setBounds(50, 50, novelWidth+2*thickness, novelHeight+2*thickness);
+        thumbnail.setBorder(BorderFactory.createLineBorder(Design.screenPop, thickness));
         top.add(thumbnail);
 
         //novel title
