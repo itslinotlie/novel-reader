@@ -1,10 +1,7 @@
 package gui;
 
 import objects.Novel;
-import tools.ButtonStyle;
-import tools.Design;
-import tools.TextAreaLimit;
-import tools.WebScraping;
+import tools.*;
 
 import java.awt.*;
 import javax.swing.*;
@@ -31,7 +28,7 @@ public class NovelDisplay {
     //testing purposes, delete once more GUI is complete
     private void setupFrame() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(0, 0, Design.WIDTH, Design.HEIGHT);
+        frame.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
         frame.setResizable(false);
         frame.setVisible(true);
     }
@@ -68,7 +65,7 @@ public class NovelDisplay {
     private void setupPanel() {
         //panel to display everything
         content.setBackground(Color.GREEN);
-        content.setBounds(0, 0, Design.WIDTH, Design.HEIGHT);
+        content.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
         content.setLayout(new BorderLayout());
         frame.add(content);
 
@@ -139,7 +136,7 @@ public class NovelDisplay {
         //header
         JPanel top = new JPanel();
         top.setBackground(Design.novelBackground);
-        top.setPreferredSize(new Dimension(Design.WIDTH, 100));
+        top.setPreferredSize(new Dimension(Misc.WIDTH, 100));
         top.setLayout(null);
         top.add(goBack);
         top.add(skip);
@@ -148,7 +145,7 @@ public class NovelDisplay {
         //footer
         JPanel bot = new JPanel();
         bot.setBackground(Design.novelBackground);
-        bot.setPreferredSize(new Dimension(Design.WIDTH, 100));
+        bot.setPreferredSize(new Dimension(Misc.WIDTH, 100));
         bot.setLayout(null);
         bot.add(next);
         bot.add(back);
@@ -156,11 +153,11 @@ public class NovelDisplay {
         //side margins (left and right)
         JPanel left = new JPanel();
         left.setBackground(Design.novelBackground);
-        left.setPreferredSize(new Dimension(10, Design.HEIGHT));
+        left.setPreferredSize(new Dimension(10, Misc.HEIGHT));
 
         JPanel right = new JPanel();
         right.setBackground(Design.novelBackground);
-        right.setPreferredSize(new Dimension(10, Design.HEIGHT));
+        right.setPreferredSize(new Dimension(10, Misc.HEIGHT));
 
         content.add(top, BorderLayout.NORTH);
         content.add(bot, BorderLayout.SOUTH);

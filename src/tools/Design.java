@@ -4,9 +4,6 @@ import java.awt.*;
 import java.io.*;
 
 public class Design {
-    //dimensions
-    public static final int WIDTH = 600, HEIGHT = 800;
-
     //custom fonts
     public static Font novelTextFont;
     public static Font buttonTextFont;

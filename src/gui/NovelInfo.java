@@ -3,6 +3,7 @@ package gui;
 import objects.Novel;
 import tools.ButtonStyle;
 import tools.Design;
+import tools.Misc;
 import tools.WebScraping;
 
 import java.awt.*;
@@ -40,7 +41,7 @@ public class NovelInfo {
     //testing purposes, delete once more GUI is complete
     private void setupFrame() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(0, 0, Design.WIDTH, Design.HEIGHT);
+        frame.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
         frame.setResizable(false);
         frame.setVisible(true);
         frame.setTitle(String.format("Current novel: %s", novel.getNovelName()));
@@ -158,14 +159,14 @@ public class NovelInfo {
     private void setupPanel() {
         //panel to display everything
         content.setBackground(Color.GREEN);
-        content.setBounds(0, 0, Design.WIDTH, Design.HEIGHT);
+        content.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
         content.setLayout(new BorderLayout());
         frame.add(content);
 
         //novel information
         top = new JPanel();
         top.setBackground(Design.screenBackground);
-        top.setPreferredSize(new Dimension(Design.WIDTH, 250));
+        top.setPreferredSize(new Dimension(Misc.WIDTH, 250));
         top.setLayout(null);
 
         //novel summary
@@ -176,7 +177,7 @@ public class NovelInfo {
         //novel chapter list
         bot = new JPanel();
         bot.setBackground(Design.screenBackground);
-        bot.setPreferredSize(new Dimension(Design.WIDTH, 325));
+        bot.setPreferredSize(new Dimension(Misc.WIDTH, 325));
         bot.setLayout(null);
 
         //panel containing everything

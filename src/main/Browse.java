@@ -7,17 +7,13 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import tools.ButtonStyle;
 import tools.Design;
+import tools.Misc;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
+
 public class Browse {
     private JFrame frame;
     private JPanel content = new JPanel(), top, center, bot;
@@ -27,28 +23,34 @@ public class Browse {
     private JScrollPane scroll;
     private SwingWorker worker = null; //allows "multi-threading"
 
-    private static ArrayList<Novel> list;
-    private static Novel novel;
+    private ArrayList<Novel> list = new ArrayList();
+    private Novel novel;
 
-    private static int novelPerPage = 20, total = 0, initial = 4, page = 0, size;
-    private static double scaleFactor = 3/5f;
+    private int novelPerPage = 20, total = 0, amountPerLoad = 4, page = 0, size;
+    private double scaleFactor = 3/5f;
 
-    private static int novelWidth, novelHeight, thickness = 4;;
+    private int novelWidth, novelHeight, thickness = 4;
 
-    public Browse(JFrame frame, Novel novel) {
+
+    public static void main(String[] args) {
+        new Browse(new JFrame());
+    }
+
+    public Browse(JFrame frame) {
         this.frame = frame;
-        this.novel = novel;
         setupPanel();
         setupContent();
         setupFrame();
     }
+
     private void setupFrame() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(0, 0, Design.WIDTH, Design.HEIGHT);
+        frame.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
         frame.setResizable(false);
         frame.setVisible(true);
         frame.setTitle(String.format("Currently browsing titles"));
     }
+
     private void setupContent() {
         //screen header
         JLabel browse = new JLabel("Browse");
@@ -71,9 +73,10 @@ public class Browse {
         scroll.getVerticalScrollBar().setUnitIncrement(15);
         content.add(scroll);
 
+        //loads up initial novels
         loadChapters();
-        displayChapter(0, list.size());
 
+        //click to view more novels
         viewMore = new JButton("View More");
         viewMore.setFont(Design.buttonTextFont.deriveFont(24f));
         viewMore.setBounds(200, 50 + list.size()*(novelHeight+50), 200, 50);
@@ -81,8 +84,8 @@ public class Browse {
         viewMore.setBackground(Design.novelButtonBackground);
         viewMore.addMouseListener(new ButtonStyle());
         viewMore.addActionListener(e -> {
-            viewMore.setVisible(false);
             size = list.size();
+            viewMore.setVisible(false); //hide viewMore button
             setupWorker();
             worker.execute();
         });
@@ -91,31 +94,31 @@ public class Browse {
 
     private void setupPanel() {
         //need to initialize this value to set center panel height
-        novelWidth = (int)(novel.getThumbnailWidth()*scaleFactor);
-        novelHeight = (int)(novel.getThumbnailHeight()*scaleFactor);
+        novelWidth = (int)(Misc.novel.getThumbnailWidth()*scaleFactor);
+        novelHeight = (int)(Misc.novel.getThumbnailHeight()*scaleFactor);
 
         //panel to display the mangas
         content.setBackground(Color.GREEN);
-        content.setBounds(0, 0, Design.WIDTH, 1000);
+        content.setBounds(0, 0, Misc.WIDTH, 1000);
         content.setLayout(new BorderLayout());
         frame.add(content);
 
         //browse screen
         top = new JPanel();
         top.setBackground(Design.screenBackground);
-        top.setPreferredSize(new Dimension(Design.WIDTH, 50));
+        top.setPreferredSize(new Dimension(Misc.WIDTH, 50));
         top.setLayout(null);
 
         //browsable novels
         center = new JPanel();
         center.setBackground(Design.screenLightBackground);
-        center.setPreferredSize(new Dimension(Design.WIDTH, 150+total*(novelHeight+50)));
+        center.setPreferredSize(new Dimension(Misc.WIDTH, 150+total*(novelHeight+50)));
         center.setLayout(null);
 
         //application dashboard
         bot = new JPanel();
         bot.setBackground(Design.screenBackground);
-        bot.setPreferredSize(new Dimension(Design.WIDTH, 100));
+        bot.setPreferredSize(new Dimension(Misc.WIDTH, 100));
         bot.setLayout(null);
 
         //panel containing everything
@@ -124,74 +127,78 @@ public class Browse {
         content.add(bot, BorderLayout.SOUTH);
     }
 
-    private void displayChapter(int begin, int end) {
-        for(int i=begin;i<end;i++) {
-            novel = list.get(i);
+    //displays the most recent novel (for an animation like feel)
+    //when multiple novels are displayed (rather than everything displaying at once)
+    private void displayChapter() {
+        //need to create a local instance of the novel or else
+        //the action listener will pick up the global novel variable (aka no good)
+        int i = list.size()-1;
+        Novel novel = list.get(i);
 
-            //novel thumbnail
-            JLabel icon = new JLabel();
-            icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
-            icon.setBounds(50, 50 + i*(novelHeight+50), novelWidth+2*thickness, novelHeight+2*thickness);
-            icon.setBorder(BorderFactory.createLineBorder(Design.screenPop, thickness));
-            center.add(icon);
+        //novel thumbnail
+        JLabel icon = new JLabel();
+        icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
+        icon.setBounds(50, 50 + i*(novelHeight+50), novelWidth+2*thickness, novelHeight+2*thickness);
+        icon.setBorder(BorderFactory.createLineBorder(Design.screenPop, thickness));
+        center.add(icon);
 
-            //novel title
-            JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
-            title.setForeground(Design.foreground);
-            title.setFont(Design.buttonTextFont.deriveFont(24f));
-            title.setBounds(200, 20 + i*(novelHeight+50), 350, 100);
-            center.add(title);
+        //novel title
+        JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
+        title.setForeground(Design.foreground);
+        title.setFont(Design.buttonTextFont.deriveFont(24f));
+        title.setBounds(200, 20 + i*(novelHeight+50), 350, 100);
+        center.add(title);
 
-            //novel author
-            JLabel author = new JLabel(novel.getAuthor());
-            author.setForeground(Design.foreground);
-            author.setFont(Design.buttonTextFont.deriveFont(18f));
-            author.setBounds(200, 100 + i*(novelHeight+50), 350, 50);
-            center.add(author);
+        //novel author
+        JLabel author = new JLabel(novel.getAuthor());
+        author.setForeground(Design.foreground);
+        author.setFont(Design.buttonTextFont.deriveFont(18f));
+        author.setBounds(200, 100 + i*(novelHeight+50), 350, 50);
+        center.add(author);
 
-            //summary
-            JLabel summary = new JLabel("<html>"+limit(novel.getSummary())+"</html>");
-            summary.setForeground(Design.foreground);
-            summary.setFont(Design.novelTextFont);
-            summary.setBounds(200, 140 + i*(novelHeight+50), 350, 100);
-            summary.setBorder(BorderFactory.createLineBorder(Color.white));
-            center.add(summary);
+        //summary
+        JLabel summary = new JLabel("<html>"+limit(novel.getSummary())+"</html>");
+        summary.setForeground(Design.foreground);
+        summary.setFont(Design.novelTextFont);
+        summary.setBounds(200, 140 + i*(novelHeight+50), 350, 100);
+        summary.setBorder(BorderFactory.createLineBorder(Color.white));
+        center.add(summary);
 
-            //invisible but clickable button
-            JButton click = new JButton();
-            click.setOpaque(false);
-            click.setContentAreaFilled(false);
-            click.setBorder(BorderFactory.createLineBorder(Color.white));
-            click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
-            int finalI = i;
-            click.addActionListener(e -> refreshScreen(finalI));
-            center.add(click);
-        }
+        //invisible but clickable button
+        JButton click = new JButton();
+        click.setOpaque(false);
+        click.setContentAreaFilled(false);
+        click.setBorder(BorderFactory.createLineBorder(Color.white));
+        click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
+        click.addActionListener(e -> { //displays the novelInfo screen
+            content.setVisible(false);
+            new NovelInfo(frame, content, novel);
+        });
+        center.add(click);
 
+        //updating gif to be in the center of the screen is user scrolls
         gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
-        center.setPreferredSize(new Dimension(Design.WIDTH, 150+total*(novelHeight+50)));
+        center.setPreferredSize(new Dimension(Misc.WIDTH, 150+total*(novelHeight+50)));
     }
 
+    //load chapters into arraylist
     private void loadChapters() {
-        total+=initial;
-        String url = "https://novelfull.com/most-popular?page="+(++page);
-        int count = initial;
+        total += amountPerLoad;
+        int count = amountPerLoad;
         try {
             while(count>0) {
+                String url = "https://novelfull.com/most-popular?page="+(++page);
                 Document doc = Jsoup.connect(url).get();
                 //all the <div> with title information are in a class called "col-xs-7"
                 //to call a class from a div, the dot is used
                 for(Element row:doc.select("div.col-xs-7")) {
-                    if(count<=0) break;
+                    if(count--<=0) break;
                     //finds the <a> tag that is contained in a <h3> tag
                     String novelLink = row.select("h3 > a").attr("href");
                     String novelName = row.select("h3 > a").text();
                     list.add(new Novel(novelName, novelLink));
-                    displayChapter(list.size()-1, list.size());
-                    System.out.println(list.get(list.size()-1));
-                    count--;
+                    displayChapter();
                 }
-                url = "https://novelfull.com/index.php/most-popular?page="+(++page);
             }
         } catch (IOException e) {
             System.out.println("Problem loading chapters in browse screen");
@@ -199,31 +206,29 @@ public class Browse {
         }
     }
 
+    //used to multithread, aka load novel and display loading screen gif
+    //because Swing works off of only one thread ):
     private void setupWorker() {
         worker = new SwingWorker() {
             @Override
             protected Void doInBackground() {
-                gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
+                //displaying gif
                 gif.setVisible(true);
+                gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
                 loadChapters();
-//                displayChapter(size, list.size());
-                viewMore.setBounds(200, 50 + list.size()*(novelHeight+50), 200, 50);
-                viewMore.setVisible(true);
                 return null;
             }
             @Override
             protected void done() {
                 gif.setVisible(false);
+                viewMore.setBounds(200, 50 + list.size()*(novelHeight+50), 200, 50);
+                viewMore.setVisible(true);
+                viewMore.setEnabled(page>7? false:true); //only 7 pages for hot novels
             }
         };
     }
 
-    private void refreshScreen(int targetChapter) {
-        content.setVisible(false);
-        System.out.println(targetChapter+"\n"+list.get(targetChapter));
-        new NovelInfo(frame, content, list.get(targetChapter));
-    }
-
+    //used to limit the novel summary so that only a snippet is displayed
     private String limit(String text) {
         String arr[] = text.split("[ ]"), ret="";
         for(int i=0;i<Math.min(25, arr.length);i++) {
@@ -231,12 +236,5 @@ public class Browse {
             ret+=arr[i].trim()+" ";
         }
         return ret+"...";
-    }
-
-    public static void main(String[] args) {
-        JFrame frame = new JFrame();
-        list = new ArrayList();
-        Novel novel = new Novel("Invincible", "/invincible.html");
-        Browse b = new Browse(frame, novel);
     }
 }
