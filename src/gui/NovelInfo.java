@@ -10,26 +10,27 @@ import javax.swing.*;
 
 public class NovelInfo {
     private JFrame frame;
-    private JPanel content = new JPanel(), top, center, bot;
+    private JPanel content = new JPanel(), top, center, bot, browse;
 
     private Novel novel;
     private NovelDisplay novelDisplay;
 
     private boolean firstOpen = true;
 
-    public static void main(String args[]) {
-        String title[] = {"/overgeared.html", "/the-kings-avatar.html"};
+//    public static void main(String args[]) {
+//        String title[] = {"/overgeared.html", "/the-kings-avatar.html"};
+//
+//        Novel novel = new Novel("Overgeared", title[0]);
+//        System.out.println(novel);
+//
+//        JFrame frame = new JFrame();
+//
+//        new NovelInfo(frame, novel);
+//    }
 
-        Novel novel = new Novel("Overgeared", title[0]);
-        System.out.println(novel);
-
-        JFrame frame = new JFrame();
-
-        new NovelInfo(frame, novel);
-    }
-
-    public NovelInfo(JFrame frame, Novel novel) {
+    public NovelInfo(JFrame frame, JPanel browse, Novel novel) {
         this.frame = frame;
+        this.browse = browse;
         this.novel = novel;
         setupPanel();
         setupContent();
@@ -58,17 +59,19 @@ public class NovelInfo {
         top.add(thumbnail);
 
         //novel title
-        JLabel title = new JLabel(novel.getNovelName());
+        JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
         title.setForeground(Design.foreground);
-        title.setFont(Design.buttonTextFont.deriveFont(28f));
-        title.setBounds(200, 50, 250, 50);
+        title.setFont(Design.buttonTextFont.deriveFont(24f));
+        title.setBounds(200, 50, 350, 75);
+        title.setBorder(BorderFactory.createLineBorder(Color.white));
         top.add(title);
 
         //novel author
-        JLabel author = new JLabel(novel.getAuthor());
+        JLabel author = new JLabel("<html>"+novel.getAuthor()+"</html>");
         author.setForeground(Design.foreground);
-        author.setFont(Design.buttonTextFont.deriveFont(18f));
-        author.setBounds(200, 100, 200, 30);
+        author.setFont(Design.buttonTextFont.deriveFont(16f));
+        author.setBounds(200, 150, 350, 50);
+        author.setBorder(BorderFactory.createLineBorder(Color.white));
         top.add(author);
 
         //novel summary in JScrollPane
@@ -136,6 +139,20 @@ public class NovelInfo {
         resume.addMouseListener(new ButtonStyle());
         resume.addActionListener(e -> refreshScreen(novel.getLastReadChapter()));
         bot.add(resume);
+
+        //closes the current novel and displays novelInfo screen
+        JButton goBack = new JButton("Go Back");
+        goBack.setFont(Design.buttonTextFont.deriveFont(16f));
+        goBack.setBounds(10, 10, 120, 30);
+        goBack.setBackground(Design.novelButtonBackground);
+        goBack.setForeground(Design.foreground);
+        goBack.addMouseListener(new ButtonStyle());
+        goBack.addActionListener(e -> {
+            content.setVisible(false);
+            browse.setVisible(true);
+            frame.setTitle(String.format("Currently browsing titles"));
+        });
+        top.add(goBack);
     }
 
     private void setupPanel() {

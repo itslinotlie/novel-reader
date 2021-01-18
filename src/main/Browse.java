@@ -22,10 +22,12 @@ public class Browse {
     private JFrame frame;
     private JPanel content = new JPanel(), top, center, bot;
 
+    private JScrollPane scroll;
+
     private static ArrayList<Novel> list;
     private static Novel novel;
 
-    private static int novelPerPage = 20, initial = 20, page = 1;
+    private static int novelPerPage = 20, total = 0, initial = 5, page = 0;
     private static double scaleFactor = 3/5f;
 
     private static int novelWidth, novelHeight, thickness = 4;;
@@ -44,30 +46,15 @@ public class Browse {
         frame.setTitle(String.format("Currently browsing titles"));
     }
     private void setupContent() {
-        for(int i=0;i<list.size();i++) {
-            novel = list.get(i);
+        //JScrollPane to allow for continuous scrolling of browsing novels
+        scroll = new JScrollPane(center);
+        scroll.setBorder(BorderFactory.createEmptyBorder());
+        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scroll.getVerticalScrollBar().setUnitIncrement(15);
+        content.add(scroll);
 
-            //novel thumbnail
-            JLabel icon = new JLabel();
-            icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
-            icon.setBounds(50, 50 + i*(novelHeight+50), novelWidth+2*thickness, novelHeight+2*thickness);
-            icon.setBorder(BorderFactory.createLineBorder(Design.screenPop, thickness));
-            center.add(icon);
-
-            //novel title
-            JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
-            title.setForeground(Design.foreground);
-            title.setFont(Design.buttonTextFont.deriveFont(24f));
-            title.setBounds(200, 20 + i*(novelHeight+50), 350, 100);
-            center.add(title);
-
-            //novel author
-            JLabel author = new JLabel(novel.getAuthor());
-            author.setForeground(Design.foreground);
-            author.setFont(Design.buttonTextFont);
-            author.setBounds(200, 100 + i*(novelHeight+50), 350, 50);
-            center.add(author);
-        }
+        displayChapter(0, list.size());
 
         JButton viewMore = new JButton("View More");
         viewMore.setFont(Design.buttonTextFont.deriveFont(24f));
@@ -75,17 +62,25 @@ public class Browse {
         viewMore.setForeground(Design.screenBackground);
         viewMore.setBackground(Design.novelButtonBackground);
         viewMore.addMouseListener(new ButtonStyle());
+        viewMore.addActionListener(e -> {
+            viewMore.setVisible(false);
+            int size = list.size();
+            loadChapters();
+            displayChapter(size, list.size());
+            viewMore.setBounds(200, 50 + list.size()*(novelHeight+50), 200, 50);
+            viewMore.setVisible(true);
+        });
 //        resume.addActionListener(e -> refreshScreen(novel.getLastReadChapter()));
         center.add(viewMore);
 
 
-        //JScrollPane to allow for continuous scrolling of browsing novels
-        JScrollPane scroll = new JScrollPane(center);
-        scroll.setBorder(BorderFactory.createEmptyBorder());
-        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.getVerticalScrollBar().setUnitIncrement(15);
-        content.add(scroll);
+//        //JScrollPane to allow for continuous scrolling of browsing novels
+//        scroll = new JScrollPane(center);
+//        scroll.setBorder(BorderFactory.createEmptyBorder());
+//        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+//        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//        scroll.getVerticalScrollBar().setUnitIncrement(15);
+//        content.add(scroll);
     }
 
     private void setupPanel() {
@@ -109,7 +104,7 @@ public class Browse {
         //browsable novels
         center = new JPanel();
         center.setBackground(Design.screenLightBackground);
-        center.setPreferredSize(new Dimension(Design.WIDTH, 150+initial*(novelHeight+50)));
+        center.setPreferredSize(new Dimension(Design.WIDTH, 150+total*(novelHeight+50)));
         center.setLayout(null);
 
         //application dashboard
@@ -124,10 +119,88 @@ public class Browse {
         content.add(bot, BorderLayout.SOUTH);
     }
 
-    public static void main(String[] args) {
-        String url = "https://novelfull.com/most-popular?page=1";
+    private void displayChapter(int begin, int end) {
+        for(int i=begin;i<end;i++) {
+            novel = list.get(i);
 
-        list = new ArrayList();
+            //novel thumbnail
+            JLabel icon = new JLabel();
+            icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
+            icon.setBounds(50, 50 + i*(novelHeight+50), novelWidth+2*thickness, novelHeight+2*thickness);
+            icon.setBorder(BorderFactory.createLineBorder(Design.screenPop, thickness));
+            center.add(icon);
+
+            //novel title
+            JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
+            title.setForeground(Design.foreground);
+            title.setFont(Design.buttonTextFont.deriveFont(24f));
+            title.setBounds(200, 20 + i*(novelHeight+50), 350, 100);
+            center.add(title);
+
+            //novel author
+            JLabel author = new JLabel(novel.getAuthor());
+            author.setForeground(Design.foreground);
+            author.setFont(Design.buttonTextFont.deriveFont(18f));
+            author.setBounds(200, 100 + i*(novelHeight+50), 350, 50);
+            center.add(author);
+
+            //summary
+            JLabel summary = new JLabel("<html>"+limit(novel.getSummary())+"</html>");
+            summary.setForeground(Design.foreground);
+            summary.setFont(Design.novelTextFont);
+            summary.setBounds(200, 140 + i*(novelHeight+50), 350, 100);
+            summary.setBorder(BorderFactory.createLineBorder(Color.white));
+            center.add(summary);
+
+            //invisible but clickable button
+            JButton click = new JButton();
+            click.setOpaque(false);
+            click.setContentAreaFilled(false);
+            click.setBorder(BorderFactory.createLineBorder(Color.white));
+            click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
+            int finalI = i;
+            click.addActionListener(e -> refreshScreen(finalI));
+            center.add(click);
+        }
+
+        center.setPreferredSize(new Dimension(Design.WIDTH, 150+total*(novelHeight+50)));
+
+//        content.remove(scroll);
+//
+//        scroll = new JScrollPane(center);
+//        scroll.setBorder(BorderFactory.createEmptyBorder());
+//        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+//        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+//        scroll.getVerticalScrollBar().setUnitIncrement(15);
+//        content.add(scroll);
+
+//        scroll.setPreferredSize(new Dimension(Design.WIDTH, 150+initial*(novelHeight+50)));
+//        scroll = new JScrollPane(center);
+////        scroll.setBorder(BorderFactory.createEmptyBorder());
+////        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+////        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+////        scroll.getVerticalScrollBar().setUnitIncrement(15);
+//        content.add(scroll);
+    }
+
+    private void refreshScreen(int targetChapter) {
+        content.setVisible(false);
+        System.out.println(targetChapter+"\n"+list.get(targetChapter));
+        new NovelInfo(frame, content, list.get(targetChapter));
+    }
+
+    private String limit(String text) {
+        String arr[] = text.split("[ ]"), ret="";
+        for(int i=0;i<Math.min(25, arr.length);i++) {
+            if(arr[i]=="") continue;
+            ret+=arr[i].trim()+" ";
+        }
+        return ret+"...";
+    }
+
+    private static void loadChapters() {
+        total+=initial;
+        String url = "https://novelfull.com/most-popular?page="+(++page);
         int count = initial;
         try {
             while(count>0) {
@@ -140,16 +213,20 @@ public class Browse {
                     String novelLink = row.select("h3 > a").attr("href");
                     String novelName = row.select("h3 > a").text();
                     list.add(new Novel(novelName, novelLink));
+                    System.out.println(list.get(list.size()-1));
                     count--;
                 }
                 url = "https://novelfull.com/index.php/most-popular?page="+(++page);
             }
-            for(Novel novel:list) {
-                System.out.println(novel+"\n");
-            }
         } catch (IOException e) {
+            System.out.println("Problem loading chapters in browse screen");
             e.printStackTrace();
         }
+    }
+
+    public static void main(String[] args) {
+        list = new ArrayList();
+        loadChapters();
         JFrame frame = new JFrame();
         new Browse(frame);
     }
