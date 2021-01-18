@@ -21,19 +21,23 @@ import java.util.Arrays;
 public class Browse {
     private JFrame frame;
     private JPanel content = new JPanel(), top, center, bot;
+    private JLabel gif;
+    private JButton viewMore;
 
     private JScrollPane scroll;
+    private SwingWorker worker = null; //allows "multi-threading"
 
     private static ArrayList<Novel> list;
     private static Novel novel;
 
-    private static int novelPerPage = 20, total = 0, initial = 5, page = 0;
+    private static int novelPerPage = 20, total = 0, initial = 4, page = 0, size;
     private static double scaleFactor = 3/5f;
 
     private static int novelWidth, novelHeight, thickness = 4;;
 
-    public Browse(JFrame frame) {
+    public Browse(JFrame frame, Novel novel) {
         this.frame = frame;
+        this.novel = novel;
         setupPanel();
         setupContent();
         setupFrame();
@@ -46,6 +50,19 @@ public class Browse {
         frame.setTitle(String.format("Currently browsing titles"));
     }
     private void setupContent() {
+        //screen header
+        JLabel browse = new JLabel("Browse");
+        browse.setForeground(Design.foreground);
+        browse.setFont(Design.buttonTextFont.deriveFont(24f));
+        browse.setBounds(25, 0, 100, 50);
+        top.add(browse);
+
+        //shown when things are loaded
+        gif = new JLabel();
+        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
+        gif.setVisible(false);
+        center.add(gif);
+
         //JScrollPane to allow for continuous scrolling of browsing novels
         scroll = new JScrollPane(center);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -54,9 +71,10 @@ public class Browse {
         scroll.getVerticalScrollBar().setUnitIncrement(15);
         content.add(scroll);
 
+        loadChapters();
         displayChapter(0, list.size());
 
-        JButton viewMore = new JButton("View More");
+        viewMore = new JButton("View More");
         viewMore.setFont(Design.buttonTextFont.deriveFont(24f));
         viewMore.setBounds(200, 50 + list.size()*(novelHeight+50), 200, 50);
         viewMore.setForeground(Design.screenBackground);
@@ -64,28 +82,15 @@ public class Browse {
         viewMore.addMouseListener(new ButtonStyle());
         viewMore.addActionListener(e -> {
             viewMore.setVisible(false);
-            int size = list.size();
-            loadChapters();
-            displayChapter(size, list.size());
-            viewMore.setBounds(200, 50 + list.size()*(novelHeight+50), 200, 50);
-            viewMore.setVisible(true);
+            size = list.size();
+            setupWorker();
+            worker.execute();
         });
-//        resume.addActionListener(e -> refreshScreen(novel.getLastReadChapter()));
         center.add(viewMore);
-
-
-//        //JScrollPane to allow for continuous scrolling of browsing novels
-//        scroll = new JScrollPane(center);
-//        scroll.setBorder(BorderFactory.createEmptyBorder());
-//        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-//        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//        scroll.getVerticalScrollBar().setUnitIncrement(15);
-//        content.add(scroll);
     }
 
     private void setupPanel() {
         //need to initialize this value to set center panel height
-        novel = list.get(0);
         novelWidth = (int)(novel.getThumbnailWidth()*scaleFactor);
         novelHeight = (int)(novel.getThumbnailHeight()*scaleFactor);
 
@@ -163,24 +168,54 @@ public class Browse {
             center.add(click);
         }
 
+        gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
         center.setPreferredSize(new Dimension(Design.WIDTH, 150+total*(novelHeight+50)));
+    }
 
-//        content.remove(scroll);
-//
-//        scroll = new JScrollPane(center);
-//        scroll.setBorder(BorderFactory.createEmptyBorder());
-//        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-//        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-//        scroll.getVerticalScrollBar().setUnitIncrement(15);
-//        content.add(scroll);
+    private void loadChapters() {
+        total+=initial;
+        String url = "https://novelfull.com/most-popular?page="+(++page);
+        int count = initial;
+        try {
+            while(count>0) {
+                Document doc = Jsoup.connect(url).get();
+                //all the <div> with title information are in a class called "col-xs-7"
+                //to call a class from a div, the dot is used
+                for(Element row:doc.select("div.col-xs-7")) {
+                    if(count<=0) break;
+                    //finds the <a> tag that is contained in a <h3> tag
+                    String novelLink = row.select("h3 > a").attr("href");
+                    String novelName = row.select("h3 > a").text();
+                    list.add(new Novel(novelName, novelLink));
+                    displayChapter(list.size()-1, list.size());
+                    System.out.println(list.get(list.size()-1));
+                    count--;
+                }
+                url = "https://novelfull.com/index.php/most-popular?page="+(++page);
+            }
+        } catch (IOException e) {
+            System.out.println("Problem loading chapters in browse screen");
+            e.printStackTrace();
+        }
+    }
 
-//        scroll.setPreferredSize(new Dimension(Design.WIDTH, 150+initial*(novelHeight+50)));
-//        scroll = new JScrollPane(center);
-////        scroll.setBorder(BorderFactory.createEmptyBorder());
-////        scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-////        scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-////        scroll.getVerticalScrollBar().setUnitIncrement(15);
-//        content.add(scroll);
+    private void setupWorker() {
+        worker = new SwingWorker() {
+            @Override
+            protected Void doInBackground() {
+                gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
+                gif.setVisible(true);
+                loadChapters();
+//                displayChapter(size, list.size());
+                viewMore.setBounds(200, 50 + list.size()*(novelHeight+50), 200, 50);
+                viewMore.setVisible(true);
+                return null;
+            }
+            @Override
+            protected void done() {
+                gif.setVisible(false);
+            }
+        };
     }
 
     private void refreshScreen(int targetChapter) {
@@ -198,36 +233,10 @@ public class Browse {
         return ret+"...";
     }
 
-    private static void loadChapters() {
-        total+=initial;
-        String url = "https://novelfull.com/most-popular?page="+(++page);
-        int count = initial;
-        try {
-            while(count>0) {
-                Document doc = Jsoup.connect(url).get();
-                //all the <div> with title information are in a class called "col-xs-7"
-                //to call a class from a div, the dot is used
-                for(Element row:doc.select("div.col-xs-7")) {
-                    if(count<=0) break;
-                    //finds the <a> tag that is contained in a <h3> tag
-                    String novelLink = row.select("h3 > a").attr("href");
-                    String novelName = row.select("h3 > a").text();
-                    list.add(new Novel(novelName, novelLink));
-                    System.out.println(list.get(list.size()-1));
-                    count--;
-                }
-                url = "https://novelfull.com/index.php/most-popular?page="+(++page);
-            }
-        } catch (IOException e) {
-            System.out.println("Problem loading chapters in browse screen");
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) {
-        list = new ArrayList();
-        loadChapters();
         JFrame frame = new JFrame();
-        new Browse(frame);
+        list = new ArrayList();
+        Novel novel = new Novel("Invincible", "/invincible.html");
+        Browse b = new Browse(frame, novel);
     }
 }
