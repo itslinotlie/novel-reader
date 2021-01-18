@@ -4,22 +4,21 @@ import java.awt.*;
 import java.io.*;
 
 public class Design {
-    //dimensions
-    public static final int WIDTH = 600, HEIGHT = 800;
-
     //custom fonts
     public static Font novelTextFont;
     public static Font buttonTextFont;
     public static Font boldText;
+//    public static Font author = new Font("Tahoma", Font.PLAIN, 16);
 
     //loading custom font (.ttf) and adding it to GraphicsEnvironment so that it can be used
     static {
         try {
             //path to the font library
-            String root = "res/font-raleway/";
-            novelTextFont = Font.createFont(Font.TRUETYPE_FONT, new File(root+"Raleway-Medium.ttf")).deriveFont(16f);
-            buttonTextFont = Font.createFont(Font.TRUETYPE_FONT, new File(root+"Raleway-SemiBold.ttf")).deriveFont(24f);
-            boldText = Font.createFont(Font.TRUETYPE_FONT, new File(root+"Raleway-Black.ttf")).deriveFont(28f);
+            String font = "NotoSansSC";
+            String root = "res/font-" + font + "/";
+            novelTextFont = Font.createFont(Font.TRUETYPE_FONT, new File(root+font+"-Medium.otf")).deriveFont(16f);
+            buttonTextFont = Font.createFont(Font.TRUETYPE_FONT, new File(root+font+"-Bold.otf")).deriveFont(24f);
+            boldText = Font.createFont(Font.TRUETYPE_FONT, new File(root+font+"-Black.otf")).deriveFont(28f);
             //adding fonts to the graphics environment, which will allow
             //them to be used throughout the project
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
