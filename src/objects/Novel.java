@@ -82,6 +82,16 @@ public class Novel {
         return ret;
     }
 
+    //need a equals to remove Novel objects in the bookshelf object
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Novel) {
+            Novel compare = (Novel) obj;
+            return this.novelName.equals(compare.getNovelName());
+        }
+        return false;
+    }
+
     public String getAuthor() {
         return author;
     }

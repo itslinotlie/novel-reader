@@ -1,5 +1,6 @@
 package tools;
 
+import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 
@@ -42,4 +43,6 @@ public class Design {
     public static Color screenHighlight = Color.decode("#99aab5"); //light gray
     public static Color screenPop = Color.decode("#7289da"); //blue
 
+    public static Dimension header = new Dimension(Misc.WIDTH, 50);
+    public static Dimension footer = new Dimension(Misc.WIDTH, 100);
 }

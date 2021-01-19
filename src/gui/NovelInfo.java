@@ -1,5 +1,6 @@
 package gui;
 
+import objects.Bookshelf;
 import objects.Novel;
 import tools.ButtonStyle;
 import tools.Design;
@@ -12,27 +13,18 @@ import javax.swing.*;
 public class NovelInfo {
     private JFrame frame;
     private JPanel content = new JPanel(), top, center, bot, browse;
+    private Bookshelf bookshelf;
 
     private Novel novel;
     private NovelDisplay novelDisplay;
 
     private boolean firstOpen = true;
 
-//    public static void main(String args[]) {
-//        String title[] = {"/overgeared.html", "/the-kings-avatar.html"};
-//
-//        Novel novel = new Novel("Overgeared", title[0]);
-//        System.out.println(novel);
-//
-//        JFrame frame = new JFrame();
-//
-//        new NovelInfo(frame, novel);
-//    }
-
-    public NovelInfo(JFrame frame, JPanel browse, Novel novel) {
+    public NovelInfo(JFrame frame, JPanel browse, Novel novel, Bookshelf bookshelf) {
         this.frame = frame;
         this.browse = browse;
         this.novel = novel;
+        this.bookshelf = bookshelf;
         setupPanel();
         setupContent();
         setupFrame();
