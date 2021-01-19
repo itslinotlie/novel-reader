@@ -25,7 +25,6 @@ public class Browse {
     private SwingWorker worker = null; //allows "multi-threading"
 
     private ArrayList<Novel> list = new ArrayList();
-    private Bookshelf bookshelf = new Bookshelf();
     private Novel novel;
     private Library library;
 
@@ -162,6 +161,8 @@ public class Browse {
         if(location==1) { //go to library
             content.setVisible(false);
             library.getPanel().setVisible(true);
+            System.out.println("BROWSE: "+library.getBookshelf().size());
+            library.updateLibrary();
         } else if(location==2) { //go to browse
         }
     }
@@ -211,7 +212,8 @@ public class Browse {
         click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
         click.addActionListener(e -> { //displays the novelInfo screen
             content.setVisible(false);
-            new NovelInfo(frame, content, novel, bookshelf);
+            NovelInfo.previousScreen = 2;
+            new NovelInfo(frame, content, novel, library);
         });
         center.add(click);
 

@@ -186,8 +186,9 @@ public class Library {
         };
     }
 
-    private void updateLibrary() {
+    public void updateLibrary() {
         center.removeAll();
+        System.out.println("LIBRARY: "+bookshelf.size());
         for (int i=0;i<bookshelf.size();i++) {
             Novel novel = bookshelf.get(i);
 
@@ -228,7 +229,8 @@ public class Library {
             click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
             click.addActionListener(e -> { //displays the novelInfo screen
                 content.setVisible(false);
-                new NovelInfo(frame, content, novel, bookshelf);
+                NovelInfo.previousScreen = 1;
+                new NovelInfo(frame, content, novel, this);
             });
             center.add(click);
         }

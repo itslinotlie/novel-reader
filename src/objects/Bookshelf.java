@@ -29,6 +29,12 @@ public class Bookshelf {
         return ret;
     }
 
+    public boolean contains(Novel novel) {
+        for(Novel title:bookshelf) {
+            if(title==novel) return true;
+        } return false;
+    }
+
     public void add(Novel novel) {
         bookshelf.add(novel);
     }

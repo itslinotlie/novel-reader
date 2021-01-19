@@ -13,18 +13,19 @@ import javax.swing.*;
 public class NovelInfo {
     private JFrame frame;
     private JPanel content = new JPanel(), top, center, bot, browse;
-    private Bookshelf bookshelf;
+    private Library library;
 
     private Novel novel;
     private NovelDisplay novelDisplay;
 
     private boolean firstOpen = true;
+    public static int previousScreen = -1;
 
-    public NovelInfo(JFrame frame, JPanel browse, Novel novel, Bookshelf bookshelf) {
+    public NovelInfo(JFrame frame, JPanel browse, Novel novel, Library library) {
         this.frame = frame;
         this.browse = browse;
         this.novel = novel;
-        this.bookshelf = bookshelf;
+        this.library = library;
         setupPanel();
         setupContent();
         setupFrame();
@@ -73,6 +74,30 @@ public class NovelInfo {
         summary.setFont(Design.buttonTextFont.deriveFont(24f));
         summary.setBounds(200, 200, 200, 50);
         top.add(summary);
+
+        JLabel rating = new JLabel(novel.getRating());
+        rating.setForeground(Design.foreground);
+        rating.setFont(Design.buttonTextFont.deriveFont(10f));
+        rating.setBounds(25, 215, 200, 30);
+        top.add(rating);
+
+        //add to library
+        JButton libraryButton = new JButton("In library?");
+        libraryButton.setFont(Design.buttonTextFont.deriveFont(12f));
+        libraryButton.setForeground(Design.foreground);
+        libraryButton.setBackground(library.getBookshelf().contains(novel)? Color.GREEN:Color.RED);
+        libraryButton.setBounds(425, 200, 100, 50);
+        libraryButton.addActionListener(e -> {
+            if(library.getBookshelf().contains(novel)) {
+                library.getBookshelf().remove(novel);
+                libraryButton.setBackground(Color.RED);
+            } else {
+                library.getBookshelf().add(novel);
+                libraryButton.setBackground(Color.GREEN);
+            }
+            library.updateLibrary();
+        });
+        top.add(libraryButton);
 
         //JTextArea to display novel summary
         JTextArea text = new JTextArea(novel.getSummary());
@@ -142,8 +167,13 @@ public class NovelInfo {
         goBack.addMouseListener(new ButtonStyle());
         goBack.addActionListener(e -> {
             content.setVisible(false);
-            browse.setVisible(true);
-            frame.setTitle(String.format("Currently browsing titles"));
+            if(previousScreen==1) { //library
+                library.getPanel().setVisible(true);
+                frame.setTitle(String.format("Your Personal Library"));
+            } else if(previousScreen==2) { //browse
+                browse.setVisible(true);
+                frame.setTitle(String.format("Currently browsing titles"));
+            }
         });
         top.add(goBack);
     }
