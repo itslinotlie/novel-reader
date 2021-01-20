@@ -14,10 +14,12 @@ import javax.swing.*;
 public class NovelInfo {
     private JFrame frame;
     private JPanel content = new JPanel(), top, center, bot, browse;
+    private JLabel gif;
     private Library library;
 
     private Novel novel;
     private NovelDisplay novelDisplay;
+    private SwingWorker worker = null; //allows "multi-threading"
 
     private boolean firstOpen = true;
     public static int previousScreen = -1;
@@ -158,6 +160,13 @@ public class NovelInfo {
         genre.setBorder(BorderFactory.createLineBorder(Color.white));
         bot.add(genre);
 
+        //shown when things are loaded
+        gif = new JLabel();
+        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
+        gif.setBounds(250, 50, 100, 100);
+        gif.setVisible(false);
+        top.add(gif);
+
         String genres = Arrays.toString(novel.getGenreList());
         JLabel genreList = new JLabel("<html>"+ genres.substring(1, genres.length()-1)+"</html>");
         genreList.setForeground(Design.foreground);
@@ -230,18 +239,32 @@ public class NovelInfo {
     }
 
     private void refreshScreen(int targetChapter) {
-        //rather than creating a new instance of novelDisplay everytime a button click
-        //having a boolean flag will allow only one instance per novel
-        if(firstOpen) {
-            novelDisplay = new NovelDisplay(frame, content, novel);
-            firstOpen = false;
-        } else {
-            content.setVisible(false);
-            novelDisplay.getPanel().setVisible(true);
-        }
-        content.setVisible(false);
-        novel.setLastReadChapter(targetChapter);
-        novelDisplay.refreshScreen();
+        setupWorker(targetChapter);
+        worker.execute();
+    }
+
+    //used to multithread, aka load novel and display loading screen gif
+    //because Swing works off of only one thread ):
+    private void setupWorker(int targetChapter) {
+        worker = new SwingWorker() {
+            @Override
+            protected Void doInBackground() {
+                //displaying gif
+                gif.setVisible(true);
+                if(novelDisplay==null) {
+                    novelDisplay = new NovelDisplay(frame, content, novel);
+                }
+                novel.setLastReadChapter(targetChapter);
+                novelDisplay.refreshScreen();
+                return null;
+            }
+            @Override
+            protected void done() {
+                gif.setVisible(false);
+                content.setVisible(false);
+                novelDisplay.getPanel().setVisible(true);
+            }
+        };
     }
 
     public JPanel getPanel() {
