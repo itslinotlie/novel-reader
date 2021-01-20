@@ -35,10 +35,6 @@ public class Browse {
     private boolean firstOpen = true;
 
     private JLabel highlight;
-//
-//    public static void main(String[] args) {
-//        new Browse(new JFrame());
-//    }
 
     public Browse(JFrame frame, Library library) {
         this.frame = frame;
@@ -185,7 +181,7 @@ public class Browse {
         //novel title
         JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
         title.setForeground(Design.foreground);
-        title.setFont(Design.buttonTextFont.deriveFont(24f));
+        title.setFont(Design.novelTextFont.deriveFont(22f));
         title.setBounds(200, 20 + i*(novelHeight+50), 350, 100);
         center.add(title);
 

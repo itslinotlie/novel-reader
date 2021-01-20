@@ -8,6 +8,7 @@ import tools.Misc;
 import tools.WebScraping;
 
 import java.awt.*;
+import java.util.Arrays;
 import javax.swing.*;
 
 public class NovelInfo {
@@ -56,15 +57,15 @@ public class NovelInfo {
         JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
         title.setForeground(Design.foreground);
         title.setFont(Design.buttonTextFont.deriveFont(24f));
-        title.setBounds(200, 50, 350, 75);
+        title.setBounds(200, 50, 350, 110);
         title.setBorder(BorderFactory.createLineBorder(Color.white));
         top.add(title);
 
         //novel author
         JLabel author = new JLabel("<html>"+novel.getAuthor()+"</html>");
         author.setForeground(Design.foreground);
-        author.setFont(Design.buttonTextFont.deriveFont(16f));
-        author.setBounds(200, 150, 350, 50);
+        author.setFont(Design.novelTextFont.deriveFont(16f));
+        author.setBounds(200, 160, 350, 30);
         author.setBorder(BorderFactory.createLineBorder(Color.white));
         top.add(author);
 
@@ -147,6 +148,21 @@ public class NovelInfo {
         dots.setFont(Design.buttonTextFont.deriveFont(24f));
         dots.setBounds(185, 10+150, 50, 30);
         bot.add(dots);
+
+        JLabel genre = new JLabel("Genre List");
+        genre.setForeground(Design.foreground);
+        genre.setFont(Design.buttonTextFont.deriveFont(18f));
+        genre.setBounds(400, 25, 200, 50);
+        genre.setBorder(BorderFactory.createLineBorder(Color.white));
+        bot.add(genre);
+
+        String genres = Arrays.toString(novel.getGenreList());
+        JLabel genreList = new JLabel("<html>"+ genres.substring(1, genres.length()-1)+"</html>");
+        genreList.setForeground(Design.foreground);
+        genreList.setFont(Design.buttonTextFont.deriveFont(12f));
+        genreList.setBounds(400, 75, 100, 150);
+        genreList.setBorder(BorderFactory.createLineBorder(Color.white));
+        bot.add(genreList);
 
         //resume to last read chapter
         JButton resume = new JButton("Resume");
