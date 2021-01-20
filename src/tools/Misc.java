@@ -14,4 +14,8 @@ public class Misc {
     public static String novelTitle(Novel novel) {
         return String.format("Current novel: %s", novel.getNovelName());
     }
+    public static String notEnoughTitles = "Your library does not contain sufficient " +
+            "amounts of novels for an accurate recommendation. Please have a minimum of " +
+            "5 novels in your library with at least 3 unique genres in the library. " +
+            "Thank you for your understanding.";
 }

@@ -31,21 +31,6 @@ public class Recommend {
 
     private SwingWorker worker = null; //allows "multi-threading"
 
-//    public static void main(String[] args) {
-//        Bookshelf one = new Bookshelf();
-//        Bookshelf two = new Bookshelf();
-//
-//        Novel novel1 = new Novel("Overgeared1", "/overgeared.html");
-//        Novel novel2 = new Novel("Overgeared2", "/overgeared.html");
-//        Novel novel3 = new Novel("Overgeared3", "/overgeared.html");
-//        Novel novel4 = new Novel("Overgeared4", "/overgeared.html");
-//
-//        one.add(novel1); one.add(novel3);
-//        one.add(novel2); one.add(novel4);
-//
-//        new Recommend(new JFrame(), one);
-//    }
-
     public Recommend(JFrame frame, Library library, Browse browse) {
         this.frame = frame;
         this.library = library;
@@ -81,12 +66,7 @@ public class Recommend {
         scroll.getVerticalScrollBar().setUnitIncrement(15);
         content.add(scroll);
 
-        //shown when things are loaded
-        gif = new JLabel();
-        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
-        gif.setVisible(false);
-        gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
-        center.add(gif);
+        updateRecommendation();
     }
 
     private void setupPanel() {
@@ -109,7 +89,6 @@ public class Recommend {
         //recommendation panel
         center = new JPanel();
         center.setBackground(Design.screenLightBackground);
-//        center.setPreferredSize(new Dimension(Misc.WIDTH, 150+total*(novelHeight+50)));
         center.setLayout(null);
 
         //application dashboard
@@ -122,6 +101,32 @@ public class Recommend {
         content.add(top, BorderLayout.NORTH);
         content.add(center, BorderLayout.CENTER);
         content.add(bot, BorderLayout.SOUTH);
+    }
+
+    public void updateRecommendation() {
+        content.setVisible(true);
+        System.out.println(library.getBookshelf());
+        if(library.getBookshelf().isReadyForRecommendation()) {
+            center.removeAll();
+//            center.setPreferredSize(new Dimension(Misc.WIDTH, 150+total*(novelHeight+50)));
+
+
+
+        } else {
+            center.removeAll();
+            System.out.println("HERE");
+
+            JLabel info = new JLabel("<html>"+Misc.notEnoughTitles+"</html>");
+            info.setForeground(Design.foreground);
+            info.setFont(Design.novelTextFont);
+            info.setBounds(125, 100, 350, 200);
+            center.add(info);
+        }
+        gif = new JLabel();
+        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
+        gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
+        gif.setVisible(false);
+        center.add(gif);
     }
 
     private void setupDashboard() {
@@ -151,7 +156,7 @@ public class Recommend {
         recommend.setBackground(Design.novelButtonBackground);
         recommend.addMouseListener(new ButtonStyle());
         recommend.setFocusable(false);
-        recommend.addActionListener(e -> refreshScreen(3));
+//        recommend.addActionListener(e -> refreshScreen(3));
         bot.add(recommend);
 
         highlight = new JLabel();
@@ -169,9 +174,9 @@ public class Recommend {
         if(location==1) {
             library.getPanel().setVisible(true);
         } else if(location==2) {
-            System.out.println(browse==null);
             if(browse==null) {
                 browse = new Browse(frame, library, this);
+                library.setBrowse(browse);
             } else {
                 browse.getPanel().setVisible(true);
             }
@@ -185,14 +190,16 @@ public class Recommend {
         worker = new SwingWorker() {
             @Override
             protected Void doInBackground() {
-                //displaying gif
-                gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
+                //shown when things are loaded
                 gif.setVisible(true);
                 refreshScreen(location, -1);
                 return null;
             }
             @Override
             protected void done() {
+                if(location==2) {
+                    browse.getPanel().setVisible(true);
+                }
                 gif.setVisible(false);
                 content.setVisible(false);
             }
@@ -201,5 +208,12 @@ public class Recommend {
 
     public JPanel getPanel() {
         return content;
+    }
+
+    public Browse getBrowse() {
+        return browse;
+    }
+    public void setBrowse(Browse browse) {
+        this.browse = browse;
     }
 }

@@ -1,9 +1,11 @@
 package objects;
 
 import java.util.ArrayList;
+import java.util.TreeMap;
 
 public class Bookshelf {
     private ArrayList<Novel> bookshelf = new ArrayList();
+    private TreeMap<String, Integer> freq = new TreeMap();
 
     public static void main(String args[]) {
         Bookshelf one = new Bookshelf();
@@ -35,8 +37,15 @@ public class Bookshelf {
         } return false;
     }
 
+    public boolean isReadyForRecommendation() {
+        return freq.size()>2 && bookshelf.size()>4;
+    }
+
     public void add(Novel novel) {
         bookshelf.add(novel);
+        for(int i=0;i<novel.getGenreList().length;i++) {
+            freq.put(novel.getGenreList()[i], 1+freq.getOrDefault(novel.getGenreList()[i], 0));
+        }
     }
 
     public void remove(Novel novel) {

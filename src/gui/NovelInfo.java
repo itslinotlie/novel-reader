@@ -226,6 +226,7 @@ public class NovelInfo {
         content.add(top, BorderLayout.NORTH);
         content.add(center, BorderLayout.CENTER);
         content.add(bot, BorderLayout.SOUTH);
+        content.setVisible(false);
     }
 
     private void refreshScreen(int targetChapter) {
@@ -241,5 +242,9 @@ public class NovelInfo {
         content.setVisible(false);
         novel.setLastReadChapter(targetChapter);
         novelDisplay.refreshScreen();
+    }
+
+    public JPanel getPanel() {
+        return content;
     }
 }

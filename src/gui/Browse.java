@@ -1,6 +1,5 @@
 package gui;
 
-import objects.Bookshelf;
 import objects.Novel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,7 +24,8 @@ public class Browse {
     private SwingWorker worker = null; //allows "multi-threading"
 
     private ArrayList<Novel> list = new ArrayList();
-    private Novel novel;
+    private Novel novel, novelPlaceHolder;
+    private NovelInfo novelInfo;
     private Library library;
     private Recommend recommend;
 
@@ -130,6 +130,7 @@ public class Browse {
         content.add(top, BorderLayout.NORTH);
         content.add(center, BorderLayout.CENTER);
         content.add(bot, BorderLayout.SOUTH);
+        content.setVisible(false);
     }
 
     //displays the most recent novel (for an animation like feel)
@@ -176,11 +177,7 @@ public class Browse {
         click.setFocusable(false);
         click.setBorder(BorderFactory.createLineBorder(Color.white));
         click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
-        click.addActionListener(e -> { //displays the novelInfo screen
-            content.setVisible(false);
-            NovelInfo.previousScreen = 2;
-            new NovelInfo(frame, content, novel, library);
-        });
+        click.addActionListener(e -> refreshScreen(-1, novel));
         center.add(click);
 
         //updating gif to be in the center of the screen is user scrolls
@@ -204,7 +201,7 @@ public class Browse {
                     String novelLink = row.select("h3 > a").attr("href");
                     String novelName = row.select("h3 > a").text();
                     list.add(new Novel(novelName, novelLink));
-                    System.out.println(list.get(list.size()-1));
+//                    System.out.println(list.get(list.size()-1));
                     displayChapter();
                 }
             }
@@ -231,7 +228,7 @@ public class Browse {
         window.setBackground(Design.novelButtonBackground);
         window.addMouseListener(new ButtonStyle());
         window.setFocusable(false);
-        window.addActionListener(e -> refreshScreen(2));
+//        window.addActionListener(e -> refreshScreen(2));
         bot.add(window);
 
         JButton recommend = new JButton();
@@ -255,8 +252,18 @@ public class Browse {
         worker.execute();
     }
 
+    public void refreshScreen(int location, Novel novel) {
+        novelPlaceHolder = novel;
+        setupWorker(location);
+        worker.execute();
+    }
+
     private void refreshScreen(int location, int random) {
-        if(location==0) {
+        if(location==-1) { //displaying novel info
+            NovelInfo.previousScreen = 2;
+            novelInfo = new NovelInfo(frame, content, novelPlaceHolder, library);
+        }
+        else if(location==0) { //view more
             loadChapters();
         }
         else if(location==1) {
@@ -266,7 +273,7 @@ public class Browse {
             if(recommend==null) {
                 recommend = new Recommend(frame, library, this);
             } else {
-                recommend.getPanel().setVisible(true);
+                recommend.updateRecommendation();
             }
         }
     }
@@ -286,7 +293,10 @@ public class Browse {
             @Override
             protected void done() {
                 gif.setVisible(false);
-                if(location==0) {
+                if(location==-1) {
+                    novelInfo.getPanel().setVisible(true);
+                }
+                else if(location==0) {
                     viewMore.setBounds(200, 50 + list.size() * (novelHeight + 50), 200, 50);
                     viewMore.setVisible(true);
                     viewMore.setEnabled(page > 7 ? false : true); //only 7 pages for hot novels

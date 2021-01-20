@@ -21,6 +21,8 @@ public class Library {
     private Bookshelf bookshelf;
     private Browse browse;
     private Recommend recommend;
+    private Novel novelPlaceHolder;
+    private NovelInfo novelInfo;
 
     private double scaleFactor = 3/5f;
     private int novelWidth, novelHeight, thickness = 4;
@@ -166,12 +168,21 @@ public class Library {
         worker.execute();
     }
 
-    private void refreshScreen(int location, int random) {
-        if(location==1) {
+    public void refreshScreen(int location, Novel novel) {
+        novelPlaceHolder = novel;
+        setupWorker(location);
+        worker.execute();
+    }
 
+    private void refreshScreen(int location, int random) {
+        if(location==-1) { //displaying novel info
+            NovelInfo.previousScreen = 2;
+            novelInfo = new NovelInfo(frame, content, novelPlaceHolder, this);
+        } else if(location==1) {
         } else if(location==2) {
             if(browse==null) {
                 browse = new Browse(frame, this, recommend);
+                recommend.setBrowse(browse);
             } else {
                 browse.getPanel().setVisible(true);
             }
@@ -179,7 +190,7 @@ public class Library {
             if(recommend==null) {
                 recommend = new Recommend(frame, this, browse);
             } else {
-                recommend.getPanel().setVisible(true);
+                recommend.updateRecommendation();
             }
         }
     }
@@ -198,6 +209,11 @@ public class Library {
             }
             @Override
             protected void done() {
+                if(location==-1) {
+                    novelInfo.getPanel().setVisible(true);
+                } else if(location==2) {
+                    browse.getPanel().setVisible(true);
+                }
                 gif.setVisible(false);
                 content.setVisible(false);
             }
@@ -206,7 +222,6 @@ public class Library {
 
     public void updateLibrary() {
         center.removeAll();
-        System.out.println("LIBRARY: "+bookshelf.size());
         for (int i=0;i<bookshelf.size();i++) {
             Novel novel = bookshelf.get(i);
 
@@ -246,11 +261,7 @@ public class Library {
             click.setFocusable(false);
             click.setBorder(BorderFactory.createLineBorder(Color.white));
             click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
-            click.addActionListener(e -> { //displays the novelInfo screen
-                content.setVisible(false);
-                NovelInfo.previousScreen = 1;
-                new NovelInfo(frame, content, novel, this);
-            });
+            click.addActionListener(e -> refreshScreen(-1, novel));
             center.add(click);
         }
         center.setPreferredSize(new Dimension(Misc.WIDTH, 50+bookshelf.size()*(novelHeight+50)));
@@ -272,5 +283,9 @@ public class Library {
 
     public Bookshelf getBookshelf() {
         return bookshelf;
+    }
+
+    public void setBrowse(Browse browse) {
+        this.browse = browse;
     }
 }
