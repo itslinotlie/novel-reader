@@ -1,6 +1,6 @@
-package main;
+package gui;
 
-import gui.NovelInfo;
+import objects.Bookshelf;
 import objects.Novel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -16,7 +16,8 @@ import java.util.ArrayList;
 
 public class Browse {
     private JFrame frame;
-    private JPanel content = new JPanel(), top, center, bot;
+    public static JPanel content = new JPanel();
+    private JPanel top, center, bot;
     private JLabel gif;
     private JButton viewMore;
 
@@ -25,21 +26,22 @@ public class Browse {
 
     private ArrayList<Novel> list = new ArrayList();
     private Novel novel;
+    private Library library;
 
     private int novelPerPage = 20, total = 0, amountPerLoad = 4, page = 0, size;
     private double scaleFactor = 3/5f;
 
     private int novelWidth, novelHeight, thickness = 4;
+    private boolean firstOpen = true;
 
+    private JLabel highlight;
 
-    public static void main(String[] args) {
-        new Browse(new JFrame());
-    }
-
-    public Browse(JFrame frame) {
+    public Browse(JFrame frame, Library library) {
         this.frame = frame;
+        this.library = library;
         setupPanel();
         setupContent();
+        setupDashboard();
         setupFrame();
     }
 
@@ -49,6 +51,30 @@ public class Browse {
         frame.setResizable(false);
         frame.setVisible(true);
         frame.setTitle(String.format("Currently browsing titles"));
+    }
+
+    private void setupDashboard() {
+        JButton library = new JButton();
+        library.setIcon(new ImageIcon(new ImageIcon("./res/library.png").getImage().getScaledInstance(90, 90, 0)));
+        library.setBounds(55, 5, 90, 90);
+        library.setBackground(Design.novelButtonBackground);
+        library.addMouseListener(new ButtonStyle());
+        library.addActionListener(e -> refreshScreen(1));
+        bot.add(library);
+
+        JButton window = new JButton();
+        window.setIcon(new ImageIcon(new ImageIcon("./res/window.png").getImage().getScaledInstance(90, 90, 0)));
+        window.setBounds(255, 5, 90, 90);
+        window.setBorder(BorderFactory.createLineBorder(Color.white));
+        window.setBackground(Design.novelButtonBackground);
+        window.addMouseListener(new ButtonStyle());
+        window.addActionListener(e -> refreshScreen(2));
+        bot.add(window);
+
+        highlight = new JLabel();
+        highlight.setIcon(new ImageIcon("./res/highlight-2.png"));
+        highlight.setBounds(250, 0, 100, 100);
+        bot.add(highlight);
     }
 
     private void setupContent() {
@@ -106,25 +132,35 @@ public class Browse {
         //browse screen
         top = new JPanel();
         top.setBackground(Design.screenBackground);
-        top.setPreferredSize(new Dimension(Misc.WIDTH, 50));
+        top.setPreferredSize(Design.header);
         top.setLayout(null);
 
         //browsable novels
         center = new JPanel();
         center.setBackground(Design.screenLightBackground);
-        center.setPreferredSize(new Dimension(Misc.WIDTH, 150+total*(novelHeight+50)));
         center.setLayout(null);
+        center.setPreferredSize(new Dimension(Misc.WIDTH, 150+total*(novelHeight+50)));
 
         //application dashboard
         bot = new JPanel();
         bot.setBackground(Design.screenBackground);
-        bot.setPreferredSize(new Dimension(Misc.WIDTH, 100));
+        bot.setPreferredSize(Design.footer);
         bot.setLayout(null);
 
         //panel containing everything
         content.add(top, BorderLayout.NORTH);
         content.add(center, BorderLayout.CENTER);
         content.add(bot, BorderLayout.SOUTH);
+    }
+
+    private void refreshScreen(int location) {
+        if(location==1) { //go to library
+            content.setVisible(false);
+            library.getPanel().setVisible(true);
+            System.out.println("BROWSE: "+library.getBookshelf().size());
+            library.updateLibrary();
+        } else if(location==2) { //go to browse
+        }
     }
 
     //displays the most recent novel (for an animation like feel)
@@ -145,7 +181,7 @@ public class Browse {
         //novel title
         JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
         title.setForeground(Design.foreground);
-        title.setFont(Design.buttonTextFont.deriveFont(24f));
+        title.setFont(Design.novelTextFont.deriveFont(22f));
         title.setBounds(200, 20 + i*(novelHeight+50), 350, 100);
         center.add(title);
 
@@ -172,7 +208,8 @@ public class Browse {
         click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
         click.addActionListener(e -> { //displays the novelInfo screen
             content.setVisible(false);
-            new NovelInfo(frame, content, novel);
+            NovelInfo.previousScreen = 2;
+            new NovelInfo(frame, content, novel, library);
         });
         center.add(click);
 
@@ -197,6 +234,7 @@ public class Browse {
                     String novelLink = row.select("h3 > a").attr("href");
                     String novelName = row.select("h3 > a").text();
                     list.add(new Novel(novelName, novelLink));
+                    System.out.println(list.get(list.size()-1));
                     displayChapter();
                 }
             }
@@ -236,5 +274,9 @@ public class Browse {
             ret+=arr[i].trim()+" ";
         }
         return ret+"...";
+    }
+
+    public JPanel getPanel() {
+        return content;
     }
 }

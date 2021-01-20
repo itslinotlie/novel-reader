@@ -15,7 +15,7 @@ import java.util.Arrays;
 public class Novel {
     private final String website = "https://novelfull.com";
     private String novelLink, novelName;
-    private String author, summary, thumbnailLink;
+    private String author, summary, thumbnailLink, rating;
     private String genreList[];
     private int lastReadChapter, chapterRange[];
     private ImageIcon thumbnail;
@@ -35,6 +35,7 @@ public class Novel {
         try {
             //connects to the url and gets the html
             Document doc = Jsoup.connect(url).get();
+            rating = doc.select("em").text();
             //there are only one of these divs, so no need for a for-each loop
             summary = doc.select(".desc-text").text();
             thumbnailLink = website + doc.select("div.book").first().select("img").attr("src"); //selects the <img> tag in a div called book and gets the src attribute
@@ -80,6 +81,16 @@ public class Novel {
         ret+=String.format("Thumbnail: %s\n", thumbnailLink);
         ret+=String.format("Summary: %s\n", summary);
         return ret;
+    }
+
+    //need a equals to remove Novel objects in the bookshelf object
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Novel) {
+            Novel compare = (Novel) obj;
+            return this.novelName.equals(compare.getNovelName());
+        }
+        return false;
     }
 
     public String getAuthor() {
@@ -136,5 +147,9 @@ public class Novel {
 
     public String getSummary() {
         return summary;
+    }
+
+    public String getRating() {
+        return rating;
     }
 }

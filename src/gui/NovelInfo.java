@@ -1,5 +1,6 @@
 package gui;
 
+import objects.Bookshelf;
 import objects.Novel;
 import tools.ButtonStyle;
 import tools.Design;
@@ -7,32 +8,25 @@ import tools.Misc;
 import tools.WebScraping;
 
 import java.awt.*;
+import java.util.Arrays;
 import javax.swing.*;
 
 public class NovelInfo {
     private JFrame frame;
     private JPanel content = new JPanel(), top, center, bot, browse;
+    private Library library;
 
     private Novel novel;
     private NovelDisplay novelDisplay;
 
     private boolean firstOpen = true;
+    public static int previousScreen = -1;
 
-//    public static void main(String args[]) {
-//        String title[] = {"/overgeared.html", "/the-kings-avatar.html"};
-//
-//        Novel novel = new Novel("Overgeared", title[0]);
-//        System.out.println(novel);
-//
-//        JFrame frame = new JFrame();
-//
-//        new NovelInfo(frame, novel);
-//    }
-
-    public NovelInfo(JFrame frame, JPanel browse, Novel novel) {
+    public NovelInfo(JFrame frame, JPanel browse, Novel novel, Library library) {
         this.frame = frame;
         this.browse = browse;
         this.novel = novel;
+        this.library = library;
         setupPanel();
         setupContent();
         setupFrame();
@@ -63,15 +57,15 @@ public class NovelInfo {
         JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
         title.setForeground(Design.foreground);
         title.setFont(Design.buttonTextFont.deriveFont(24f));
-        title.setBounds(200, 50, 350, 75);
+        title.setBounds(200, 50, 350, 110);
         title.setBorder(BorderFactory.createLineBorder(Color.white));
         top.add(title);
 
         //novel author
         JLabel author = new JLabel("<html>"+novel.getAuthor()+"</html>");
         author.setForeground(Design.foreground);
-        author.setFont(Design.buttonTextFont.deriveFont(16f));
-        author.setBounds(200, 150, 350, 50);
+        author.setFont(Design.novelTextFont.deriveFont(16f));
+        author.setBounds(200, 160, 350, 30);
         author.setBorder(BorderFactory.createLineBorder(Color.white));
         top.add(author);
 
@@ -81,6 +75,30 @@ public class NovelInfo {
         summary.setFont(Design.buttonTextFont.deriveFont(24f));
         summary.setBounds(200, 200, 200, 50);
         top.add(summary);
+
+        JLabel rating = new JLabel(novel.getRating());
+        rating.setForeground(Design.foreground);
+        rating.setFont(Design.buttonTextFont.deriveFont(10f));
+        rating.setBounds(25, 215, 200, 30);
+        top.add(rating);
+
+        //add to library
+        JButton libraryButton = new JButton("In library?");
+        libraryButton.setFont(Design.buttonTextFont.deriveFont(12f));
+        libraryButton.setForeground(Design.foreground);
+        libraryButton.setBackground(library.getBookshelf().contains(novel)? Color.GREEN:Color.RED);
+        libraryButton.setBounds(425, 200, 100, 50);
+        libraryButton.addActionListener(e -> {
+            if(library.getBookshelf().contains(novel)) {
+                library.getBookshelf().remove(novel);
+                libraryButton.setBackground(Color.RED);
+            } else {
+                library.getBookshelf().add(novel);
+                libraryButton.setBackground(Color.GREEN);
+            }
+            library.updateLibrary();
+        });
+        top.add(libraryButton);
 
         //JTextArea to display novel summary
         JTextArea text = new JTextArea(novel.getSummary());
@@ -131,6 +149,21 @@ public class NovelInfo {
         dots.setBounds(185, 10+150, 50, 30);
         bot.add(dots);
 
+        JLabel genre = new JLabel("Genre List");
+        genre.setForeground(Design.foreground);
+        genre.setFont(Design.buttonTextFont.deriveFont(18f));
+        genre.setBounds(400, 25, 200, 50);
+        genre.setBorder(BorderFactory.createLineBorder(Color.white));
+        bot.add(genre);
+
+        String genres = Arrays.toString(novel.getGenreList());
+        JLabel genreList = new JLabel("<html>"+ genres.substring(1, genres.length()-1)+"</html>");
+        genreList.setForeground(Design.foreground);
+        genreList.setFont(Design.buttonTextFont.deriveFont(12f));
+        genreList.setBounds(400, 75, 100, 150);
+        genreList.setBorder(BorderFactory.createLineBorder(Color.white));
+        bot.add(genreList);
+
         //resume to last read chapter
         JButton resume = new JButton("Resume");
         resume.setFont(Design.buttonTextFont.deriveFont(24f));
@@ -150,8 +183,13 @@ public class NovelInfo {
         goBack.addMouseListener(new ButtonStyle());
         goBack.addActionListener(e -> {
             content.setVisible(false);
-            browse.setVisible(true);
-            frame.setTitle(String.format("Currently browsing titles"));
+            if(previousScreen==1) { //library
+                library.getPanel().setVisible(true);
+                frame.setTitle(String.format("Your Personal Library"));
+            } else if(previousScreen==2) { //browse
+                browse.setVisible(true);
+                frame.setTitle(String.format("Currently browsing titles"));
+            }
         });
         top.add(goBack);
     }
