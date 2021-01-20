@@ -14,16 +14,16 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Library {
+public class Recommend {
     private JFrame frame;
-    private static JPanel content = new JPanel(), top, center, bot;
+    private JPanel content = new JPanel(), top, center, bot;
 
-    private Bookshelf bookshelf;
+    private Library library;
     private Browse browse;
-    private Recommend recommend;
 
     private double scaleFactor = 3/5f;
     private int novelWidth, novelHeight, thickness = 4;
+    private boolean firstOpen = true;
 
     private JLabel highlight, gif;
 
@@ -31,24 +31,25 @@ public class Library {
 
     private SwingWorker worker = null; //allows "multi-threading"
 
-    public static void main(String[] args) {
-        Bookshelf one = new Bookshelf();
-        Bookshelf two = new Bookshelf();
+//    public static void main(String[] args) {
+//        Bookshelf one = new Bookshelf();
+//        Bookshelf two = new Bookshelf();
+//
+//        Novel novel1 = new Novel("Overgeared1", "/overgeared.html");
+//        Novel novel2 = new Novel("Overgeared2", "/overgeared.html");
+//        Novel novel3 = new Novel("Overgeared3", "/overgeared.html");
+//        Novel novel4 = new Novel("Overgeared4", "/overgeared.html");
+//
+//        one.add(novel1); one.add(novel3);
+//        one.add(novel2); one.add(novel4);
+//
+//        new Recommend(new JFrame(), one);
+//    }
 
-        Novel novel1 = new Novel("Overgeared1", "/overgeared.html");
-        Novel novel2 = new Novel("Overgeared2", "/overgeared.html");
-        Novel novel3 = new Novel("Overgeared3", "/overgeared.html");
-        Novel novel4 = new Novel("Overgeared4", "/overgeared.html");
-
-        one.add(novel1); one.add(novel3);
-        one.add(novel2); one.add(novel4);
-
-        new Library(new JFrame(), one);
-    }
-
-    public Library(JFrame frame, Bookshelf bookshelf) {
+    public Recommend(JFrame frame, Library library, Browse browse) {
         this.frame = frame;
-        this.bookshelf = bookshelf;
+        this.library = library;
+        this.browse = browse;
         setupPanel();
         setupContent();
         setupDashboard();
@@ -60,19 +61,17 @@ public class Library {
         frame.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
         frame.setResizable(false);
         frame.setVisible(true);
-        frame.setTitle(Misc.libraryTitle);
+        frame.setTitle(Misc.recommendTitle);
         frame.repaint();
     }
 
     private void setupContent() {
         //screen header
-        JLabel library = new JLabel("Library");
-        library.setForeground(Design.foreground);
-        library.setFont(Design.buttonTextFont.deriveFont(24f));
-        library.setBounds(25, 0, 100, 50);
-        top.add(library);
-
-        updateLibrary();
+        JLabel recommend = new JLabel("Recommend");
+        recommend.setForeground(Design.foreground);
+        recommend.setFont(Design.buttonTextFont.deriveFont(24f));
+        recommend.setBounds(25, 0, 150, 50);
+        top.add(recommend);
 
         //JScrollPane to allow for continuous scrolling of browsing novels
         scroll = new JScrollPane(center);
@@ -107,11 +106,11 @@ public class Library {
         top.setPreferredSize(Design.header);
         top.setLayout(null);
 
-        //bookmarked novels
+        //recommendation panel
         center = new JPanel();
         center.setBackground(Design.screenLightBackground);
+//        center.setPreferredSize(new Dimension(Misc.WIDTH, 150+total*(novelHeight+50)));
         center.setLayout(null);
-        center.setPreferredSize(new Dimension(Misc.WIDTH, 50+bookshelf.size()*(novelHeight+50)));
 
         //application dashboard
         bot = new JPanel();
@@ -132,7 +131,7 @@ public class Library {
         library.setBackground(Design.novelButtonBackground);
         library.addMouseListener(new ButtonStyle());
         library.setFocusable(false);
-//        library.addActionListener(e -> refreshScreen(1));
+        library.addActionListener(e -> refreshScreen(1));
         bot.add(library);
 
         JButton window = new JButton();
@@ -157,7 +156,7 @@ public class Library {
 
         highlight = new JLabel();
         highlight.setIcon(new ImageIcon("./res/highlight-2.png"));
-        highlight.setBounds(50, 0, 100, 100);
+        highlight.setBounds(450, 0, 100, 100);
         bot.add(highlight);
     }
 
@@ -168,19 +167,15 @@ public class Library {
 
     private void refreshScreen(int location, int random) {
         if(location==1) {
-
+            library.getPanel().setVisible(true);
         } else if(location==2) {
+            System.out.println(browse==null);
             if(browse==null) {
-                browse = new Browse(frame, this, recommend);
+                browse = new Browse(frame, library, this);
             } else {
                 browse.getPanel().setVisible(true);
             }
         } else if(location==3) {
-            if(recommend==null) {
-                recommend = new Recommend(frame, this, browse);
-            } else {
-                recommend.getPanel().setVisible(true);
-            }
         }
     }
 
@@ -204,73 +199,7 @@ public class Library {
         };
     }
 
-    public void updateLibrary() {
-        center.removeAll();
-        System.out.println("LIBRARY: "+bookshelf.size());
-        for (int i=0;i<bookshelf.size();i++) {
-            Novel novel = bookshelf.get(i);
-
-            //novel thumbnail
-            JLabel icon = new JLabel();
-            icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
-            icon.setBounds(50, 50 + i*(novelHeight+50), novelWidth+2*thickness, novelHeight+2*thickness);
-            icon.setBorder(BorderFactory.createLineBorder(Design.screenPop, thickness));
-            center.add(icon);
-
-            //novel title
-            JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
-            title.setForeground(Design.foreground);
-            title.setFont(Design.buttonTextFont.deriveFont(24f));
-            title.setBounds(200, 20 + i*(novelHeight+50), 350, 100);
-            center.add(title);
-
-            //novel author
-            JLabel author = new JLabel(novel.getAuthor());
-            author.setForeground(Design.foreground);
-            author.setFont(Design.buttonTextFont.deriveFont(18f));
-            author.setBounds(200, 100 + i*(novelHeight+50), 350, 50);
-            center.add(author);
-
-            //summary
-            JLabel summary = new JLabel("<html>"+limit(novel.getSummary())+"</html>");
-            summary.setForeground(Design.foreground);
-            summary.setFont(Design.novelTextFont);
-            summary.setBounds(200, 140 + i*(novelHeight+50), 350, 100);
-            summary.setBorder(BorderFactory.createLineBorder(Color.white));
-            center.add(summary);
-
-            //invisible but clickable button
-            JButton click = new JButton();
-            click.setOpaque(false);
-            click.setContentAreaFilled(false);
-            click.setFocusable(false);
-            click.setBorder(BorderFactory.createLineBorder(Color.white));
-            click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
-            click.addActionListener(e -> { //displays the novelInfo screen
-                content.setVisible(false);
-                NovelInfo.previousScreen = 1;
-                new NovelInfo(frame, content, novel, this);
-            });
-            center.add(click);
-        }
-        center.setPreferredSize(new Dimension(Misc.WIDTH, 50+bookshelf.size()*(novelHeight+50)));
-    }
-
-    //used to limit the novel summary so that only a snippet is displayed
-    private String limit(String text) {
-        String arr[] = text.split("[ ]"), ret="";
-        for(int i=0;i<Math.min(25, arr.length);i++) {
-            if(arr[i]=="") continue;
-            ret+=arr[i].trim()+" ";
-        }
-        return ret+"...";
-    }
-
     public JPanel getPanel() {
         return content;
-    }
-
-    public Bookshelf getBookshelf() {
-        return bookshelf;
     }
 }

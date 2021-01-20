@@ -38,7 +38,7 @@ public class NovelInfo {
         frame.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
         frame.setResizable(false);
         frame.setVisible(true);
-        frame.setTitle(String.format("Current novel: %s", novel.getNovelName()));
+        frame.setTitle(Misc.novelTitle(novel));
     }
 
     private void setupContent() {
@@ -88,6 +88,7 @@ public class NovelInfo {
         libraryButton.setForeground(Design.foreground);
         libraryButton.setBackground(library.getBookshelf().contains(novel)? Color.GREEN:Color.RED);
         libraryButton.setBounds(425, 200, 100, 50);
+        libraryButton.setFocusable(false);
         libraryButton.addActionListener(e -> {
             if(library.getBookshelf().contains(novel)) {
                 library.getBookshelf().remove(novel);
@@ -137,6 +138,7 @@ public class NovelInfo {
             chapter[i].setFont(Design.buttonTextFont.deriveFont(12f));
             chapter[i].setBounds(50, 10+40*i+(i<=3? 0:30), 300, 30);
             chapter[i].addMouseListener(new ButtonStyle());
+            chapter[i].setFocusable(false);
             int finalI = i;
             chapter[i].addActionListener(e -> refreshScreen(finalI<=3? finalI:novel.getChapterRange()[1]+finalI-6));
             bot.add(chapter[i]);
@@ -171,6 +173,7 @@ public class NovelInfo {
         resume.setForeground(Design.screenBackground);
         resume.setBackground(Design.novelButtonBackground);
         resume.addMouseListener(new ButtonStyle());
+        resume.setFocusable(false);
         resume.addActionListener(e -> refreshScreen(novel.getLastReadChapter()));
         bot.add(resume);
 
@@ -181,14 +184,15 @@ public class NovelInfo {
         goBack.setBackground(Design.novelButtonBackground);
         goBack.setForeground(Design.foreground);
         goBack.addMouseListener(new ButtonStyle());
+        goBack.setFocusable(false);
         goBack.addActionListener(e -> {
             content.setVisible(false);
             if(previousScreen==1) { //library
                 library.getPanel().setVisible(true);
-                frame.setTitle(String.format("Your Personal Library"));
+                frame.setTitle(Misc.libraryTitle);
             } else if(previousScreen==2) { //browse
                 browse.setVisible(true);
-                frame.setTitle(String.format("Currently browsing titles"));
+                frame.setTitle(Misc.browseTitle);
             }
         });
         top.add(goBack);
