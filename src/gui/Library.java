@@ -42,8 +42,8 @@ public class Library {
         Novel novel3 = new Novel("Overgeared3", "/overgeared.html");
         Novel novel4 = new Novel("Overgeared4", "/overgeared.html");
 
-        one.add(novel1); one.add(novel3);
-        one.add(novel2); one.add(novel4);
+//        one.add(novel1); one.add(novel3);
+//        one.add(novel2); one.add(novel4);
 
         new Library(new JFrame(), one);
     }
@@ -222,6 +222,14 @@ public class Library {
 
     public void updateLibrary() {
         center.removeAll();
+        if(bookshelf.isEmpty()) {
+            JLabel info = new JLabel("<html>"+Misc.emptyLibrary+"</html>");
+            info.setForeground(Design.foreground);
+            info.setFont(Design.novelTextFont);
+            info.setBounds(125, 100, 350, 300);
+            center.add(info);
+            return;
+        }
         for (int i=0;i<bookshelf.size();i++) {
             Novel novel = bookshelf.get(i);
 
@@ -265,6 +273,11 @@ public class Library {
             center.add(click);
         }
         center.setPreferredSize(new Dimension(Misc.WIDTH, 50+bookshelf.size()*(novelHeight+50)));
+//        gif = new JLabel();
+//        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
+//        gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
+//        gif.setVisible(false);
+        center.add(gif);
     }
 
     //used to limit the novel summary so that only a snippet is displayed

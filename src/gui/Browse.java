@@ -294,6 +294,7 @@ public class Browse {
             protected void done() {
                 gif.setVisible(false);
                 if(location==-1) {
+                    content.setVisible(false);
                     novelInfo.getPanel().setVisible(true);
                 }
                 else if(location==0) {

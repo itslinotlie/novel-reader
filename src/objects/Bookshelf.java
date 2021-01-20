@@ -31,6 +31,10 @@ public class Bookshelf {
         return ret;
     }
 
+    public boolean isEmpty() {
+        return bookshelf.size()==0;
+    }
+
     public boolean contains(Novel novel) {
         for(Novel title:bookshelf) {
             if(title==novel) return true;

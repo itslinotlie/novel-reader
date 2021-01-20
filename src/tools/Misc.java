@@ -18,4 +18,9 @@ public class Misc {
             "amounts of novels for an accurate recommendation. Please have a minimum of " +
             "5 novels in your library with at least 3 unique genres in the library. " +
             "Thank you for your understanding.";
+    public static String emptyLibrary = "Your library is empty. Chances are that you just " +
+            "opened up this application for the first time. Click on the browse icon (window) down " +
+            "below to browse for titles. Find more information on a novel by clicking on it and add it " +
+            "to your library if you want the novel reading history to be tracked. If you ever get confused, " +
+            "click on the question mark icon in the top right of your screen for more information. ";
 }
