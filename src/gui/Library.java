@@ -43,7 +43,7 @@ public class Library {
         Novel novel4 = new Novel("Overgeared4", "/overgeared.html");
 
         one.add(novel1); one.add(novel3);
-        one.add(novel2); one.add(novel4);
+        one.add(novel2); one.add(novel4); one.add(novel4);
 
         new Library(new JFrame(), one);
     }
@@ -229,51 +229,51 @@ public class Library {
             info.setFont(Design.novelTextFont);
             info.setBounds(125, 100, 350, 300);
             center.add(info);
-            return;
+        } else {
+            for (int i = 0; i < bookshelf.size(); i++) {
+                Novel novel = bookshelf.get(i);
+
+                //novel thumbnail
+                JLabel icon = new JLabel();
+                icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
+                icon.setBounds(50, 50 + i * (novelHeight + 50), novelWidth + 2 * thickness, novelHeight + 2 * thickness);
+                icon.setBorder(BorderFactory.createLineBorder(Design.screenPop, thickness));
+                center.add(icon);
+
+                //novel title
+                JLabel title = new JLabel("<html>" + novel.getNovelName() + "</html>");
+                title.setForeground(Design.foreground);
+                title.setFont(Design.buttonTextFont.deriveFont(24f));
+                title.setBounds(200, 20 + i * (novelHeight + 50), 350, 100);
+                center.add(title);
+
+                //novel author
+                JLabel author = new JLabel(novel.getAuthor());
+                author.setForeground(Design.foreground);
+                author.setFont(Design.buttonTextFont.deriveFont(18f));
+                author.setBounds(200, 100 + i * (novelHeight + 50), 350, 50);
+                center.add(author);
+
+                //summary
+                JLabel summary = new JLabel("<html>" + limit(novel.getSummary()) + "</html>");
+                summary.setForeground(Design.foreground);
+                summary.setFont(Design.novelTextFont);
+                summary.setBounds(200, 140 + i * (novelHeight + 50), 350, 100);
+                summary.setBorder(BorderFactory.createLineBorder(Color.white));
+                center.add(summary);
+
+                //invisible but clickable button
+                JButton click = new JButton();
+                click.setOpaque(false);
+                click.setContentAreaFilled(false);
+                click.setFocusable(false);
+                click.setBorder(BorderFactory.createLineBorder(Color.white));
+                click.setBounds(50, 50 + i * (novelHeight + 50), 500, 200);
+                click.addActionListener(e -> refreshScreen(-1, novel));
+                center.add(click);
+            }
+            center.setPreferredSize(new Dimension(Misc.WIDTH, 50 + bookshelf.size() * (novelHeight + 50)));
         }
-        for (int i=0;i<bookshelf.size();i++) {
-            Novel novel = bookshelf.get(i);
-
-            //novel thumbnail
-            JLabel icon = new JLabel();
-            icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
-            icon.setBounds(50, 50 + i*(novelHeight+50), novelWidth+2*thickness, novelHeight+2*thickness);
-            icon.setBorder(BorderFactory.createLineBorder(Design.screenPop, thickness));
-            center.add(icon);
-
-            //novel title
-            JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
-            title.setForeground(Design.foreground);
-            title.setFont(Design.buttonTextFont.deriveFont(24f));
-            title.setBounds(200, 20 + i*(novelHeight+50), 350, 100);
-            center.add(title);
-
-            //novel author
-            JLabel author = new JLabel(novel.getAuthor());
-            author.setForeground(Design.foreground);
-            author.setFont(Design.buttonTextFont.deriveFont(18f));
-            author.setBounds(200, 100 + i*(novelHeight+50), 350, 50);
-            center.add(author);
-
-            //summary
-            JLabel summary = new JLabel("<html>"+limit(novel.getSummary())+"</html>");
-            summary.setForeground(Design.foreground);
-            summary.setFont(Design.novelTextFont);
-            summary.setBounds(200, 140 + i*(novelHeight+50), 350, 100);
-            summary.setBorder(BorderFactory.createLineBorder(Color.white));
-            center.add(summary);
-
-            //invisible but clickable button
-            JButton click = new JButton();
-            click.setOpaque(false);
-            click.setContentAreaFilled(false);
-            click.setFocusable(false);
-            click.setBorder(BorderFactory.createLineBorder(Color.white));
-            click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
-            click.addActionListener(e -> refreshScreen(-1, novel));
-            center.add(click);
-        }
-        center.setPreferredSize(new Dimension(Misc.WIDTH, 50+bookshelf.size()*(novelHeight+50)));
         center.add(gif);
     }
 

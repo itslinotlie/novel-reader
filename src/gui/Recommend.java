@@ -13,6 +13,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Recommend {
     private JFrame frame;
@@ -21,7 +22,7 @@ public class Recommend {
     private Library library;
     private Browse browse;
 
-    private double scaleFactor = 3/5f;
+    private double scaleFactor = 1/2f;
     private int novelWidth, novelHeight, thickness = 4;
     private boolean firstOpen = true;
 
@@ -113,10 +114,49 @@ public class Recommend {
         System.out.println(library.getBookshelf());
         if(library.getBookshelf().isReadyForRecommendation()) {
             center.removeAll();
-//            center.setPreferredSize(new Dimension(Misc.WIDTH, 150+total*(novelHeight+50)));
+            center.setPreferredSize(new Dimension(Misc.WIDTH,6*(novelHeight+50+50)));
+            int index = 0;
 
+            //adding recommendations based on top 3 genres
+            for(String genre:library.getBookshelf().getTopGenre()) {
+                JLabel header = new JLabel(String.format("<html>Because you read %s from:</html>", genre));
+                header.setForeground(Design.foreground);
+                header.setFont(Design.novelTextFont.deriveFont(22f));
+                header.setBorder(BorderFactory.createLineBorder(Color.white));
+                header.setBounds(100, 25+index*(2*novelHeight+100+50+50), 400, 50);
+                center.add(header);
 
+                int sideways = 0;
+                //novels the user has read that fall under the give genre
+                for(Novel novel:library.getBookshelf().getNovelFromGenre(genre)) {
+                    //novel thumbnail
+                    JLabel icon = new JLabel();
+                    icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
+                    icon.setBounds(50+175*sideways++, 25+50 + 2*index*(novelHeight+50+50), novelWidth+2*thickness, novelHeight+2*thickness);
+                    icon.setBorder(BorderFactory.createLineBorder(Design.screenPop, thickness));
+                    center.add(icon);
+                }
 
+                //recommendations
+                JLabel secondaryHeader = new JLabel("You might like:");
+                secondaryHeader.setForeground(Design.foreground);
+                secondaryHeader.setFont(Design.novelTextFont.deriveFont(22f));
+                secondaryHeader.setBounds(100, 25+50+novelHeight+index*(2*novelHeight+75+50+75), 400, 50);
+                secondaryHeader.setBorder(BorderFactory.createLineBorder(Color.white));
+                center.add(secondaryHeader);
+
+                sideways = 0;
+                //new novels that aren't in library, that fit the genre tag
+                for(Novel novel:library.getBookshelf().getNovelFromGenre(genre)) {
+                    //novel thumbnail
+                    JLabel icon = new JLabel();
+                    icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
+                    icon.setBounds(50+175*sideways++, 25+50 + 50 + novelHeight+2*index*(novelHeight+50+50), novelWidth+2*thickness, novelHeight+2*thickness);
+                    icon.setBorder(BorderFactory.createLineBorder(Design.screenHighlight, thickness));
+                    center.add(icon);
+                }
+                index++;
+            }
         } else {
             center.removeAll();
 

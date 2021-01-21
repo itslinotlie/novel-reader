@@ -33,17 +33,35 @@ public class Bookshelf {
         return ret;
     }
 
-    public void sort() {
-        //converting map to list of map
-        List<Map.Entry<String, Integer>> list = new LinkedList(freq.entrySet());
-        //sorting with built in comparator
-        Collections.sort(list, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
-        //looping through an inserting into new map
-        freq.clear();
-        for(Map.Entry<String, Integer> entry:list) {
-            freq.put(entry.getKey(), entry.getValue());
+    public String[] getTopGenre() {
+        int amount = 3, index = 0;
+        String ret[] = new String[amount];
+        for(Map.Entry<String, Integer> entry:freq.entrySet()) {
+            if(amount-->0) {
+                ret[index++] = entry.getKey();
+            }
         }
+        return ret;
     }
+
+    public Novel[] getNovelFromGenre(String genre) {
+        int amount = 3, index = 0;
+        Novel ret[] = new Novel[amount];
+        ArrayList<Novel> list = new ArrayList();
+        for(Novel novel:bookshelf) {
+            if(novel.hasGenre(genre)) {
+                list.add(novel);
+            }
+        }
+        Collections.shuffle(list);
+        for(Novel novel:list) {
+            if(amount-->0) {
+                ret[index++] = novel;
+            }
+        }
+        return ret;
+    }
+
 
     public boolean isEmpty() {
         return bookshelf.size()==0;
@@ -72,6 +90,18 @@ public class Bookshelf {
 
     public int size() {
         return bookshelf.size();
+    }
+
+    public void sort() {
+        //converting map to list of map
+        List<Map.Entry<String, Integer>> list = new LinkedList(freq.entrySet());
+        //sorting with built in comparator
+        Collections.sort(list, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+        //looping through an inserting into new map
+        freq.clear();
+        for(Map.Entry<String, Integer> entry:list) {
+            freq.put(entry.getKey(), entry.getValue());
+        }
     }
 
     public Novel get(int target) {

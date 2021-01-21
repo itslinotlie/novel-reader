@@ -125,6 +125,12 @@ public class Novel {
         return genreList;
     }
 
+    public boolean hasGenre(String genre) {
+        for(int i=0;i<genreList.length;i++) {
+            if(genre.equals(genreList[i])) return true;
+        } return false;
+    }
+
     public int[] getChapterRange() {
         return chapterRange;
     }
