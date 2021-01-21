@@ -71,6 +71,11 @@ public class Recommend {
         scroll.getVerticalScrollBar().setUnitIncrement(15);
         content.add(scroll);
 
+        gif = new JLabel();
+        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
+        gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
+        gif.setVisible(false);
+
         updateRecommendation();
     }
 
@@ -80,6 +85,7 @@ public class Recommend {
         novelHeight = (int)(Misc.novel.getThumbnailHeight()*scaleFactor);
 
         //panel to display personal library
+        content.setVisible(false);
         content.setBackground(Color.green);
         content.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
         content.setLayout(new BorderLayout());
@@ -106,13 +112,13 @@ public class Recommend {
         content.add(top, BorderLayout.NORTH);
         content.add(center, BorderLayout.CENTER);
         content.add(bot, BorderLayout.SOUTH);
-        content.setVisible(false);
     }
 
     public void updateRecommendation() {
-        content.setVisible(true);
+        center.removeAll();
+        center.add(gif);
+
         if(library.getBookshelf().isReadyForRecommendation()) {
-            center.removeAll();
             center.setPreferredSize(new Dimension(Misc.WIDTH,6*(novelHeight+50+50)));
             int index = 0;
 
@@ -168,19 +174,12 @@ public class Recommend {
                 index++;
             }
         } else {
-            center.removeAll();
-
             JLabel info = new JLabel("<html>"+Misc.notEnoughTitles+"</html>");
             info.setForeground(Design.foreground);
             info.setFont(Design.novelTextFont);
             info.setBounds(125, 100, 350, 200);
             center.add(info);
         }
-        gif = new JLabel();
-        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
-        gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
-        gif.setVisible(false);
-        center.add(gif);
     }
 
     private Novel[] findChapter(String genre) {

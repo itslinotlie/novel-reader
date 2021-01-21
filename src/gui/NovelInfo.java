@@ -47,6 +47,13 @@ public class NovelInfo {
     }
 
     private void setupContent() {
+        //gif has to be added first to be on top
+        gif = new JLabel();
+        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
+        gif.setBounds(250, 50, 100, 100);
+        gif.setVisible(false);
+        top.add(gif);
+
         //novel information
         JLabel thumbnail = new JLabel();
         double scaleFactor = 1/2f;
@@ -162,13 +169,6 @@ public class NovelInfo {
         genre.setBounds(400, 25, 200, 50);
         genre.setBorder(BorderFactory.createLineBorder(Color.white));
         bot.add(genre);
-
-        //shown when things are loaded
-        gif = new JLabel();
-        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
-        gif.setBounds(250, 50, 100, 100);
-        gif.setVisible(false);
-        top.add(gif);
 
         String genres = Arrays.toString(novel.getGenreList());
         JLabel genreList = new JLabel("<html>"+ genres.substring(1, genres.length()-1)+"</html>");

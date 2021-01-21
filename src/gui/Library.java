@@ -87,7 +87,6 @@ public class Library {
         gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
         gif.setVisible(false);
         gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
-        center.add(gif);
 
         updateLibrary();
     }
@@ -226,6 +225,8 @@ public class Library {
 
     public void updateLibrary() {
         center.removeAll();
+        center.add(gif);
+
         System.out.println(bookshelf);
         if(bookshelf.isEmpty()) {
             JLabel info = new JLabel("<html>"+Misc.emptyLibrary+"</html>");
@@ -278,7 +279,6 @@ public class Library {
             }
             center.setPreferredSize(new Dimension(Misc.WIDTH, 50 + bookshelf.size() * (novelHeight + 50)));
         }
-        center.add(gif);
     }
 
     //used to limit the novel summary so that only a snippet is displayed
