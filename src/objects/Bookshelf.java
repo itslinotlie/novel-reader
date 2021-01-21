@@ -62,6 +62,10 @@ public class Bookshelf {
         return ret;
     }
 
+    public void clear() {
+        bookshelf.clear();
+        freq.clear();
+    }
 
     public boolean isEmpty() {
         return bookshelf.size()==0;
@@ -106,5 +110,9 @@ public class Bookshelf {
 
     public Novel get(int target) {
         return bookshelf.get(target);
+    }
+
+    public ArrayList<Novel> getAllNovels() {
+        return bookshelf;
     }
 }

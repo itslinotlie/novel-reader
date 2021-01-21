@@ -11,6 +11,7 @@ import tools.Misc;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.print.Book;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -21,6 +22,7 @@ public class Recommend {
 
     private Library library;
     private Browse browse;
+    private Bookshelf recommendations = new Bookshelf();
 
     private double scaleFactor = 1/2f;
     private int novelWidth, novelHeight, thickness = 4;
@@ -107,6 +109,7 @@ public class Recommend {
         content.add(top, BorderLayout.NORTH);
         content.add(center, BorderLayout.CENTER);
         content.add(bot, BorderLayout.SOUTH);
+        content.setVisible(false);
     }
 
     public void updateRecommendation() {
@@ -116,6 +119,12 @@ public class Recommend {
             center.removeAll();
             center.setPreferredSize(new Dimension(Misc.WIDTH,6*(novelHeight+50+50)));
             int index = 0;
+
+            //creating a new copy of the exisitng bookshelf
+            recommendations.clear();
+            for(Novel novel:library.getBookshelf().getAllNovels()) {
+                recommendations.add(novel);
+            }
 
             //adding recommendations based on top 3 genres
             for(String genre:library.getBookshelf().getTopGenre()) {
@@ -145,9 +154,10 @@ public class Recommend {
                 secondaryHeader.setBorder(BorderFactory.createLineBorder(Color.white));
                 center.add(secondaryHeader);
 
+                findChapter(genre);
                 sideways = 0;
                 //new novels that aren't in library, that fit the genre tag
-                for(Novel novel:library.getBookshelf().getNovelFromGenre(genre)) {
+                for(Novel novel:findChapter(genre)) {
                     //novel thumbnail
                     JLabel icon = new JLabel();
                     icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
@@ -167,6 +177,32 @@ public class Recommend {
             center.add(info);
         }
         center.add(gif);
+    }
+
+    private Novel[] findChapter(String genre) {
+        String url = "https://novelfull.com/genre/"+genre.replace(" ", "+");
+        Novel ret[] = new Novel[3];
+        int index = 0;
+        try {
+            Document doc = Jsoup.connect(url).get();
+            //all the <div> with title information are in a class called "col-xs-7"
+            //to call a class from a div, the dot is used
+            for(Element row:doc.select("div.col-xs-7")) {
+                if(index>2) break;
+                String novelLink = row.select("h3 > a").attr("href");
+                String novelName = row.select("h3 > a").text();
+
+                Novel novel = new Novel(novelName, novelLink);
+                if(!recommendations.contains(novel)) {
+                    ret[index++] = novel;
+                    recommendations.add(novel);
+                }
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+            System.out.println("HAD PROBLEM GETTING GENRE");
+        }
+        return ret;
     }
 
     private void setupDashboard() {
@@ -213,6 +249,7 @@ public class Recommend {
     private void refreshScreen(int location, int random) {
         if(location==1) {
             library.getPanel().setVisible(true);
+            frame.setTitle(Misc.libraryTitle);
         } else if(location==2) {
             if(browse==null) {
                 browse = new Browse(frame, library, this);
@@ -220,6 +257,7 @@ public class Recommend {
             } else {
                 browse.getPanel().setVisible(true);
             }
+            frame.setTitle(Misc.browseTitle);
         } else if(location==3) {
         }
     }

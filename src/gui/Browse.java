@@ -268,6 +268,7 @@ public class Browse {
         }
         else if(location==1) {
             library.getPanel().setVisible(true);
+            frame.setTitle(Misc.libraryTitle);
         } else if(location==2) {
         } else if(location==3) {
             if(recommend==null) {
@@ -275,6 +276,7 @@ public class Browse {
             } else {
                 recommend.updateRecommendation();
             }
+            frame.setTitle(Misc.recommendTitle);
         }
     }
 
@@ -301,6 +303,9 @@ public class Browse {
                     viewMore.setBounds(200, 50 + list.size() * (novelHeight + 50), 200, 50);
                     viewMore.setVisible(true);
                     viewMore.setEnabled(page > 7 ? false : true); //only 7 pages for hot novels
+                } else if(location==2) {
+                    content.setVisible(false);
+                    recommend.getPanel().setVisible(true);
                 } else {
                     content.setVisible(false);
                 }

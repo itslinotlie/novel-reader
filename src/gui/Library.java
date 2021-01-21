@@ -186,12 +186,14 @@ public class Library {
             } else {
                 browse.getPanel().setVisible(true);
             }
+            frame.setTitle(Misc.browseTitle);
         } else if(location==3) {
             if(recommend==null) {
                 recommend = new Recommend(frame, this, browse);
             } else {
                 recommend.updateRecommendation();
             }
+            frame.setTitle(Misc.recommendTitle);
         }
     }
 
