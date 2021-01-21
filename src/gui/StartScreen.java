@@ -88,12 +88,13 @@ public class StartScreen {
             @Override
             protected Void doInBackground() {
                 gif.setVisible(true);
-                bookshelf.load();
+                bookshelf = new Bookshelf();
                 return null;
             }
             @Override
             protected void done() {
                 panel.setVisible(false);
+                System.out.println(bookshelf);
                 new Library(frame, bookshelf);
             }
         };

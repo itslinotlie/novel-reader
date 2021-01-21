@@ -20,6 +20,11 @@ public class Novel {
     private int lastReadChapter, chapterRange[];
     private ImageIcon thumbnail;
 
+    //blank constructor for loading novels rather than web scraping novels from website
+    public Novel() {
+
+    }
+
     public Novel(String novelName, String novelLink) {
         this.novelName = novelName;
         this.novelLink = novelLink;
@@ -98,6 +103,10 @@ public class Novel {
         return author;
     }
 
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
     public int getLastReadChapter() {
         return lastReadChapter;
     }
@@ -114,8 +123,16 @@ public class Novel {
         return novelName;
     }
 
+    public void setNovelName(String novelName) {
+        this.novelName = novelName;
+    }
+
     public String getNovelLink() {
         return novelLink;
+    }
+
+    public void setNovelLink(String novelLink) {
+        this.novelLink = novelLink;
     }
 
     public String getWebsite() {
@@ -124,6 +141,10 @@ public class Novel {
 
     public String[] getGenreList() {
         return genreList;
+    }
+
+    public void setGenreList(String[] genreList) {
+        this.genreList = genreList;
     }
 
     public boolean hasGenre(String genre) {
@@ -136,12 +157,24 @@ public class Novel {
         return chapterRange;
     }
 
+    public void setChapterRange(int[] chapterRange) {
+        this.chapterRange = chapterRange;
+    }
+
     public String getThumbnailLink() {
         return thumbnailLink;
     }
 
+    public void setThumbnailLink(String thumbnailLink) {
+        this.thumbnailLink = thumbnailLink;
+    }
+
     public ImageIcon getThumbnail() {
         return thumbnail;
+    }
+
+    public void setThumbnail(ImageIcon thumbnail) {
+        this.thumbnail = thumbnail;
     }
 
     public int getThumbnailHeight() {
@@ -156,7 +189,15 @@ public class Novel {
         return summary;
     }
 
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
     public String getRating() {
         return rating;
+    }
+
+    public void setRating(String rating) {
+        this.rating = rating;
     }
 }

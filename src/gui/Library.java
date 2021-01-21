@@ -68,19 +68,19 @@ public class Library {
         frame.setVisible(true);
         frame.setTitle(Misc.libraryTitle);
         frame.repaint();
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent event) {
-                JOptionPane.showMessageDialog(frame, "Saving files. Click ok and wait until a confirmation message.");
-                bookshelf.save();
-                try {
-                    TimeUnit.SECONDS.sleep(5);
-                } catch (Exception e) {
-
-                }
-                JOptionPane.showMessageDialog(frame, "You can close now");
-            }
-        });
+//        frame.addWindowListener(new WindowAdapter() {
+//            @Override
+//            public void windowClosing(WindowEvent event) {
+//                JOptionPane.showMessageDialog(frame, "Saving files. Click ok and wait until a confirmation message.");
+//                bookshelf.save();
+//                try {
+//                    TimeUnit.SECONDS.sleep(5);
+//                } catch (Exception e) {
+//
+//                }
+//                JOptionPane.showMessageDialog(frame, "You can close now");
+//            }
+//        });
     }
 
     private void setupContent() {

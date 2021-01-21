@@ -8,3 +8,6 @@ out/
 *.classpath
 *.project
 /bin/
+
+# Saving and loading files
+res/bookshelf.txt

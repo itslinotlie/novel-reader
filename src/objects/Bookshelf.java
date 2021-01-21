@@ -1,12 +1,24 @@
 package objects;
 
+import javax.imageio.ImageIO;
+import javax.swing.*;
 import java.io.*;
+import java.net.URL;
 import java.util.*;
 
 public class Bookshelf {
     private ArrayList<Novel> bookshelf = new ArrayList();
     private Map<String, Integer> freq = new LinkedHashMap();
+
+    //used for reading/loading file information
     private String path = new File("").getAbsolutePath()+"/res/bookshelf.txt";
+    private static BufferedReader br;
+    private static PrintWriter pw;
+    private static StringTokenizer st;
+
+    public Bookshelf() {
+        load();
+    }
 
     public static void main(String args[]) {
         Bookshelf one = new Bookshelf();
@@ -28,8 +40,15 @@ public class Bookshelf {
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path)));
             pw.println(bookshelf.size());
             for(Novel novel:bookshelf) {
-                pw.println(String.format("%s$%s", novel.getNovelName(), novel.getNovelLink()));
+                pw.println(String.format("%s@%s", novel.getNovelName(), novel.getNovelLink()));
+                pw.println(String.format("%s@%s@%s@%s", novel.getAuthor(), novel.getSummary(),
+                    novel.getThumbnailLink(), novel.getRating()));
+                for(int i=0;i<novel.getGenreList().length;i++) {
+                    pw.print(novel.getGenreList()[i]+(i==novel.getGenreList().length-1? "\n":"@"));
+                }
+                pw.println(String.format("%d@%d@%d", novel.getLastReadChapter(), novel.getChapterRange()[0], novel.getChapterRange()[1]));
             }
+            pw.close();
         } catch(IOException e) {
             e.printStackTrace();
             System.out.println("Problem saving bookshelf");
@@ -37,8 +56,38 @@ public class Bookshelf {
     }
 
     public void load() {
+        if(!new File(path).isFile()) return;
         try {
+            br = new BufferedReader(new FileReader(path));
+            int novelAmount = readInt();
+            String ret[];
+            for(int i=0;i<novelAmount;i++) {
+                Novel novel = new Novel();
+                ret = readLine().split("@");
+                System.out.println(Arrays.toString(ret));
+                novel.setNovelName(ret[0]);
+                novel.setNovelLink(ret[1]);
 
+                ret = readLine().split("@");
+                System.out.println(Arrays.toString(ret));
+                novel.setAuthor(ret[0]);
+                novel.setSummary(ret[1]);
+                novel.setThumbnailLink(ret[2]);
+                novel.setThumbnail(new ImageIcon(ImageIO.read(new URL(novel.getThumbnailLink()))));
+                novel.setRating(ret[3]);
+
+                ret = readLine().split("@");
+                System.out.println(Arrays.toString(ret));
+                novel.setGenreList(ret);
+
+                ret = readLine().split("@");
+                novel.setChapterRange(new int[] {
+                    Integer.parseInt(ret[1]), Integer.parseInt(ret[2])
+                });
+                novel.setLastReadChapter(Integer.parseInt(ret[0]));
+                System.out.println(novel);
+                bookshelf.add(novel);
+            }
         } catch(IOException e) {
             e.printStackTrace();
             System.out.println("Problem loading bookshelf");
@@ -50,10 +99,6 @@ public class Bookshelf {
         sort();
         String ret = "";
         ret = freq.toString();
-//        ret = Collections.max(freq.keySet());
-//        for(int i=0;i<bookshelf.size();i++) {
-//            ret+=String.format("Item %d:\n%s\n", i, bookshelf.get(i));
-//        }
         return ret;
     }
 
@@ -139,4 +184,13 @@ public class Bookshelf {
     public ArrayList<Novel> getAllNovels() {
         return bookshelf;
     }
+
+    private static String next() throws IOException {
+        while(st==null || !st.hasMoreTokens())
+            st = new StringTokenizer(br.readLine().trim());
+        return st.nextToken();
+    }
+    private static String readLine() throws IOException {return br.readLine().trim();}
+    private static int readInt() throws IOException {return Integer.parseInt(next());}
+    private static double readDouble() throws IOException {return Double.parseDouble(next());}
 }
