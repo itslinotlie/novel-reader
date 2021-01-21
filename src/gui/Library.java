@@ -176,8 +176,8 @@ public class Library {
 
     private void refreshScreen(int location, int random) {
         if(location==-1) { //displaying novel info
-            NovelInfo.previousScreen = 2;
-            novelInfo = new NovelInfo(frame, content, novelPlaceHolder, this);
+            NovelInfo.previousScreen = 1;
+            novelInfo = new NovelInfo(frame, browse, novelPlaceHolder, this, recommend);
         } else if(location==1) {
         } else if(location==2) {
             if(browse==null) {
@@ -215,6 +215,8 @@ public class Library {
                     novelInfo.getPanel().setVisible(true);
                 } else if(location==2) {
                     browse.getPanel().setVisible(true);
+                } else if(location==3) {
+                    recommend.getPanel().setVisible(true);
                 }
                 gif.setVisible(false);
                 content.setVisible(false);

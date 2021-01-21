@@ -13,9 +13,11 @@ import javax.swing.*;
 
 public class NovelInfo {
     private JFrame frame;
-    private JPanel content = new JPanel(), top, center, bot, browse;
+    private JPanel content = new JPanel(), top, center, bot;
+    private Browse browse;
     private JLabel gif;
     private Library library;
+    private Recommend recommend;
 
     private Novel novel;
     private NovelDisplay novelDisplay;
@@ -24,11 +26,12 @@ public class NovelInfo {
     private boolean firstOpen = true;
     public static int previousScreen = -1;
 
-    public NovelInfo(JFrame frame, JPanel browse, Novel novel, Library library) {
+    public NovelInfo(JFrame frame, Browse browse, Novel novel, Library library, Recommend recommend) {
         this.frame = frame;
         this.browse = browse;
         this.novel = novel;
         this.library = library;
+        this.recommend = recommend;
         setupPanel();
         setupContent();
         setupFrame();
@@ -67,7 +70,7 @@ public class NovelInfo {
         JLabel author = new JLabel("<html>"+novel.getAuthor()+"</html>");
         author.setForeground(Design.foreground);
         author.setFont(Design.novelTextFont.deriveFont(16f));
-        author.setBounds(200, 160, 350, 30);
+        author.setBounds(200, 160, 350, 50);
         author.setBorder(BorderFactory.createLineBorder(Color.white));
         top.add(author);
 
@@ -171,7 +174,7 @@ public class NovelInfo {
         JLabel genreList = new JLabel("<html>"+ genres.substring(1, genres.length()-1)+"</html>");
         genreList.setForeground(Design.foreground);
         genreList.setFont(Design.buttonTextFont.deriveFont(12f));
-        genreList.setBounds(400, 75, 100, 150);
+        genreList.setBounds(400, 75, 125, 175);
         genreList.setBorder(BorderFactory.createLineBorder(Color.white));
         bot.add(genreList);
 
@@ -200,8 +203,11 @@ public class NovelInfo {
                 library.getPanel().setVisible(true);
                 frame.setTitle(Misc.libraryTitle);
             } else if(previousScreen==2) { //browse
-                browse.setVisible(true);
+                browse.getPanel().setVisible(true);
                 frame.setTitle(Misc.browseTitle);
+            } else if(previousScreen==3) { //recommend
+                recommend.getPanel().setVisible(true);
+                frame.setTitle(Misc.recommendTitle);
             }
         });
         top.add(goBack);

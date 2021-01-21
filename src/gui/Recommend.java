@@ -15,6 +15,7 @@ import java.awt.print.Book;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 public class Recommend {
     private JFrame frame;
@@ -33,6 +34,7 @@ public class Recommend {
     private JScrollPane scroll;
 
     private SwingWorker worker = null; //allows "multi-threading"
+    private HashMap<String, Integer> map = new HashMap();
 
     public Recommend(JFrame frame, Library library, Browse browse) {
         this.frame = frame;
@@ -68,11 +70,6 @@ public class Recommend {
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.getVerticalScrollBar().setUnitIncrement(15);
         content.add(scroll);
-
-        gif = new JLabel();
-        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
-        gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
-        gif.setVisible(false);
 
         updateRecommendation();
     }
@@ -114,7 +111,6 @@ public class Recommend {
 
     public void updateRecommendation() {
         content.setVisible(true);
-        System.out.println(library.getBookshelf());
         if(library.getBookshelf().isReadyForRecommendation()) {
             center.removeAll();
             center.setPreferredSize(new Dimension(Misc.WIDTH,6*(novelHeight+50+50)));
@@ -125,6 +121,8 @@ public class Recommend {
             for(Novel novel:library.getBookshelf().getAllNovels()) {
                 recommendations.add(novel);
             }
+            System.out.println("SIZE = "+recommendations.size());
+
 
             //adding recommendations based on top 3 genres
             for(String genre:library.getBookshelf().getTopGenre()) {
@@ -139,10 +137,11 @@ public class Recommend {
                 //novels the user has read that fall under the give genre
                 for(Novel novel:library.getBookshelf().getNovelFromGenre(genre)) {
                     //novel thumbnail
-                    JLabel icon = new JLabel();
+                    JButton icon = new JButton();
                     icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
                     icon.setBounds(50+175*sideways++, 25+50 + 2*index*(novelHeight+50+50), novelWidth+2*thickness, novelHeight+2*thickness);
                     icon.setBorder(BorderFactory.createLineBorder(Design.screenPop, thickness));
+                    icon.addActionListener(e -> refreshScreen(-1, novel));
                     center.add(icon);
                 }
 
@@ -159,10 +158,11 @@ public class Recommend {
                 //new novels that aren't in library, that fit the genre tag
                 for(Novel novel:findChapter(genre)) {
                     //novel thumbnail
-                    JLabel icon = new JLabel();
+                    JButton icon = new JButton();
                     icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
                     icon.setBounds(50+175*sideways++, 25+50 + 50 + novelHeight+2*index*(novelHeight+50+50), novelWidth+2*thickness, novelHeight+2*thickness);
                     icon.setBorder(BorderFactory.createLineBorder(Design.screenHighlight, thickness));
+                    icon.addActionListener(e -> refreshScreen(-1, novel));
                     center.add(icon);
                 }
                 index++;
@@ -176,11 +176,17 @@ public class Recommend {
             info.setBounds(125, 100, 350, 200);
             center.add(info);
         }
+        gif = new JLabel();
+        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
+        gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
+        gif.setVisible(false);
         center.add(gif);
     }
 
     private Novel[] findChapter(String genre) {
-        String url = "https://novelfull.com/genre/"+genre.replace(" ", "+");
+        int page = 1 + map.getOrDefault(genre, 0);
+        String url = "https://novelfull.com/genre/"+genre.replace(" ", "+")+"?page="+page;
+        map.put(genre, 1 + map.getOrDefault(genre, 0));
         Novel ret[] = new Novel[3];
         int index = 0;
         try {
@@ -246,8 +252,21 @@ public class Recommend {
         worker.execute();
     }
 
+    public void refreshScreen(int location, Novel novel) {
+      novelPlaceHolder = novel;
+      setupWorker(location);
+      worker.execute();
+    }
+
+    private Novel novelPlaceHolder;
+    private NovelInfo novelInfo;
+
     private void refreshScreen(int location, int random) {
-        if(location==1) {
+        if(location==-1) {
+            NovelInfo.previousScreen = 3;
+            novelInfo = new NovelInfo(frame, browse, novelPlaceHolder, library, this);
+        }
+        else if(location==1) {
             library.getPanel().setVisible(true);
             frame.setTitle(Misc.libraryTitle);
         } else if(location==2) {
@@ -270,12 +289,15 @@ public class Recommend {
             protected Void doInBackground() {
                 //shown when things are loaded
                 gif.setVisible(true);
+                gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
                 refreshScreen(location, -1);
                 return null;
             }
             @Override
             protected void done() {
-                if(location==2) {
+                if(location==-1) {
+                    novelInfo.getPanel().setVisible(true);
+                } else if(location==2) {
                     browse.getPanel().setVisible(true);
                 }
                 gif.setVisible(false);

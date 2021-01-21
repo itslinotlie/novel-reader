@@ -73,7 +73,7 @@ public class Bookshelf {
 
     public boolean contains(Novel novel) {
         for(Novel title:bookshelf) {
-            if(title==novel) return true;
+            if(title.equals(novel)) return true;
         } return false;
     }
 

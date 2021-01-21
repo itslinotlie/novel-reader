@@ -261,7 +261,7 @@ public class Browse {
     private void refreshScreen(int location, int random) {
         if(location==-1) { //displaying novel info
             NovelInfo.previousScreen = 2;
-            novelInfo = new NovelInfo(frame, content, novelPlaceHolder, library);
+            novelInfo = new NovelInfo(frame, this, novelPlaceHolder, library, recommend);
         }
         else if(location==0) { //view more
             loadChapters();
@@ -303,7 +303,7 @@ public class Browse {
                     viewMore.setBounds(200, 50 + list.size() * (novelHeight + 50), 200, 50);
                     viewMore.setVisible(true);
                     viewMore.setEnabled(page > 7 ? false : true); //only 7 pages for hot novels
-                } else if(location==2) {
+                } else if(location==3) {
                     content.setVisible(false);
                     recommend.getPanel().setVisible(true);
                 } else {
