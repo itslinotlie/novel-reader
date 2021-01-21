@@ -66,6 +66,11 @@ public class Recommend {
         scroll.getVerticalScrollBar().setUnitIncrement(15);
         content.add(scroll);
 
+        gif = new JLabel();
+        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
+        gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
+        gif.setVisible(false);
+
         updateRecommendation();
     }
 
@@ -114,7 +119,6 @@ public class Recommend {
 
         } else {
             center.removeAll();
-            System.out.println("HERE");
 
             JLabel info = new JLabel("<html>"+Misc.notEnoughTitles+"</html>");
             info.setForeground(Design.foreground);
@@ -122,10 +126,6 @@ public class Recommend {
             info.setBounds(125, 100, 350, 200);
             center.add(info);
         }
-        gif = new JLabel();
-        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
-        gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
-        gif.setVisible(false);
         center.add(gif);
     }
 

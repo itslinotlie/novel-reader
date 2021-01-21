@@ -42,8 +42,8 @@ public class Library {
         Novel novel3 = new Novel("Overgeared3", "/overgeared.html");
         Novel novel4 = new Novel("Overgeared4", "/overgeared.html");
 
-//        one.add(novel1); one.add(novel3);
-//        one.add(novel2); one.add(novel4);
+        one.add(novel1); one.add(novel3);
+        one.add(novel2); one.add(novel4);
 
         new Library(new JFrame(), one);
     }
@@ -74,8 +74,6 @@ public class Library {
         library.setBounds(25, 0, 100, 50);
         top.add(library);
 
-        updateLibrary();
-
         //JScrollPane to allow for continuous scrolling of browsing novels
         scroll = new JScrollPane(center);
         scroll.setBorder(BorderFactory.createEmptyBorder());
@@ -90,6 +88,8 @@ public class Library {
         gif.setVisible(false);
         gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
         center.add(gif);
+
+        updateLibrary();
     }
 
     private void setupPanel() {
@@ -222,6 +222,7 @@ public class Library {
 
     public void updateLibrary() {
         center.removeAll();
+        System.out.println(bookshelf);
         if(bookshelf.isEmpty()) {
             JLabel info = new JLabel("<html>"+Misc.emptyLibrary+"</html>");
             info.setForeground(Design.foreground);
@@ -273,10 +274,6 @@ public class Library {
             center.add(click);
         }
         center.setPreferredSize(new Dimension(Misc.WIDTH, 50+bookshelf.size()*(novelHeight+50)));
-//        gif = new JLabel();
-//        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
-//        gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
-//        gif.setVisible(false);
         center.add(gif);
     }
 

@@ -1,11 +1,10 @@
 package objects;
 
-import java.util.ArrayList;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Bookshelf {
     private ArrayList<Novel> bookshelf = new ArrayList();
-    private TreeMap<String, Integer> freq = new TreeMap();
+    private Map<String, Integer> freq = new LinkedHashMap();
 
     public static void main(String args[]) {
         Bookshelf one = new Bookshelf();
@@ -24,11 +23,26 @@ public class Bookshelf {
 
     @Override
     public String toString() {
+        sort();
         String ret = "";
-        for(int i=0;i<bookshelf.size();i++) {
-            ret+=String.format("Item %d:\n%s\n", i, bookshelf.get(i));
-        }
+        ret = freq.toString();
+//        ret = Collections.max(freq.keySet());
+//        for(int i=0;i<bookshelf.size();i++) {
+//            ret+=String.format("Item %d:\n%s\n", i, bookshelf.get(i));
+//        }
         return ret;
+    }
+
+    public void sort() {
+        //converting map to list of map
+        List<Map.Entry<String, Integer>> list = new LinkedList(freq.entrySet());
+        //sorting with built in comparator
+        Collections.sort(list, (o1, o2) -> o2.getValue().compareTo(o1.getValue()));
+        //looping through an inserting into new map
+        freq.clear();
+        for(Map.Entry<String, Integer> entry:list) {
+            freq.put(entry.getKey(), entry.getValue());
+        }
     }
 
     public boolean isEmpty() {
