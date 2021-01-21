@@ -88,7 +88,7 @@ public class Novel {
     public boolean equals(Object obj) {
         if (obj instanceof Novel) {
             Novel compare = (Novel) obj;
-            return this.novelName.equals(compare.getNovelName());
+            if(this.novelName.equals(compare.getNovelName())) return true;
         }
         return false;
     }
@@ -123,6 +123,12 @@ public class Novel {
 
     public String[] getGenreList() {
         return genreList;
+    }
+
+    public boolean hasGenre(String genre) {
+        for(int i=0;i<genreList.length;i++) {
+            if(genre.equals(genreList[i])) return true;
+        } return false;
     }
 
     public int[] getChapterRange() {

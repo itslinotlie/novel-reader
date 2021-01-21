@@ -163,6 +163,7 @@ public class NovelDisplay {
         content.add(bot, BorderLayout.SOUTH);
         content.add(left, BorderLayout.WEST);
         content.add(right, BorderLayout.EAST);
+        content.setVisible(false);
     }
 
     public void refreshScreen() {

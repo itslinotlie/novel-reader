@@ -13,20 +13,25 @@ import javax.swing.*;
 
 public class NovelInfo {
     private JFrame frame;
-    private JPanel content = new JPanel(), top, center, bot, browse;
+    private JPanel content = new JPanel(), top, center, bot;
+    private Browse browse;
+    private JLabel gif;
     private Library library;
+    private Recommend recommend;
 
     private Novel novel;
     private NovelDisplay novelDisplay;
+    private SwingWorker worker = null; //allows "multi-threading"
 
     private boolean firstOpen = true;
     public static int previousScreen = -1;
 
-    public NovelInfo(JFrame frame, JPanel browse, Novel novel, Library library) {
+    public NovelInfo(JFrame frame, Browse browse, Novel novel, Library library, Recommend recommend) {
         this.frame = frame;
         this.browse = browse;
         this.novel = novel;
         this.library = library;
+        this.recommend = recommend;
         setupPanel();
         setupContent();
         setupFrame();
@@ -38,10 +43,17 @@ public class NovelInfo {
         frame.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
         frame.setResizable(false);
         frame.setVisible(true);
-        frame.setTitle(String.format("Current novel: %s", novel.getNovelName()));
+        frame.setTitle(Misc.novelTitle(novel));
     }
 
     private void setupContent() {
+        //gif has to be added first to be on top
+        gif = new JLabel();
+        gif.setIcon(new ImageIcon(new ImageIcon("./res/load.gif").getImage().getScaledInstance(100, 100, 0)));
+        gif.setBounds(250, 50, 100, 100);
+        gif.setVisible(false);
+        top.add(gif);
+
         //novel information
         JLabel thumbnail = new JLabel();
         double scaleFactor = 1/2f;
@@ -65,7 +77,7 @@ public class NovelInfo {
         JLabel author = new JLabel("<html>"+novel.getAuthor()+"</html>");
         author.setForeground(Design.foreground);
         author.setFont(Design.novelTextFont.deriveFont(16f));
-        author.setBounds(200, 160, 350, 30);
+        author.setBounds(200, 160, 350, 50);
         author.setBorder(BorderFactory.createLineBorder(Color.white));
         top.add(author);
 
@@ -88,6 +100,7 @@ public class NovelInfo {
         libraryButton.setForeground(Design.foreground);
         libraryButton.setBackground(library.getBookshelf().contains(novel)? Color.GREEN:Color.RED);
         libraryButton.setBounds(425, 200, 100, 50);
+        libraryButton.setFocusable(false);
         libraryButton.addActionListener(e -> {
             if(library.getBookshelf().contains(novel)) {
                 library.getBookshelf().remove(novel);
@@ -137,6 +150,7 @@ public class NovelInfo {
             chapter[i].setFont(Design.buttonTextFont.deriveFont(12f));
             chapter[i].setBounds(50, 10+40*i+(i<=3? 0:30), 300, 30);
             chapter[i].addMouseListener(new ButtonStyle());
+            chapter[i].setFocusable(false);
             int finalI = i;
             chapter[i].addActionListener(e -> refreshScreen(finalI<=3? finalI:novel.getChapterRange()[1]+finalI-6));
             bot.add(chapter[i]);
@@ -160,7 +174,7 @@ public class NovelInfo {
         JLabel genreList = new JLabel("<html>"+ genres.substring(1, genres.length()-1)+"</html>");
         genreList.setForeground(Design.foreground);
         genreList.setFont(Design.buttonTextFont.deriveFont(12f));
-        genreList.setBounds(400, 75, 100, 150);
+        genreList.setBounds(400, 75, 125, 175);
         genreList.setBorder(BorderFactory.createLineBorder(Color.white));
         bot.add(genreList);
 
@@ -171,6 +185,7 @@ public class NovelInfo {
         resume.setForeground(Design.screenBackground);
         resume.setBackground(Design.novelButtonBackground);
         resume.addMouseListener(new ButtonStyle());
+        resume.setFocusable(false);
         resume.addActionListener(e -> refreshScreen(novel.getLastReadChapter()));
         bot.add(resume);
 
@@ -181,14 +196,18 @@ public class NovelInfo {
         goBack.setBackground(Design.novelButtonBackground);
         goBack.setForeground(Design.foreground);
         goBack.addMouseListener(new ButtonStyle());
+        goBack.setFocusable(false);
         goBack.addActionListener(e -> {
             content.setVisible(false);
             if(previousScreen==1) { //library
                 library.getPanel().setVisible(true);
-                frame.setTitle(String.format("Your Personal Library"));
+                frame.setTitle(Misc.libraryTitle);
             } else if(previousScreen==2) { //browse
-                browse.setVisible(true);
-                frame.setTitle(String.format("Currently browsing titles"));
+                browse.getPanel().setVisible(true);
+                frame.setTitle(Misc.browseTitle);
+            } else if(previousScreen==3) { //recommend
+                recommend.getPanel().setVisible(true);
+                frame.setTitle(Misc.recommendTitle);
             }
         });
         top.add(goBack);
@@ -222,20 +241,39 @@ public class NovelInfo {
         content.add(top, BorderLayout.NORTH);
         content.add(center, BorderLayout.CENTER);
         content.add(bot, BorderLayout.SOUTH);
+        content.setVisible(false);
     }
 
     private void refreshScreen(int targetChapter) {
-        //rather than creating a new instance of novelDisplay everytime a button click
-        //having a boolean flag will allow only one instance per novel
-        if(firstOpen) {
-            novelDisplay = new NovelDisplay(frame, content, novel);
-            firstOpen = false;
-        } else {
-            content.setVisible(false);
-            novelDisplay.getPanel().setVisible(true);
-        }
-        content.setVisible(false);
-        novel.setLastReadChapter(targetChapter);
-        novelDisplay.refreshScreen();
+        setupWorker(targetChapter);
+        worker.execute();
+    }
+
+    //used to multithread, aka load novel and display loading screen gif
+    //because Swing works off of only one thread ):
+    private void setupWorker(int targetChapter) {
+        worker = new SwingWorker() {
+            @Override
+            protected Void doInBackground() {
+                //displaying gif
+                gif.setVisible(true);
+                if(novelDisplay==null) {
+                    novelDisplay = new NovelDisplay(frame, content, novel);
+                }
+                novel.setLastReadChapter(targetChapter);
+                novelDisplay.refreshScreen();
+                return null;
+            }
+            @Override
+            protected void done() {
+                gif.setVisible(false);
+                content.setVisible(false);
+                novelDisplay.getPanel().setVisible(true);
+            }
+        };
+    }
+
+    public JPanel getPanel() {
+        return content;
     }
 }
