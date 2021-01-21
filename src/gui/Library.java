@@ -11,8 +11,11 @@ import tools.Misc;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class Library {
     private JFrame frame;
@@ -65,6 +68,19 @@ public class Library {
         frame.setVisible(true);
         frame.setTitle(Misc.libraryTitle);
         frame.repaint();
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+                JOptionPane.showMessageDialog(frame, "Saving files. Click ok and wait until a confirmation message.");
+                bookshelf.save();
+                try {
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (Exception e) {
+
+                }
+                JOptionPane.showMessageDialog(frame, "You can close now");
+            }
+        });
     }
 
     private void setupContent() {
@@ -271,6 +287,7 @@ public class Library {
         } else {
             for (int i = 0; i < bookshelf.size(); i++) {
                 Novel novel = bookshelf.get(i);
+                System.out.println(novel);
 
                 //novel thumbnail
                 JLabel icon = new JLabel();
@@ -319,19 +336,15 @@ public class Library {
     private void help() {
         if(!clickHelp) { //show help screen
             helpPanel.add(gif);
-//            center.setEnabled(false);
             center.setVisible(false);
-//            scroll.setEnabled(false);
             scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
             helpPanel.setVisible(true);
             helpHighlight.setVisible(true);
         } else { //show library screen
             center.add(gif);
             helpPanel.setVisible(false);
-//            helpPanel.setEnabled(false);
             center.setVisible(true);
             scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-//            center.setPreferredSize(new Dimension(Misc.WIDTH, 50+bookshelf.size()*(novelHeight+50)));
             helpHighlight.setVisible(false);
         }
         clickHelp = !clickHelp;

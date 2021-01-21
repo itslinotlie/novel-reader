@@ -1,10 +1,12 @@
 package objects;
 
+import java.io.*;
 import java.util.*;
 
 public class Bookshelf {
     private ArrayList<Novel> bookshelf = new ArrayList();
     private Map<String, Integer> freq = new LinkedHashMap();
+    private String path = new File("").getAbsolutePath()+"/res/bookshelf.txt";
 
     public static void main(String args[]) {
         Bookshelf one = new Bookshelf();
@@ -19,6 +21,28 @@ public class Bookshelf {
         System.out.println(one);
         one.remove(novel1);
         System.out.println(one);
+    }
+
+    public void save() {
+        try {
+            PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path)));
+            pw.println(bookshelf.size());
+            for(Novel novel:bookshelf) {
+                pw.println(String.format("%s$%s", novel.getNovelName(), novel.getNovelLink()));
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+            System.out.println("Problem saving bookshelf");
+        }
+    }
+
+    public void load() {
+        try {
+
+        } catch(IOException e) {
+            e.printStackTrace();
+            System.out.println("Problem loading bookshelf");
+        }
     }
 
     @Override

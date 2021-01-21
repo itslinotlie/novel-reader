@@ -80,6 +80,7 @@ public class Novel {
         ret+=String.format("Last read chapter: %d\n", lastReadChapter);
         ret+=String.format("Thumbnail: %s\n", thumbnailLink);
         ret+=String.format("Summary: %s\n", summary);
+        ret+=String.format("Rating: %s\n", rating);
         return ret;
     }
 
