@@ -43,7 +43,7 @@ public class Recommend {
         setupPanel();
         setupContent();
         setupDashboard();
-        setupFrame();
+//        setupFrame();
     }
 
     private void setupFrame() {
@@ -119,6 +119,7 @@ public class Recommend {
         center.add(gif);
 
         if(library.getBookshelf().isReadyForRecommendation()) {
+            library.getBookshelf().sort();
             center.setPreferredSize(new Dimension(Misc.WIDTH,6*(novelHeight+50+50)));
             int index = 0;
 
@@ -127,8 +128,6 @@ public class Recommend {
             for(Novel novel:library.getBookshelf().getAllNovels()) {
                 recommendations.add(novel);
             }
-            System.out.println("SIZE = "+recommendations.size());
-
 
             //adding recommendations based on top 3 genres
             for(String genre:library.getBookshelf().getTopGenre()) {
@@ -138,6 +137,7 @@ public class Recommend {
                 header.setBorder(BorderFactory.createLineBorder(Color.white));
                 header.setBounds(100, 25+index*(2*novelHeight+100+50+50), 400, 50);
                 center.add(header);
+
 
                 int sideways = 0;
                 //novels the user has read that fall under the give genre

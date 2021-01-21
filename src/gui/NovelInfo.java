@@ -34,7 +34,7 @@ public class NovelInfo {
         this.recommend = recommend;
         setupPanel();
         setupContent();
-        setupFrame();
+//        setupFrame();
     }
 
     //testing purposes, delete once more GUI is complete

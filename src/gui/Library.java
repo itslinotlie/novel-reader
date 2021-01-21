@@ -37,28 +37,13 @@ public class Library {
 
     private SwingWorker worker = null; //allows "multi-threading"
 
-    public static void main(String[] args) {
-        Bookshelf one = new Bookshelf();
-        Bookshelf two = new Bookshelf();
-
-        Novel novel1 = new Novel("Overgeared1", "/overgeared.html");
-        Novel novel2 = new Novel("Overgeared2", "/overgeared.html");
-        Novel novel3 = new Novel("Overgeared3", "/overgeared.html");
-        Novel novel4 = new Novel("Overgeared4", "/overgeared.html");
-
-        one.add(novel1); one.add(novel3);
-        one.add(novel2); one.add(novel4); one.add(novel4);
-
-        new Library(new JFrame(), one);
-    }
-
     public Library(JFrame frame, Bookshelf bookshelf) {
         this.frame = frame;
         this.bookshelf = bookshelf;
         setupPanel();
         setupContent();
         setupDashboard();
-        setupFrame();
+//        setupFrame();
     }
 
     private void setupFrame() {
@@ -68,19 +53,6 @@ public class Library {
         frame.setVisible(true);
         frame.setTitle(Misc.libraryTitle);
         frame.repaint();
-//        frame.addWindowListener(new WindowAdapter() {
-//            @Override
-//            public void windowClosing(WindowEvent event) {
-//                JOptionPane.showMessageDialog(frame, "Saving files. Click ok and wait until a confirmation message.");
-//                bookshelf.save();
-//                try {
-//                    TimeUnit.SECONDS.sleep(5);
-//                } catch (Exception e) {
-//
-//                }
-//                JOptionPane.showMessageDialog(frame, "You can close now");
-//            }
-//        });
     }
 
     private void setupContent() {
@@ -277,7 +249,6 @@ public class Library {
         center.removeAll();
         center.add(gif);
 
-        System.out.println(bookshelf);
         if(bookshelf.isEmpty()) {
             JLabel info = new JLabel("<html>"+Misc.emptyLibrary+"</html>");
             info.setForeground(Design.foreground);
@@ -287,7 +258,6 @@ public class Library {
         } else {
             for (int i = 0; i < bookshelf.size(); i++) {
                 Novel novel = bookshelf.get(i);
-                System.out.println(novel);
 
                 //novel thumbnail
                 JLabel icon = new JLabel();

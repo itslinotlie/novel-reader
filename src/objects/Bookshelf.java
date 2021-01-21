@@ -20,21 +20,6 @@ public class Bookshelf {
         load();
     }
 
-    public static void main(String args[]) {
-        Bookshelf one = new Bookshelf();
-        Bookshelf two = new Bookshelf();
-
-        Novel novel1 = new Novel("Overgeared1", "/overgeared.html");
-        Novel novel2 = new Novel("Overgeared2", "/overgeared.html");
-        Novel novel3 = new Novel("Overgeared3", "/overgeared.html");
-        Novel novel4 = new Novel("Overgeared4", "/overgeared.html");
-
-        one.add(novel1); one.add(novel3);
-        System.out.println(one);
-        one.remove(novel1);
-        System.out.println(one);
-    }
-
     public void save() {
         try {
             PrintWriter pw = new PrintWriter(new BufferedWriter(new FileWriter(path)));
@@ -64,12 +49,10 @@ public class Bookshelf {
             for(int i=0;i<novelAmount;i++) {
                 Novel novel = new Novel();
                 ret = readLine().split("@");
-                System.out.println(Arrays.toString(ret));
                 novel.setNovelName(ret[0]);
                 novel.setNovelLink(ret[1]);
 
                 ret = readLine().split("@");
-                System.out.println(Arrays.toString(ret));
                 novel.setAuthor(ret[0]);
                 novel.setSummary(ret[1]);
                 novel.setThumbnailLink(ret[2]);
@@ -77,7 +60,6 @@ public class Bookshelf {
                 novel.setRating(ret[3]);
 
                 ret = readLine().split("@");
-                System.out.println(Arrays.toString(ret));
                 novel.setGenreList(ret);
 
                 ret = readLine().split("@");
@@ -85,8 +67,7 @@ public class Bookshelf {
                     Integer.parseInt(ret[1]), Integer.parseInt(ret[2])
                 });
                 novel.setLastReadChapter(Integer.parseInt(ret[0]));
-                System.out.println(novel);
-                bookshelf.add(novel);
+                add(novel);
             }
         } catch(IOException e) {
             e.printStackTrace();

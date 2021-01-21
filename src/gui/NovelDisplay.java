@@ -22,7 +22,7 @@ public class NovelDisplay {
         this.novel = novel;
         setupPanel();
         setupContent();
-        setupFrame(); //testing purposes, delete once more GUI is complete
+//        setupFrame(); //testing purposes, delete once more GUI is complete
         refreshScreen();
     }
     //testing purposes, delete once more GUI is complete

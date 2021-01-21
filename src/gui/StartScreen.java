@@ -94,7 +94,6 @@ public class StartScreen {
             @Override
             protected void done() {
                 panel.setVisible(false);
-                System.out.println(bookshelf);
                 new Library(frame, bookshelf);
             }
         };

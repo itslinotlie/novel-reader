@@ -44,7 +44,7 @@ public class Browse {
         setupPanel();
         setupContent();
         setupDashboard();
-        setupFrame();
+//        setupFrame();
     }
 
     private void setupFrame() {
@@ -201,7 +201,6 @@ public class Browse {
                     String novelLink = row.select("h3 > a").attr("href");
                     String novelName = row.select("h3 > a").text();
                     list.add(new Novel(novelName, novelLink));
-//                    System.out.println(list.get(list.size()-1));
                     displayChapter();
                 }
             }
