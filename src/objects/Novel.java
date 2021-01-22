@@ -65,8 +65,9 @@ public class Novel {
                 if(!chapterName.startsWith("Chapter")) continue; //first row is hidden/blank, needs to be filtered out
                 //ReGeX to replace everything but numbers and spaces (spaces because sometimes numbers
                 //are in the chapter name and it needs to be separated to find the chapter number)
-                maxChap = Math.max(maxChap, Integer.parseInt(chapterName.replaceAll("[^0-9 ]", "").split("[ ]")[1]));
-                minChap = Math.min(minChap, Integer.parseInt(chapterName.replaceAll("[^0-9 ]", "").split("[ ]")[1]));
+                String arr[] = chapterName.replaceAll("[^0-9 ]", "").split("[ ]");
+                maxChap = Math.max(maxChap, Integer.parseInt(arr[arr.length-1]));
+                minChap = Math.min(minChap, Integer.parseInt(arr[arr.length-1]));
             }
             chapterRange = new int[]{minChap, maxChap};
         } catch (IOException e) {

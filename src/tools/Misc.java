@@ -28,7 +28,7 @@ public class Misc {
         "5 novels in your library with at least 3 unique genres in the library. " +
         "Thank you for your understanding.";
     public static String emptyLibrary = "Your library is empty. Chances are that you just " +
-        "opened up this application for the first time. Click on the browse icon (window) down " +
+        "opened up this application for the first time. Click on the browse icon (window-icon) down " +
         "below to browse for titles. Find more information on a novel by clicking on it and add it " +
         "to your library if you want the novel reading history to be tracked. If you ever get confused, " +
         "click on the question mark icon in the top right of your screen for more information. ";
@@ -39,7 +39,8 @@ public class Misc {
         "from your last read chapter if you click the \"Resume\" button in the novel information screen. To get to the " +
         "novel information screen, you can click on the novel thumbnail from either your library, browse screen, or recommendation " +
         "screen. To browse titles, click on the browse icon (window) down below. To view recommended novels based " +
-        "on your selection, click on the recommend icon (thumbs-up) down below as well.";
+        "on your selection, click on the recommend icon (thumbs-up) down below as well.\nClick the help buttton to go back " +
+        "to where you came from.";
     public static String browseInfo = "This is where you can browse for new novels. By clicking on the \"View More\" button, " +
         "you will be able to load more novels. These novels are the hottest novels on novelfull.com, the source of these novels. " +
         "If a novel's thumbnail, title, author, or summary intrigues you, click on the novel thumbnail and the novel information will appear." +

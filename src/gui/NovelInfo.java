@@ -95,11 +95,11 @@ public class NovelInfo {
         top.add(rating);
 
         //add to library
-        JButton libraryButton = new JButton("In library?");
+        JButton libraryButton = new JButton("Add to Library");
         libraryButton.setFont(Design.buttonTextFont.deriveFont(12f));
         libraryButton.setForeground(Design.foreground);
         libraryButton.setBackground(library.getBookshelf().contains(novel)? Color.GREEN:Color.RED);
-        libraryButton.setBounds(425, 200, 100, 50);
+        libraryButton.setBounds(425, 200, 150, 50);
         libraryButton.setFocusable(false);
         libraryButton.addActionListener(e -> {
             if(library.getBookshelf().contains(novel)) {

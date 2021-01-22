@@ -45,7 +45,7 @@ public class Recommend {
         setupPanel();
         setupContent();
         setupDashboard();
-//        setupFrame();
+        setupFrame();
     }
 
     private void setupFrame() {
@@ -196,7 +196,6 @@ public class Recommend {
                 secondaryHeader.setBorder(BorderFactory.createLineBorder(Color.white));
                 center.add(secondaryHeader);
 
-                findChapter(genre);
                 sideways = 0;
                 //new novels that aren't in library, that fit the genre tag
                 for(Novel novel:findChapter(genre)) {
@@ -221,7 +220,7 @@ public class Recommend {
 
     private Novel[] findChapter(String genre) {
         int page = 1 + map.getOrDefault(genre, 0);
-        String url = "https://novelfull.com/genre/"+genre.replace(" ", "+")+"?page="+page;
+        String url = "https://novelfull.com/genre/"+genre.trim().replace(" ", "+")+"?page="+page;
         map.put(genre, 1 + map.getOrDefault(genre, 0));
         Novel ret[] = new Novel[3];
         int index = 0;
@@ -240,7 +239,7 @@ public class Recommend {
                     recommendations.add(novel);
                 }
             }
-        } catch(IOException e) {
+        } catch(Exception e) {
             e.printStackTrace();
             System.out.println("HAD PROBLEM GETTING GENRE");
         }
