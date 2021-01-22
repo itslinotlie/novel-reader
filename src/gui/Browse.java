@@ -33,7 +33,7 @@ public class Browse {
     private double scaleFactor = 3/5f;
 
     private int novelWidth, novelHeight, thickness = 4;
-    private boolean firstOpen = true, clickHelp = false;
+    private boolean firstOpen = true, clickHelp = false, clickGraphic = false;
 
     private JLabel highlight;
 
@@ -83,12 +83,32 @@ public class Browse {
         help.setBounds(150, 20, 300, 50);
         helpPanel.add(help);
 
-        JLabel libraryInfo = new JLabel("<html>"+Misc.browseInfo+"</html>");
-        libraryInfo.setForeground(Design.foreground);
-        libraryInfo.setFont(Design.novelTextFont);
-        libraryInfo.setBorder(BorderFactory.createLineBorder(Color.white));
-        libraryInfo.setBounds(50, 50, 500, 400);
-        helpPanel.add(libraryInfo);
+        JLabel browseInfo = new JLabel("<html>"+Misc.browseInfo+"</html>");
+        browseInfo.setForeground(Design.foreground);
+        browseInfo.setFont(Design.novelTextFont);
+        browseInfo.setBorder(BorderFactory.createLineBorder(Color.white));
+        browseInfo.setBounds(50, 50, 500, 400);
+        helpPanel.add(browseInfo);
+
+        JLabel browseGraphic = new JLabel();
+        browseGraphic.setIcon(new ImageIcon(new ImageIcon("./res/help/browse.png").getImage().getScaledInstance(400, 570, 0)));
+        browseGraphic.setBounds(50, 20, 400, 570);
+        browseGraphic.setVisible(false);
+        helpPanel.add(browseGraphic);
+
+        JButton moreHelp = new JButton("More Help");
+        moreHelp.setForeground(Design.screenBackground);
+        moreHelp.setBackground(Design.novelButtonBackground);
+        moreHelp.setFont(Design.novelTextFont);
+        moreHelp.setBounds(460, 500, 115, 50);
+        moreHelp.addMouseListener(new ButtonStyle());
+        moreHelp.addActionListener(e -> {
+            browseGraphic.setVisible(!clickGraphic);
+            browseInfo.setVisible(clickGraphic);
+            help.setVisible(clickGraphic);
+            clickGraphic = !clickGraphic;
+        });
+        helpPanel.add(moreHelp);
 
         //shown when things are loaded
         gif = new JLabel();

@@ -31,7 +31,7 @@ public class Recommend {
 
     private JLabel highlight, gif, helpHighlight;
     private JButton help;
-    private boolean clickHelp = false;
+    private boolean clickHelp = false, clickGraphic = false;
 
     private JScrollPane scroll;
 
@@ -85,11 +85,31 @@ public class Recommend {
         help.setBounds(150, 20, 300, 50);
         helpPanel.add(help);
 
-        JLabel libraryInfo = new JLabel("<html>"+Misc.recommendInfo+"</html>");
-        libraryInfo.setForeground(Design.foreground);
-        libraryInfo.setFont(Design.novelTextFont);
-        libraryInfo.setBounds(50, 50, 500, 300);
-        helpPanel.add(libraryInfo);
+        JLabel recommendInfo = new JLabel("<html>"+Misc.recommendInfo+"</html>");
+        recommendInfo.setForeground(Design.foreground);
+        recommendInfo.setFont(Design.novelTextFont);
+        recommendInfo.setBounds(50, 50, 500, 300);
+        helpPanel.add(recommendInfo);
+
+        JLabel recommendGraphic = new JLabel();
+        recommendGraphic.setIcon(new ImageIcon(new ImageIcon("./res/help/recommend.png").getImage().getScaledInstance(400, 570, 0)));
+        recommendGraphic.setBounds(50, 20, 400, 570);
+        recommendGraphic.setVisible(false);
+        helpPanel.add(recommendGraphic);
+
+        JButton moreHelp = new JButton("More Help");
+        moreHelp.setForeground(Design.screenBackground);
+        moreHelp.setBackground(Design.novelButtonBackground);
+        moreHelp.setFont(Design.novelTextFont);
+        moreHelp.setBounds(460, 500, 115, 50);
+        moreHelp.addMouseListener(new ButtonStyle());
+        moreHelp.addActionListener(e -> {
+            recommendGraphic.setVisible(!clickGraphic);
+            recommendInfo.setVisible(clickGraphic);
+            help.setVisible(clickGraphic);
+            clickGraphic = !clickGraphic;
+        });
+        helpPanel.add(moreHelp);
 
         //JScrollPane to allow for continuous scrolling of browsing novels
         scroll = new JScrollPane(center);

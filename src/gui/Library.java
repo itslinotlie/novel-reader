@@ -29,7 +29,7 @@ public class Library {
 
     private double scaleFactor = 3/5f;
     private int novelWidth, novelHeight, thickness = 4;
-    private boolean clickHelp = false;
+    private boolean clickHelp = false, clickGraphic = false;
 
     private JLabel highlight, helpHighlight, gif;
     private JButton help;
@@ -91,6 +91,26 @@ public class Library {
         libraryInfo.setFont(Design.novelTextFont);
         libraryInfo.setBounds(50, 50, 500, 300);
         helpPanel.add(libraryInfo);
+
+        JLabel libraryGraphic = new JLabel();
+        libraryGraphic.setIcon(new ImageIcon(new ImageIcon("./res/help/library.png").getImage().getScaledInstance(400, 570, 0)));
+        libraryGraphic.setBounds(50, 20, 400, 570);
+        libraryGraphic.setVisible(false);
+        helpPanel.add(libraryGraphic);
+
+        JButton moreHelp = new JButton("More Help");
+        moreHelp.setForeground(Design.screenBackground);
+        moreHelp.setBackground(Design.novelButtonBackground);
+        moreHelp.setFont(Design.novelTextFont);
+        moreHelp.setBounds(460, 500, 115, 50);
+        moreHelp.addMouseListener(new ButtonStyle());
+        moreHelp.addActionListener(e -> {
+            libraryGraphic.setVisible(!clickGraphic);
+            libraryInfo.setVisible(clickGraphic);
+            help.setVisible(clickGraphic);
+            clickGraphic = !clickGraphic;
+        });
+        helpPanel.add(moreHelp);
 
         //JScrollPane to allow for continuous scrolling of browsing novels
         scroll = new JScrollPane(center);
