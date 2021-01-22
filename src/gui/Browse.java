@@ -16,9 +16,9 @@ import java.util.ArrayList;
 public class Browse {
     private JFrame frame;
     public static JPanel content = new JPanel();
-    private JPanel top, center, bot;
-    private JLabel gif;
-    private JButton viewMore;
+    private JPanel top, center, bot, helpPanel;
+    private JLabel gif, helpHighlight;
+    private JButton viewMore, help;
 
     private JScrollPane scroll;
     private SwingWorker worker = null; //allows "multi-threading"
@@ -33,7 +33,7 @@ public class Browse {
     private double scaleFactor = 3/5f;
 
     private int novelWidth, novelHeight, thickness = 4;
-    private boolean firstOpen = true;
+    private boolean firstOpen = true, clickHelp = false;
 
     private JLabel highlight;
 
@@ -62,6 +62,33 @@ public class Browse {
         browse.setFont(Design.buttonTextFont.deriveFont(24f));
         browse.setBounds(25, 0, 100, 50);
         top.add(browse);
+
+        help = new JButton();
+        help.setIcon(new ImageIcon(new ImageIcon("./res/help.png").getImage().getScaledInstance(35, 35, 0)));
+        help.setBackground(Design.novelButtonBackground);
+        help.addMouseListener(new ButtonStyle());
+        help.addActionListener(e -> help());
+        help.setBounds(500, 2, 46, 46);
+        top.add(help);
+
+        helpHighlight = new JLabel();
+        helpHighlight.setIcon(new ImageIcon("./res/highlight-2.png"));
+        helpHighlight.setBounds(498, 0, 50, 50);
+        helpHighlight.setVisible(false);
+        top.add(helpHighlight);
+
+        JLabel help = new JLabel("Browse Help Screen");
+        help.setForeground(Design.foreground);
+        help.setFont(Design.buttonTextFont.deriveFont(24f));
+        help.setBounds(150, 20, 300, 50);
+        helpPanel.add(help);
+
+        JLabel libraryInfo = new JLabel("<html>"+Misc.browseInfo+"</html>");
+        libraryInfo.setForeground(Design.foreground);
+        libraryInfo.setFont(Design.novelTextFont);
+        libraryInfo.setBorder(BorderFactory.createLineBorder(Color.white));
+        libraryInfo.setBounds(50, 50, 500, 400);
+        helpPanel.add(libraryInfo);
 
         //shown when things are loaded
         gif = new JLabel();
@@ -119,6 +146,13 @@ public class Browse {
         center.setBackground(Design.screenLightBackground);
         center.setLayout(null);
         center.setPreferredSize(new Dimension(Misc.WIDTH, 150+total*(novelHeight+50)));
+
+        helpPanel = new JPanel();
+        helpPanel.setBackground(Design.screenLightBackground);
+        helpPanel.setLayout(null);
+        helpPanel.setVisible(false);
+        helpPanel.setBounds(0, 50, 600, 612);
+        content.add(helpPanel);
 
         //application dashboard
         bot = new JPanel();
@@ -310,6 +344,23 @@ public class Browse {
                 }
             }
         };
+    }
+
+    private void help() {
+        if(!clickHelp) { //show help screen
+            helpPanel.add(gif);
+            center.setVisible(false);
+            scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+            helpPanel.setVisible(true);
+            helpHighlight.setVisible(true);
+        } else { //show library screen
+            center.add(gif);
+            helpPanel.setVisible(false);
+            center.setVisible(true);
+            scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+            helpHighlight.setVisible(false);
+        }
+        clickHelp = !clickHelp;
     }
 
     //used to limit the novel summary so that only a snippet is displayed

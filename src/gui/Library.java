@@ -86,6 +86,7 @@ public class Library {
         JLabel libraryInfo = new JLabel("<html>"+Misc.libraryInfo+"</html>");
         libraryInfo.setForeground(Design.foreground);
         libraryInfo.setFont(Design.novelTextFont);
+        libraryInfo.setBorder(BorderFactory.createLineBorder(Color.white));
         libraryInfo.setBounds(50, 50, 500, 300);
         helpPanel.add(libraryInfo);
 
