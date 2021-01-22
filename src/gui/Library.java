@@ -89,7 +89,6 @@ public class Library {
         JLabel libraryInfo = new JLabel("<html>"+Misc.libraryInfo+"</html>");
         libraryInfo.setForeground(Design.foreground);
         libraryInfo.setFont(Design.novelTextFont);
-        libraryInfo.setBorder(BorderFactory.createLineBorder(Color.white));
         libraryInfo.setBounds(50, 50, 500, 300);
         helpPanel.add(libraryInfo);
 
@@ -162,25 +161,41 @@ public class Library {
 //        library.addActionListener(e -> refreshScreen(1));
         bot.add(library);
 
+        JLabel libraryLabel = new JLabel("Library");
+        libraryLabel.setBounds(55, 100, 100, 25);
+        libraryLabel.setForeground(Design.foreground);
+        libraryLabel.setFont(Design.novelTextFont);
+        bot.add(libraryLabel);
+
         JButton window = new JButton();
         window.setIcon(new ImageIcon(new ImageIcon("./res/window.png").getImage().getScaledInstance(90, 90, 0)));
         window.setBounds(255, 5, 90, 90);
-        window.setBorder(BorderFactory.createLineBorder(Color.white));
         window.setBackground(Design.novelButtonBackground);
         window.addMouseListener(new ButtonStyle());
         window.setFocusable(false);
         window.addActionListener(e -> refreshScreen(2));
         bot.add(window);
 
+        JLabel windowLabel = new JLabel("Browse");
+        windowLabel.setBounds(255, 100, 100, 25);
+        windowLabel.setForeground(Design.foreground);
+        windowLabel.setFont(Design.novelTextFont);
+        bot.add(windowLabel);
+
         JButton recommend = new JButton();
         recommend.setIcon(new ImageIcon(new ImageIcon("./res/recommend.png").getImage().getScaledInstance(90, 90, 0)));
         recommend.setBounds(455, 5, 90, 90);
-        recommend.setBorder(BorderFactory.createLineBorder(Color.white));
         recommend.setBackground(Design.novelButtonBackground);
         recommend.addMouseListener(new ButtonStyle());
         recommend.setFocusable(false);
         recommend.addActionListener(e -> refreshScreen(3));
         bot.add(recommend);
+
+        JLabel recommendLabel = new JLabel("Recommend");
+        recommendLabel.setBounds(455, 100, 100, 25);
+        recommendLabel.setForeground(Design.foreground);
+        recommendLabel.setFont(Design.novelTextFont);
+        bot.add(recommendLabel);
 
         highlight = new JLabel();
         highlight.setIcon(new ImageIcon("./res/highlight-2.png"));
@@ -203,6 +218,7 @@ public class Library {
         if(location==-1) { //displaying novel info
             NovelInfo.previousScreen = 1;
             novelInfo = new NovelInfo(frame, browse, novelPlaceHolder, this, recommend);
+            frame.setTitle(String.format("Viewing %s", novelPlaceHolder.getNovelName()));
         } else if(location==1) {
         } else if(location==2) {
             if(browse==null) {
@@ -289,7 +305,6 @@ public class Library {
                 summary.setForeground(Design.foreground);
                 summary.setFont(Design.novelTextFont);
                 summary.setBounds(200, 140 + i*(novelHeight+50), 350, 125);
-                summary.setBorder(BorderFactory.createLineBorder(Color.white));
                 center.add(summary);
 
                 //invisible but clickable button
@@ -297,7 +312,7 @@ public class Library {
                 click.setOpaque(false);
                 click.setContentAreaFilled(false);
                 click.setFocusable(false);
-                click.setBorder(BorderFactory.createLineBorder(Color.white));
+                click.setBorder(BorderFactory.createEmptyBorder());
                 click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
                 click.addActionListener(e -> refreshScreen(-1, novel));
                 center.add(click);

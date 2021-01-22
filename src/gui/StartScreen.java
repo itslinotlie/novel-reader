@@ -42,7 +42,7 @@ public class StartScreen {
         panel.add(gif);
 
         JButton go = new JButton("START");
-        go.setBounds(225, 650, 150, 50);
+        go.setBounds(225, 700, 150, 50);
         go.setForeground(Design.foreground);
         go.setBackground(Design.novelButtonBackground);
         go.setFont(Design.buttonTextFont);

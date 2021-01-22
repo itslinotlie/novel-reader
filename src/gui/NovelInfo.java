@@ -97,18 +97,17 @@ public class NovelInfo {
         //add to library
         JButton libraryButton = new JButton("Add to Library");
         libraryButton.setFont(Design.buttonTextFont.deriveFont(16f));
-//        libraryButton.setFont(Design.buttonTextFont.deriveFont(24f));
         libraryButton.setForeground(Design.screenBackground);
-        libraryButton.setBackground(library.getBookshelf().contains(novel)? Color.GREEN:Color.RED);
+        libraryButton.setBackground(library.getBookshelf().contains(novel)? Design.novelButtonBackground:Design.red);
         libraryButton.setBounds(425, 200, 150, 50);
         libraryButton.setFocusable(false);
         libraryButton.addActionListener(e -> {
             if(library.getBookshelf().contains(novel)) {
                 library.getBookshelf().remove(novel);
-                libraryButton.setBackground(Color.RED);
+                libraryButton.setBackground(Design.red);
             } else {
                 library.getBookshelf().add(novel);
-                libraryButton.setBackground(Color.GREEN);
+                libraryButton.setBackground(Design.novelButtonBackground);
             }
             library.updateLibrary();
         });

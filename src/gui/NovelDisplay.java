@@ -70,12 +70,13 @@ public class NovelDisplay {
         frame.add(content);
 
         //closes the current novel and displays novelInfo screen
-        goBack = new JButton(">");
-        goBack.setFont(Design.buttonTextFont.deriveFont(24f));
-        goBack.setBounds(20, 20, 50, 50);
+        goBack = new JButton("Go Back");
+        goBack.setFont(Design.buttonTextFont);
         goBack.setBackground(Design.novelButtonBackground);
         goBack.setForeground(Design.foreground);
         goBack.addMouseListener(new ButtonStyle());
+        goBack.setFocusable(false);
+        goBack.setBounds(20, 30, 150, 40);
         goBack.addActionListener(e -> {
             content.setVisible(false);
             novelInfo.setVisible(true);
@@ -88,13 +89,18 @@ public class NovelDisplay {
         skip.setForeground(Design.foreground);
         skip.setFont(Design.buttonTextFont);
         skip.setDocument(new TextAreaLimit());
-        skip.setText("1234");
+        skip.setText(Integer.toString(novel.getChapterRange()[1]-1));
         skip.setBounds(200, 30, 60, 40);
+
+        JLabel max = new JLabel("/"+novel.getChapterRange()[1]);
+        max.setForeground(Design.novelButtonBackground);
+        max.setFont(Design.buttonTextFont);
+        max.setBounds(260, 25, 75, 40);
 
         //navigation buttons
         go = new JButton("GO");
         go.setFont(Design.buttonTextFont);
-        go.setBounds(275, 30, 100, 40);
+        go.setBounds(340, 30, 80, 40);
         go.setBackground(Design.novelButtonBackground);
         go.setForeground(Design.foreground);
         go.addMouseListener(new ButtonStyle());
@@ -140,6 +146,7 @@ public class NovelDisplay {
         top.setLayout(null);
         top.add(goBack);
         top.add(skip);
+        top.add(max);
         top.add(go);
 
         //footer

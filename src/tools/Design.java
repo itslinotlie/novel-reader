@@ -37,6 +37,7 @@ public class Design {
     //colours
     public static Color novelBackground = Color.decode("#f4f4f4"); //newspaper
     public static Color novelButtonBackground = Color.decode("#5cb85c"); //green
+    public static Color red = Color.decode("#f08080"); //red
     public static Color novelButtonBackgroundDark = Color.decode("#449d44"); //dark green
     public static Color novelText = Color.decode("#455d72"); //grey
     public static Color foreground = Color.decode("#fff4c0"); //white

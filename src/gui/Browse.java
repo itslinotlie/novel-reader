@@ -201,7 +201,6 @@ public class Browse {
         summary.setForeground(Design.foreground);
         summary.setFont(Design.novelTextFont);
         summary.setBounds(200, 140 + i*(novelHeight+50), 350, 125);
-        summary.setBorder(BorderFactory.createLineBorder(Color.white));
         center.add(summary);
 
         //invisible but clickable button
@@ -209,7 +208,7 @@ public class Browse {
         click.setOpaque(false);
         click.setContentAreaFilled(false);
         click.setFocusable(false);
-        click.setBorder(BorderFactory.createLineBorder(Color.white));
+        click.setBorder(BorderFactory.createEmptyBorder());
         click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
         click.addActionListener(e -> refreshScreen(-1, novel));
         center.add(click);
@@ -255,6 +254,12 @@ public class Browse {
         library.addActionListener(e -> refreshScreen(1));
         bot.add(library);
 
+        JLabel libraryLabel = new JLabel("Library");
+        libraryLabel.setBounds(55, 100, 100, 25);
+        libraryLabel.setForeground(Design.foreground);
+        libraryLabel.setFont(Design.novelTextFont);
+        bot.add(libraryLabel);
+
         JButton window = new JButton();
         window.setIcon(new ImageIcon(new ImageIcon("./res/window.png").getImage().getScaledInstance(90, 90, 0)));
         window.setBounds(255, 5, 90, 90);
@@ -265,6 +270,12 @@ public class Browse {
 //        window.addActionListener(e -> refreshScreen(2));
         bot.add(window);
 
+        JLabel windowLabel = new JLabel("Browse");
+        windowLabel.setBounds(255, 100, 100, 25);
+        windowLabel.setForeground(Design.foreground);
+        windowLabel.setFont(Design.novelTextFont);
+        bot.add(windowLabel);
+
         JButton recommend = new JButton();
         recommend.setIcon(new ImageIcon(new ImageIcon("./res/recommend.png").getImage().getScaledInstance(90, 90, 0)));
         recommend.setBounds(455, 5, 90, 90);
@@ -274,6 +285,12 @@ public class Browse {
         recommend.setFocusable(false);
         recommend.addActionListener(e -> refreshScreen(3));
         bot.add(recommend);
+
+        JLabel recommendLabel = new JLabel("Recommend");
+        recommendLabel.setBounds(455, 100, 100, 25);
+        recommendLabel.setForeground(Design.foreground);
+        recommendLabel.setFont(Design.novelTextFont);
+        bot.add(recommendLabel);
 
         highlight = new JLabel();
         highlight.setIcon(new ImageIcon("./res/highlight-2.png"));

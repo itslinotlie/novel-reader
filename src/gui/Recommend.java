@@ -171,7 +171,6 @@ public class Recommend {
                 JLabel header = new JLabel(String.format("<html>Because you read %s from:</html>", genre));
                 header.setForeground(Design.foreground);
                 header.setFont(Design.novelTextFont.deriveFont(22f));
-                header.setBorder(BorderFactory.createLineBorder(Color.white));
                 header.setBounds(100, 25+index*(2*novelHeight+100+50+50), 400, 50);
                 center.add(header);
 
@@ -193,7 +192,6 @@ public class Recommend {
                 secondaryHeader.setForeground(Design.foreground);
                 secondaryHeader.setFont(Design.novelTextFont.deriveFont(22f));
                 secondaryHeader.setBounds(100, 25+50+novelHeight+index*(2*novelHeight+75+50+75), 400, 50);
-                secondaryHeader.setBorder(BorderFactory.createLineBorder(Color.white));
                 center.add(secondaryHeader);
 
                 sideways = 0;
@@ -256,25 +254,41 @@ public class Recommend {
         library.addActionListener(e -> refreshScreen(1));
         bot.add(library);
 
+        JLabel libraryLabel = new JLabel("Library");
+        libraryLabel.setBounds(55, 100, 100, 25);
+        libraryLabel.setForeground(Design.foreground);
+        libraryLabel.setFont(Design.novelTextFont);
+        bot.add(libraryLabel);
+
         JButton window = new JButton();
         window.setIcon(new ImageIcon(new ImageIcon("./res/window.png").getImage().getScaledInstance(90, 90, 0)));
         window.setBounds(255, 5, 90, 90);
-        window.setBorder(BorderFactory.createLineBorder(Color.white));
         window.setBackground(Design.novelButtonBackground);
         window.addMouseListener(new ButtonStyle());
         window.setFocusable(false);
         window.addActionListener(e -> refreshScreen(2));
         bot.add(window);
 
+        JLabel windowLabel = new JLabel("Browse");
+        windowLabel.setBounds(255, 100, 100, 25);
+        windowLabel.setForeground(Design.foreground);
+        windowLabel.setFont(Design.novelTextFont);
+        bot.add(windowLabel);
+
         JButton recommend = new JButton();
         recommend.setIcon(new ImageIcon(new ImageIcon("./res/recommend.png").getImage().getScaledInstance(90, 90, 0)));
         recommend.setBounds(455, 5, 90, 90);
-        recommend.setBorder(BorderFactory.createLineBorder(Color.white));
         recommend.setBackground(Design.novelButtonBackground);
         recommend.addMouseListener(new ButtonStyle());
         recommend.setFocusable(false);
 //        recommend.addActionListener(e -> refreshScreen(3));
         bot.add(recommend);
+
+        JLabel recommendLabel = new JLabel("Recommend");
+        recommendLabel.setBounds(455, 100, 100, 25);
+        recommendLabel.setForeground(Design.foreground);
+        recommendLabel.setFont(Design.novelTextFont);
+        bot.add(recommendLabel);
 
         highlight = new JLabel();
         highlight.setIcon(new ImageIcon("./res/highlight-2.png"));
