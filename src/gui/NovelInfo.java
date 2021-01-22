@@ -1,6 +1,5 @@
 package gui;
 
-import objects.Bookshelf;
 import objects.Novel;
 import tools.ButtonStyle;
 import tools.Design;
@@ -11,6 +10,13 @@ import java.awt.*;
 import java.util.Arrays;
 import javax.swing.*;
 
+/**
+ * This creates the novel info screen, where uses can find more information on a specific novel.
+ * Displayed information includes the novel name, author, rating, genre list, summary, and the first and last
+ * 3 chapters of the novel. Users can jump to these 6 given chapters, or decide to resume to the last read chapter.
+ * If the user has not read the novel before, this is chapter 1. The user can also bookmark the novel so that the
+ * information can be tracked in the library screen.
+ */
 public class NovelInfo {
     private JFrame frame;
     private JPanel content = new JPanel(), top, center, bot;
@@ -23,9 +29,9 @@ public class NovelInfo {
     private NovelDisplay novelDisplay;
     private SwingWorker worker = null; //allows "multi-threading"
 
-    private boolean firstOpen = true;
     public static int previousScreen = -1;
 
+    //basic constructor
     public NovelInfo(JFrame frame, Browse browse, Novel novel, Library library, Recommend recommend) {
         this.frame = frame;
         this.browse = browse;
@@ -34,15 +40,6 @@ public class NovelInfo {
         this.recommend = recommend;
         setupPanel();
         setupContent();
-//        setupFrame();
-    }
-
-    //testing purposes, delete once more GUI is complete
-    private void setupFrame() {
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
-        frame.setResizable(false);
-        frame.setVisible(true);
         frame.setTitle(Misc.novelTitle(novel));
     }
 
@@ -167,6 +164,7 @@ public class NovelInfo {
         genre.setBounds(400, 25, 200, 50);
         bot.add(genre);
 
+        //list of genres related to this novel
         String genres = Arrays.toString(novel.getGenreList());
         JLabel genreList = new JLabel("<html>"+ genres.substring(1, genres.length()-1)+"</html>");
         genreList.setForeground(Design.foreground);

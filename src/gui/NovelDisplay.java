@@ -6,6 +6,14 @@ import tools.*;
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * This creates the novel display screen, where users will be able to read the contents of a specified novel.
+ * To navigate between chapters, users can either click the back/next button to traverse -/+ 1 chapter respectively.
+ * Another option is to jump straight to a chapter by inputting a chapter # in the textbox and pressing go. Users
+ * are able to read the contents of the novel by scrolling with the implementation of the JScrollPane, which allows
+ * for "infinite scrolling". If the novel is bookmarked in the library, the last read chapter will be stored even
+ * when the program is closed and reloaded when the program is relaunched.
+ */
 public class NovelDisplay {
     private JFrame frame;
     private JPanel content = new JPanel(), novelInfo;
@@ -16,21 +24,14 @@ public class NovelDisplay {
 
     private Novel novel;
 
+    //basic constructor
     public NovelDisplay(JFrame frame, JPanel novelInfo, Novel novel) {
         this.frame = frame;
         this.novelInfo = novelInfo;
         this.novel = novel;
         setupPanel();
         setupContent();
-//        setupFrame(); //testing purposes, delete once more GUI is complete
         refreshScreen();
-    }
-    //testing purposes, delete once more GUI is complete
-    private void setupFrame() {
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
-        frame.setResizable(false);
-        frame.setVisible(true);
     }
     //display novel text to reader in JScrollPane
     //to allow for continuous scrolling
@@ -92,6 +93,7 @@ public class NovelDisplay {
         skip.setText(Integer.toString(novel.getChapterRange()[1]-1));
         skip.setBounds(200, 30, 60, 40);
 
+        //shows the maximum chapter the user can jump too before an error occurs
         JLabel max = new JLabel("/"+novel.getChapterRange()[1]);
         max.setForeground(Design.novelButtonBackground);
         max.setFont(Design.buttonTextFont);
