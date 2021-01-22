@@ -200,7 +200,7 @@ public class Browse {
         JLabel summary = new JLabel("<html>"+limit(novel.getSummary())+"</html>");
         summary.setForeground(Design.foreground);
         summary.setFont(Design.novelTextFont);
-        summary.setBounds(200, 140 + i*(novelHeight+50), 350, 100);
+        summary.setBounds(200, 140 + i*(novelHeight+50), 350, 125);
         summary.setBorder(BorderFactory.createLineBorder(Color.white));
         center.add(summary);
 
@@ -235,6 +235,7 @@ public class Browse {
                     String novelLink = row.select("h3 > a").attr("href");
                     String novelName = row.select("h3 > a").text();
                     list.add(new Novel(novelName, novelLink));
+                    System.out.println(list.get(list.size()-1));
                     displayChapter();
                 }
             }
@@ -294,6 +295,7 @@ public class Browse {
     private void refreshScreen(int location, int random) {
         if(location==-1) { //displaying novel info
             NovelInfo.previousScreen = 2;
+            System.out.println(novelPlaceHolder);
             novelInfo = new NovelInfo(frame, this, novelPlaceHolder, library, recommend);
         }
         else if(location==0) { //view more

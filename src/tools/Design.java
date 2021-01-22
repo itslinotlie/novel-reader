@@ -48,5 +48,5 @@ public class Design {
 
     //dimensions for JPanels
     public static Dimension header = new Dimension(Misc.WIDTH, 50);
-    public static Dimension footer = new Dimension(Misc.WIDTH, 100);
+    public static Dimension footer = new Dimension(Misc.WIDTH, 125);
 }

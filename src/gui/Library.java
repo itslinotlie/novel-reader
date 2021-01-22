@@ -266,29 +266,29 @@ public class Library {
                 //novel thumbnail
                 JLabel icon = new JLabel();
                 icon.setIcon(new ImageIcon(novel.getThumbnail().getImage().getScaledInstance(novelWidth, novelHeight, 0)));
-                icon.setBounds(50, 50 + i * (novelHeight + 50), novelWidth + 2 * thickness, novelHeight + 2 * thickness);
+                icon.setBounds(50, 50 + i*(novelHeight+50), novelWidth+2*thickness, novelHeight+2*thickness);
                 icon.setBorder(BorderFactory.createLineBorder(Design.screenPop, thickness));
                 center.add(icon);
 
                 //novel title
-                JLabel title = new JLabel("<html>" + novel.getNovelName() + "</html>");
+                JLabel title = new JLabel("<html>"+novel.getNovelName()+"</html>");
                 title.setForeground(Design.foreground);
-                title.setFont(Design.buttonTextFont.deriveFont(24f));
-                title.setBounds(200, 20 + i * (novelHeight + 50), 350, 100);
+                title.setFont(Design.novelTextFont.deriveFont(22f));
+                title.setBounds(200, 20 + i*(novelHeight+50), 350, 100);
                 center.add(title);
 
                 //novel author
                 JLabel author = new JLabel(novel.getAuthor());
                 author.setForeground(Design.foreground);
                 author.setFont(Design.buttonTextFont.deriveFont(18f));
-                author.setBounds(200, 100 + i * (novelHeight + 50), 350, 50);
+                author.setBounds(200, 100 + i*(novelHeight+50), 350, 50);
                 center.add(author);
 
                 //summary
-                JLabel summary = new JLabel("<html>" + limit(novel.getSummary()) + "</html>");
+                JLabel summary = new JLabel("<html>"+limit(novel.getSummary())+"</html>");
                 summary.setForeground(Design.foreground);
                 summary.setFont(Design.novelTextFont);
-                summary.setBounds(200, 140 + i * (novelHeight + 50), 350, 100);
+                summary.setBounds(200, 140 + i*(novelHeight+50), 350, 125);
                 summary.setBorder(BorderFactory.createLineBorder(Color.white));
                 center.add(summary);
 
@@ -298,7 +298,7 @@ public class Library {
                 click.setContentAreaFilled(false);
                 click.setFocusable(false);
                 click.setBorder(BorderFactory.createLineBorder(Color.white));
-                click.setBounds(50, 50 + i * (novelHeight + 50), 500, 200);
+                click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
                 click.addActionListener(e -> refreshScreen(-1, novel));
                 center.add(click);
             }

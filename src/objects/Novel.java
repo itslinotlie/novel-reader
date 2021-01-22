@@ -60,14 +60,15 @@ public class Novel {
 
             //parsing information to get chapter range goes through
             //all the elements with a <li> tag on the front page
-            for(Element row:doc.getElementsByTag("li")) {
-                String chapterName = row.select("a").attr("title");
+            for(Element row:doc.getElementsByTag("span")) {
+                String chapterName = row.text();
                 if(!chapterName.startsWith("Chapter")) continue; //first row is hidden/blank, needs to be filtered out
                 //ReGeX to replace everything but numbers and spaces (spaces because sometimes numbers
                 //are in the chapter name and it needs to be separated to find the chapter number)
+                chapterName = chapterName.replace("-", " ");
                 String arr[] = chapterName.replaceAll("[^0-9 ]", "").split("[ ]");
-                maxChap = Math.max(maxChap, Integer.parseInt(arr[arr.length-1]));
-                minChap = Math.min(minChap, Integer.parseInt(arr[arr.length-1]));
+                maxChap = Math.max(maxChap, Integer.parseInt(arr[Math.min(arr.length-1, 1)]));
+                minChap = Math.min(minChap, Integer.parseInt(arr[Math.min(arr.length-1, 1)]));
             }
             chapterRange = new int[]{minChap, maxChap};
         } catch (IOException e) {

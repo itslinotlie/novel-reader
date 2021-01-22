@@ -96,8 +96,9 @@ public class NovelInfo {
 
         //add to library
         JButton libraryButton = new JButton("Add to Library");
-        libraryButton.setFont(Design.buttonTextFont.deriveFont(12f));
-        libraryButton.setForeground(Design.foreground);
+        libraryButton.setFont(Design.buttonTextFont.deriveFont(16f));
+//        libraryButton.setFont(Design.buttonTextFont.deriveFont(24f));
+        libraryButton.setForeground(Design.screenBackground);
         libraryButton.setBackground(library.getBookshelf().contains(novel)? Color.GREEN:Color.RED);
         libraryButton.setBounds(425, 200, 150, 50);
         libraryButton.setFocusable(false);
@@ -130,7 +131,7 @@ public class NovelInfo {
         scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         scroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         scroll.getVerticalScrollBar().setUnitIncrement(5);
-        scroll.setBounds(50, 25, 500, 150);
+        scroll.setBounds(50, 25, 500, 175);
         center.add(scroll);
 
         //chapter list
