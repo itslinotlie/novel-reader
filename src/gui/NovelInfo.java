@@ -70,7 +70,6 @@ public class NovelInfo {
         title.setForeground(Design.foreground);
         title.setFont(Design.buttonTextFont.deriveFont(24f));
         title.setBounds(200, 50, 350, 110);
-        title.setBorder(BorderFactory.createLineBorder(Color.white));
         top.add(title);
 
         //novel author
@@ -78,7 +77,6 @@ public class NovelInfo {
         author.setForeground(Design.foreground);
         author.setFont(Design.novelTextFont.deriveFont(16f));
         author.setBounds(200, 160, 350, 50);
-        author.setBorder(BorderFactory.createLineBorder(Color.white));
         top.add(author);
 
         //novel summary in JScrollPane
@@ -167,7 +165,6 @@ public class NovelInfo {
         genre.setForeground(Design.foreground);
         genre.setFont(Design.buttonTextFont.deriveFont(18f));
         genre.setBounds(400, 25, 200, 50);
-        genre.setBorder(BorderFactory.createLineBorder(Color.white));
         bot.add(genre);
 
         String genres = Arrays.toString(novel.getGenreList());
@@ -175,7 +172,6 @@ public class NovelInfo {
         genreList.setForeground(Design.foreground);
         genreList.setFont(Design.buttonTextFont.deriveFont(12f));
         genreList.setBounds(400, 75, 125, 175);
-        genreList.setBorder(BorderFactory.createLineBorder(Color.white));
         bot.add(genreList);
 
         //resume to last read chapter

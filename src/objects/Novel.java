@@ -6,12 +6,16 @@ import org.jsoup.nodes.Element;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
 
+/**
+ * This class represents a novel from novelfull.com. It includes all the information
+ * unique to said novel, such as the novel name, author, summary, rating, thumbnail image, etc.
+ * There are two ways to create a novel object, through loading an existing novel or scraping
+ * the novel information given its novel link (i.e. /the-kings-avatar.html)
+ */
 public class Novel {
     private final String website = "https://novelfull.com";
     private String novelLink, novelName;
@@ -24,14 +28,15 @@ public class Novel {
     public Novel() {
 
     }
-
+    //constructor to web-scrape novel information given its novelLink
     public Novel(String novelName, String novelLink) {
         this.novelName = novelName;
         this.novelLink = novelLink;
         lastReadChapter = 1;
         loadInformation();
     }
-
+    //loads all the information unique to the novel,
+    //including parameters discussed above
     private void loadInformation() {
         String url = website + novelLink;
         String description = "", descriptionInfo[] = null;
