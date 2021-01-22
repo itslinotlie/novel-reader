@@ -1,26 +1,34 @@
 package tools;
 
 import objects.Novel;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 
 import java.io.IOException;
 
+/**
+ * The heart of the program. This file is used to scrape information from websites,
+ * keeping the front-end portion of the code void of back-end related tasks. This class will scrape
+ * for the following tasks: the chapter url, chapter name, and chapter contents for any given novel,
+ * regardless if it is bookmarked in the library or not. However, this process takes a long time, resulting
+ * in a very long load time ):
+ */
 public class WebScraping {
     public static String errorMessage = ">>>>>>>>>> -1 <<<<<<<<<<";
 
-    //returns the url of a given chapter, if possilbe
+    //returns the url of a given chapter, if this is not possible the error message is displayed
     public static String getChapterUrl(Novel novel, int targetChapter) {
-        //this is the way novelfull.com queries/displays pages
         String url = "";
         String chapterName = "", chapterUrl="";
         boolean found = false;
 
         try {
-            //due to chapter being missing, the logic gets messed up
-            //so by going +/- 1 chapter, the target chapter should be found
+            //due to chapter(s) being missing, direct math logic gets messed up.
+            //To avoid this, space of +/- 50 chapters (1 page) will be given and the target chapter should be found
             for(int i=-50;i<=50;i+=50) {
                 if (found) break;
+                //this is the format novelfull.com queries/displays pages
                 url = novel.getWebsite() + novel.getNovelLink() +"?page=" + ((targetChapter + 49 + i) / 50) + "&per-page=50";
                 //connecting to the url and getting html
                 Document doc = Jsoup.connect(url).get();
@@ -33,6 +41,8 @@ public class WebScraping {
                     chapterName = chapterName.trim().replaceAll("[^a-zA-Z0-9 ]", ""); //replaces everything except for Alphanumeric + space to nothing
                     chapterName = chapterName.replaceAll(" +", "-"); //replaces all consecutive spaces with a dash
 
+                    //some chapters have text adjacent to the numbers, breaking the ReGeX formatting
+                    //this is why there is an additional conditional statement to check the chapter
                     int currentChapter = -1;
                     if(isInteger(chapterName.split("-")[1])) {
                         currentChapter = Integer.parseInt(chapterName.split("-")[1]); //url is in the form of Chapter x, where x is chapter #
@@ -52,18 +62,18 @@ public class WebScraping {
     }
 
     //pretty much the same code as getChapterUrl except the
-    //original untampered chapter name is returned here
+    //original un-tampered chapter name is returned here
     public static String getChapterName(Novel novel, int targetChapter) {
-        //this is the way novelfull.com queries/displays pages
         String url = "";
         String chapterName = "";
         boolean found = false;
 
         try {
-            //due to chapter being missing, the logic gets messed up
-            //so by going +/- 1 chapter, the target chapter should be found
+            //due to chapter(s) being missing, direct math logic gets messed up.
+            //To avoid this, space of +/- 50 chapters (1 page) will be given and the target chapter should be found
             for(int i=-50;i<=50;i+=50) {
                 if (found) break;
+                //this is the way novelfull.com queries/displays pages
                 url = novel.getWebsite() + novel.getNovelLink() +"?page=" + ((targetChapter + 49 + i) / 50) + "&per-page=50";
                 //connecting to the url and getting html
                 Document doc = Jsoup.connect(url).get();
@@ -75,6 +85,8 @@ public class WebScraping {
                     chapterName = chapterName.trim().replaceAll("[^a-zA-Z0-9 ]", ""); //replaces everything except for Alphanumeric + space to nothing
                     chapterName = chapterName.replaceAll(" +", "-"); //replaces all consecutive spaces with a dash
 
+                    //some chapters have text adjacent to the numbers, breaking the ReGeX formatting
+                    //this is why there is an additional conditional statement to check the chapter
                     int currentChapter = -1;
                     if(isInteger(chapterName.split("-")[1])) {
                         currentChapter = Integer.parseInt(chapterName.split("-")[1]); //url is in the form of Chapter x, where x is chapter #
@@ -94,15 +106,17 @@ public class WebScraping {
         return found? chapterName:errorMessage;
     }
 
-    //returns the text from a chapter
+    //returns the text from a given novel and given chapter number
     public static String getChapterContent(Novel novel, int targetChapter) {
         String url = novel.getWebsite() + getChapterUrl(novel, targetChapter);
         String content = "";
 
+        //very coincidentally, the king's avatar chapter 1234 does not physically exist, which
+        //is why an additional sentence was included (the hard coding)
         if(url.contains(errorMessage)) {
             content = String.format("The novel \"%s\" chapter %d that you requested for is currently unavailable. " +
-                    "Reasons can include the chapter does not exist (i.e. the-kings-avatar chapter 1234 --> # is not hardcoded :/) or there was an error " +
-                    "in parsing the information. Thank you for your understanding.", novel.getNovelName(), targetChapter);
+                "Reasons can include the chapter does not exist (i.e. the-kings-avatar chapter 1234 --> # is not hardcoded :/) or there was an error " +
+                "in parsing the information. Thank you for your understanding.", novel.getNovelName(), targetChapter);
         } else {
             try {
                 Document doc = Jsoup.connect(url).get();
@@ -120,7 +134,7 @@ public class WebScraping {
     }
 
     //some chapters such as https://novelfull.com/the-kings-avatar/chapter-1729end-final-update-thoughts-on-completion.html
-    //have letters beside numbers. Need to make sure parsed string is an integer or else exception occurs
+    //have letters beside numbers. Need to make sure the parsed string is an integer or else an exception occurs
     public static boolean isInteger(String str) {
         if(str==null || str.length()==0
             || (str.length()==1 && str.charAt(0)=='-')) {

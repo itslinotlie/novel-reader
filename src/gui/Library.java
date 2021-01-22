@@ -43,16 +43,19 @@ public class Library {
         setupPanel();
         setupContent();
         setupDashboard();
-//        setupFrame();
+        setupFrame();
     }
 
     private void setupFrame() {
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
-        frame.setResizable(false);
-        frame.setVisible(true);
         frame.setTitle(Misc.libraryTitle);
-        frame.repaint();
+        frame.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent event) {
+            JOptionPane.showMessageDialog(frame, "Saving files. Click ok and wait until a confirmation message.");
+            bookshelf.save();
+            JOptionPane.showMessageDialog(frame, "Thank you for your patience. You can close the screen now");
+            }
+        });
     }
 
     private void setupContent() {

@@ -1,17 +1,21 @@
 package tools;
 
-import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 
+/**
+ * Various design styling. Creating this class creates unity amongst the components
+ * that use the variables here. Changes can also easily be made by changing one variable
+ * rather than changing variables from multiple files.
+ * In essence, consistent styling across all files and convenience for the programmer (reusable styling)
+ */
 public class Design {
     //custom fonts
     public static Font novelTextFont;
     public static Font buttonTextFont;
-    public static Font boldText;
-//    public static Font author = new Font("Tahoma", Font.PLAIN, 16);
 
-    //loading custom font (.ttf) and adding it to GraphicsEnvironment so that it can be used
+    //loading custom font (NotoSansSC.ttf) and adding it to GraphicsEnvironment so that it can be used
+    //across various files with .setFont(<font>);
     static {
         try {
             //path to the font library
@@ -19,15 +23,14 @@ public class Design {
             String root = "res/font-" + font + "/";
             novelTextFont = Font.createFont(Font.TRUETYPE_FONT, new File(root+font+"-Medium.otf")).deriveFont(16f);
             buttonTextFont = Font.createFont(Font.TRUETYPE_FONT, new File(root+font+"-Bold.otf")).deriveFont(24f);
-            boldText = Font.createFont(Font.TRUETYPE_FONT, new File(root+font+"-Black.otf")).deriveFont(28f);
             //adding fonts to the graphics environment, which will allow
             //them to be used throughout the project
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
             ge.registerFont(novelTextFont);
             ge.registerFont(buttonTextFont);
-            ge.registerFont(boldText);
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("Problem loading fonts");
         }
     }
 
@@ -43,6 +46,7 @@ public class Design {
     public static Color screenHighlight = Color.decode("#99aab5"); //light gray
     public static Color screenPop = Color.decode("#7289da"); //blue
 
+    //dimensions for JPanels
     public static Dimension header = new Dimension(Misc.WIDTH, 50);
     public static Dimension footer = new Dimension(Misc.WIDTH, 100);
 }

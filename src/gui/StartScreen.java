@@ -19,10 +19,6 @@ public class StartScreen {
     private SwingWorker worker = null; //allows "multi-threading"
     private Bookshelf bookshelf;
 
-    public static void main(String[] args) {
-        new StartScreen();
-    }
-
     public StartScreen() {
         setupPanel();
         setupContent();
@@ -36,14 +32,6 @@ public class StartScreen {
         frame.setVisible(true);
         frame.setTitle(Misc.libraryTitle);
         frame.repaint();
-        frame.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent event) {
-                JOptionPane.showMessageDialog(frame, "Saving files. Click ok and wait until a confirmation message.");
-                bookshelf.save();
-                JOptionPane.showMessageDialog(frame, "Thank you for your patience. You can close now the screen now");
-            }
-        });
     }
 
     private void setupContent() {
