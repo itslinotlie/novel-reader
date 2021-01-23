@@ -188,7 +188,7 @@ public class NovelInfo {
         goBack.setFont(Design.buttonTextFont.deriveFont(16f));
         goBack.setBounds(10, 10, 120, 30);
         goBack.setBackground(Design.novelButtonBackground);
-        goBack.setForeground(Design.foreground);
+        goBack.setForeground(Design.screenBackground);
         goBack.addMouseListener(new ButtonStyle());
         goBack.setFocusable(false);
         goBack.addActionListener(e -> {

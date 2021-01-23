@@ -2,6 +2,11 @@ package main;
 
 import gui.StartScreen;
 
+//IMPORTANT MESSAGE: you need to add the lib/jsoup-1.13.1.jar file
+//to your Java build path in order for the program to work.
+//General how to (depends on ide but the ideas there):
+//Select Build Path > Configure Build Path > Add external jar > add the jsoup jar > apply and voila
+
 /**
  * Programmer: Michael Li
  * Date of submission: Jan 22, 2021
@@ -48,7 +53,6 @@ import gui.StartScreen;
  * -Novels take an absurd amount of time to load. When loading the novel information with an already loaded novel,
  *  it takes a roughly second. To scrape new novels (used in the recommendation+browse screen) it takes
  * 2-3 seconds per novel to load and to display.
- *
  */
 public class Launcher {
     public static void main(String[] args) {

@@ -38,8 +38,8 @@ public class NovelDisplay {
     private void setupContent() {
         //JTextArea to display chapter content
         text = new JTextArea(WebScraping.getChapterContent(novel, novel.getLastReadChapter()));
-        text.setBackground(Design.novelBackground);
-        text.setForeground(Design.novelText);
+        text.setBackground(Design.screenLightBackground);
+        text.setForeground(Design.foreground);
         text.setWrapStyleWord(true);
         text.setLineWrap(true);
         text.setEditable(false);
@@ -74,7 +74,7 @@ public class NovelDisplay {
         goBack = new JButton("Go Back");
         goBack.setFont(Design.buttonTextFont);
         goBack.setBackground(Design.novelButtonBackground);
-        goBack.setForeground(Design.foreground);
+        goBack.setForeground(Design.screenBackground);
         goBack.addMouseListener(new ButtonStyle());
         goBack.setFocusable(false);
         goBack.setBounds(20, 30, 150, 40);
@@ -87,7 +87,7 @@ public class NovelDisplay {
         //text area to skip to a chapter
         skip = new JTextArea();
         skip.setBackground(Design.novelButtonBackground);
-        skip.setForeground(Design.foreground);
+        skip.setForeground(Design.screenBackground);
         skip.setFont(Design.buttonTextFont);
         skip.setDocument(new TextAreaLimit());
         skip.setText(Integer.toString(novel.getChapterRange()[1]-1));
@@ -97,14 +97,14 @@ public class NovelDisplay {
         JLabel max = new JLabel("/"+novel.getChapterRange()[1]);
         max.setForeground(Design.novelButtonBackground);
         max.setFont(Design.buttonTextFont);
-        max.setBounds(260, 25, 75, 40);
+        max.setBounds(265, 25, 75, 40);
 
         //navigation buttons
         go = new JButton("GO");
         go.setFont(Design.buttonTextFont);
         go.setBounds(340, 30, 80, 40);
         go.setBackground(Design.novelButtonBackground);
-        go.setForeground(Design.foreground);
+        go.setForeground(Design.screenBackground);
         go.addMouseListener(new ButtonStyle());
         go.addActionListener(e -> { //logic to check if you can skip to a chapter
             skip.setText(skip.getText().trim());
@@ -121,7 +121,7 @@ public class NovelDisplay {
         back = new JButton("< Back");
         back.setFont(Design.buttonTextFont);
         back.setBackground(Design.novelButtonBackground);
-        back.setForeground(Design.foreground);
+        back.setForeground(Design.screenBackground);
         back.setBounds(125, 30, 150, 40);
         back.addMouseListener(new ButtonStyle());
         back.addActionListener(e -> {
@@ -133,7 +133,7 @@ public class NovelDisplay {
         next = new JButton("Next >");
         next.setFont(Design.buttonTextFont);
         next.setBackground(Design.novelButtonBackground);
-        next.setForeground(Design.foreground);
+        next.setForeground(Design.screenBackground);
         next.setBounds(325, 30, 150, 40);
         next.addMouseListener(new ButtonStyle());
         next.addActionListener(e -> {
@@ -143,7 +143,7 @@ public class NovelDisplay {
 
         //header
         JPanel top = new JPanel();
-        top.setBackground(Design.novelBackground);
+        top.setBackground(Design.screenLightBackground);
         top.setPreferredSize(new Dimension(Misc.WIDTH, 100));
         top.setLayout(null);
         top.add(goBack);
@@ -153,7 +153,7 @@ public class NovelDisplay {
 
         //footer
         JPanel bot = new JPanel();
-        bot.setBackground(Design.novelBackground);
+        bot.setBackground(Design.screenLightBackground);
         bot.setPreferredSize(new Dimension(Misc.WIDTH, 100));
         bot.setLayout(null);
         bot.add(next);
@@ -161,11 +161,11 @@ public class NovelDisplay {
 
         //side margins (left and right)
         JPanel left = new JPanel();
-        left.setBackground(Design.novelBackground);
+        left.setBackground(Design.screenLightBackground);
         left.setPreferredSize(new Dimension(10, Misc.HEIGHT));
 
         JPanel right = new JPanel();
-        right.setBackground(Design.novelBackground);
+        right.setBackground(Design.screenLightBackground);
         right.setPreferredSize(new Dimension(10, Misc.HEIGHT));
 
         content.add(top, BorderLayout.NORTH);
