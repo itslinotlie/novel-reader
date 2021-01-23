@@ -6,6 +6,14 @@ import tools.*;
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * This creates the novel display screen, where users will be able to read the contents of a specified novel.
+ * To navigate between chapters, users can either click the back/next button to traverse -/+ 1 chapter respectively.
+ * Another option is to jump straight to a chapter by inputting a chapter # in the textbox and pressing go. Users
+ * are able to read the contents of the novel by scrolling with the implementation of the JScrollPane, which allows
+ * for "infinite scrolling". If the novel is bookmarked in the library, the last read chapter will be stored even
+ * when the program is closed and reloaded when the program is relaunched.
+ */
 public class NovelDisplay {
     private JFrame frame;
     private JPanel content = new JPanel(), novelInfo;
@@ -16,29 +24,22 @@ public class NovelDisplay {
 
     private Novel novel;
 
+    //basic constructor
     public NovelDisplay(JFrame frame, JPanel novelInfo, Novel novel) {
         this.frame = frame;
         this.novelInfo = novelInfo;
         this.novel = novel;
         setupPanel();
         setupContent();
-        setupFrame(); //testing purposes, delete once more GUI is complete
         refreshScreen();
-    }
-    //testing purposes, delete once more GUI is complete
-    private void setupFrame() {
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
-        frame.setResizable(false);
-        frame.setVisible(true);
     }
     //display novel text to reader in JScrollPane
     //to allow for continuous scrolling
     private void setupContent() {
         //JTextArea to display chapter content
         text = new JTextArea(WebScraping.getChapterContent(novel, novel.getLastReadChapter()));
-        text.setBackground(Design.novelBackground);
-        text.setForeground(Design.novelText);
+        text.setBackground(Design.screenLightBackground);
+        text.setForeground(Design.foreground);
         text.setWrapStyleWord(true);
         text.setLineWrap(true);
         text.setEditable(false);
@@ -70,12 +71,13 @@ public class NovelDisplay {
         frame.add(content);
 
         //closes the current novel and displays novelInfo screen
-        goBack = new JButton(">");
-        goBack.setFont(Design.buttonTextFont.deriveFont(24f));
-        goBack.setBounds(20, 20, 50, 50);
+        goBack = new JButton("Go Back");
+        goBack.setFont(Design.buttonTextFont);
         goBack.setBackground(Design.novelButtonBackground);
-        goBack.setForeground(Design.foreground);
+        goBack.setForeground(Design.screenBackground);
         goBack.addMouseListener(new ButtonStyle());
+        goBack.setFocusable(false);
+        goBack.setBounds(20, 30, 150, 40);
         goBack.addActionListener(e -> {
             content.setVisible(false);
             novelInfo.setVisible(true);
@@ -85,18 +87,24 @@ public class NovelDisplay {
         //text area to skip to a chapter
         skip = new JTextArea();
         skip.setBackground(Design.novelButtonBackground);
-        skip.setForeground(Design.foreground);
+        skip.setForeground(Design.screenBackground);
         skip.setFont(Design.buttonTextFont);
         skip.setDocument(new TextAreaLimit());
-        skip.setText("1234");
+        skip.setText(Integer.toString(novel.getChapterRange()[1]-1));
         skip.setBounds(200, 30, 60, 40);
+
+        //shows the maximum chapter the user can jump too before an error occurs
+        JLabel max = new JLabel("/"+novel.getChapterRange()[1]);
+        max.setForeground(Design.novelButtonBackground);
+        max.setFont(Design.buttonTextFont);
+        max.setBounds(265, 25, 75, 40);
 
         //navigation buttons
         go = new JButton("GO");
         go.setFont(Design.buttonTextFont);
-        go.setBounds(275, 30, 100, 40);
+        go.setBounds(340, 30, 80, 40);
         go.setBackground(Design.novelButtonBackground);
-        go.setForeground(Design.foreground);
+        go.setForeground(Design.screenBackground);
         go.addMouseListener(new ButtonStyle());
         go.addActionListener(e -> { //logic to check if you can skip to a chapter
             skip.setText(skip.getText().trim());
@@ -113,7 +121,7 @@ public class NovelDisplay {
         back = new JButton("< Back");
         back.setFont(Design.buttonTextFont);
         back.setBackground(Design.novelButtonBackground);
-        back.setForeground(Design.foreground);
+        back.setForeground(Design.screenBackground);
         back.setBounds(125, 30, 150, 40);
         back.addMouseListener(new ButtonStyle());
         back.addActionListener(e -> {
@@ -125,7 +133,7 @@ public class NovelDisplay {
         next = new JButton("Next >");
         next.setFont(Design.buttonTextFont);
         next.setBackground(Design.novelButtonBackground);
-        next.setForeground(Design.foreground);
+        next.setForeground(Design.screenBackground);
         next.setBounds(325, 30, 150, 40);
         next.addMouseListener(new ButtonStyle());
         next.addActionListener(e -> {
@@ -135,16 +143,17 @@ public class NovelDisplay {
 
         //header
         JPanel top = new JPanel();
-        top.setBackground(Design.novelBackground);
+        top.setBackground(Design.screenLightBackground);
         top.setPreferredSize(new Dimension(Misc.WIDTH, 100));
         top.setLayout(null);
         top.add(goBack);
         top.add(skip);
+        top.add(max);
         top.add(go);
 
         //footer
         JPanel bot = new JPanel();
-        bot.setBackground(Design.novelBackground);
+        bot.setBackground(Design.screenLightBackground);
         bot.setPreferredSize(new Dimension(Misc.WIDTH, 100));
         bot.setLayout(null);
         bot.add(next);
@@ -152,11 +161,11 @@ public class NovelDisplay {
 
         //side margins (left and right)
         JPanel left = new JPanel();
-        left.setBackground(Design.novelBackground);
+        left.setBackground(Design.screenLightBackground);
         left.setPreferredSize(new Dimension(10, Misc.HEIGHT));
 
         JPanel right = new JPanel();
-        right.setBackground(Design.novelBackground);
+        right.setBackground(Design.screenLightBackground);
         right.setPreferredSize(new Dimension(10, Misc.HEIGHT));
 
         content.add(top, BorderLayout.NORTH);

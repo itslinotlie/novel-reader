@@ -6,7 +6,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
 /**
- * Button hover styling
+ * Button hover styling. Creating this class allows all buttons that
+ * add ButtonStyle() as a MouseListener to be updated with changes if need be.
+ * In essence, consistent styling across all buttons and convenience for the programmer (reusable styling)
  */
 public class ButtonStyle implements MouseListener {
     @Override

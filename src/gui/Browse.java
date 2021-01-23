@@ -13,30 +13,33 @@ import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
+/**
+ * This creates the browse screen, where users will be able to view novels scraped from the web.
+ * The novels displayed are the hot novels from novelfull.com and the user can view more
+ * by pressing on the view more button. This will continue until the maximum page number is reached, page 7.
+ * The novels are clickable, and will redirect the user to the novel information screen, with more information in that file.
+ */
 public class Browse {
     private JFrame frame;
-    public static JPanel content = new JPanel();
-    private JPanel top, center, bot;
-    private JLabel gif;
-    private JButton viewMore;
-
+    public JPanel content = new JPanel();
+    private JPanel top, center, bot, helpPanel;
+    private JLabel gif, highlight, helpHighlight;
+    private JButton viewMore, help;
     private JScrollPane scroll;
     private SwingWorker worker = null; //allows "multi-threading"
 
     private ArrayList<Novel> list = new ArrayList();
-    private Novel novel, novelPlaceHolder;
+    private Novel novelPlaceHolder;
     private NovelInfo novelInfo;
     private Library library;
     private Recommend recommend;
 
-    private int novelPerPage = 20, total = 0, amountPerLoad = 4, page = 0, size;
-    private double scaleFactor = 3/5f;
-
+    private int size = 0, novelPerPage = 20, total = 0, amountPerLoad = 4, page = 0;
     private int novelWidth, novelHeight, thickness = 4;
-    private boolean firstOpen = true;
+    private double scaleFactor = 3/5f;
+    private boolean clickHelp = false, clickGraphic = false;
 
-    private JLabel highlight;
-
+    //default constructor
     public Browse(JFrame frame, Library library, Recommend recommend) {
         this.frame = frame;
         this.library = library;
@@ -44,14 +47,6 @@ public class Browse {
         setupPanel();
         setupContent();
         setupDashboard();
-        setupFrame();
-    }
-
-    private void setupFrame() {
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
-        frame.setResizable(false);
-        frame.setVisible(true);
         frame.setTitle(Misc.browseTitle);
     }
 
@@ -62,6 +57,59 @@ public class Browse {
         browse.setFont(Design.buttonTextFont.deriveFont(24f));
         browse.setBounds(25, 0, 100, 50);
         top.add(browse);
+
+        //button to display help screen
+        help = new JButton();
+        help.setIcon(new ImageIcon(new ImageIcon("./res/help.png").getImage().getScaledInstance(35, 35, 0)));
+        help.setBackground(Design.novelButtonBackground);
+        help.addMouseListener(new ButtonStyle());
+        help.addActionListener(e -> help());
+        help.setBounds(500, 2, 46, 46);
+        top.add(help);
+
+        //highlight to go show the help button is clicked
+        helpHighlight = new JLabel();
+        helpHighlight.setIcon(new ImageIcon("./res/highlight-2.png"));
+        helpHighlight.setBounds(498, 0, 50, 50);
+        helpHighlight.setVisible(false);
+        top.add(helpHighlight);
+
+        //header to show user "this is the help screen"
+        JLabel help = new JLabel("Browse Help Screen");
+        help.setForeground(Design.foreground);
+        help.setFont(Design.buttonTextFont.deriveFont(24f));
+        help.setBounds(150, 20, 300, 50);
+        helpPanel.add(help);
+
+        //help text label
+        JLabel browseInfo = new JLabel("<html>"+Misc.browseInfo+"</html>");
+        browseInfo.setForeground(Design.foreground);
+        browseInfo.setFont(Design.novelTextFont);
+        browseInfo.setBorder(BorderFactory.createLineBorder(Color.white));
+        browseInfo.setBounds(50, 50, 500, 400);
+        helpPanel.add(browseInfo);
+
+        //annotated help screen
+        JLabel browseGraphic = new JLabel();
+        browseGraphic.setIcon(new ImageIcon(new ImageIcon("./res/help/browse.png").getImage().getScaledInstance(400, 570, 0)));
+        browseGraphic.setBounds(50, 20, 400, 570);
+        browseGraphic.setVisible(false);
+        helpPanel.add(browseGraphic);
+
+        //button to display help screen graphic or help screen text
+        JButton moreHelp = new JButton("More Help");
+        moreHelp.setForeground(Design.screenBackground);
+        moreHelp.setBackground(Design.novelButtonBackground);
+        moreHelp.setFont(Design.novelTextFont);
+        moreHelp.setBounds(460, 500, 115, 50);
+        moreHelp.addMouseListener(new ButtonStyle());
+        moreHelp.addActionListener(e -> {
+            browseGraphic.setVisible(!clickGraphic);
+            browseInfo.setVisible(clickGraphic);
+            help.setVisible(clickGraphic);
+            clickGraphic = !clickGraphic;
+        });
+        helpPanel.add(moreHelp);
 
         //shown when things are loaded
         gif = new JLabel();
@@ -120,6 +168,14 @@ public class Browse {
         center.setLayout(null);
         center.setPreferredSize(new Dimension(Misc.WIDTH, 150+total*(novelHeight+50)));
 
+        //panel to display help contents
+        helpPanel = new JPanel();
+        helpPanel.setBackground(Design.screenLightBackground);
+        helpPanel.setLayout(null);
+        helpPanel.setVisible(false);
+        helpPanel.setBounds(0, 50, 600, 612);
+        content.add(helpPanel);
+
         //application dashboard
         bot = new JPanel();
         bot.setBackground(Design.screenBackground);
@@ -166,8 +222,7 @@ public class Browse {
         JLabel summary = new JLabel("<html>"+limit(novel.getSummary())+"</html>");
         summary.setForeground(Design.foreground);
         summary.setFont(Design.novelTextFont);
-        summary.setBounds(200, 140 + i*(novelHeight+50), 350, 100);
-        summary.setBorder(BorderFactory.createLineBorder(Color.white));
+        summary.setBounds(200, 140 + i*(novelHeight+50), 350, 125);
         center.add(summary);
 
         //invisible but clickable button
@@ -175,7 +230,7 @@ public class Browse {
         click.setOpaque(false);
         click.setContentAreaFilled(false);
         click.setFocusable(false);
-        click.setBorder(BorderFactory.createLineBorder(Color.white));
+        click.setBorder(BorderFactory.createEmptyBorder());
         click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
         click.addActionListener(e -> refreshScreen(-1, novel));
         center.add(click);
@@ -201,7 +256,6 @@ public class Browse {
                     String novelLink = row.select("h3 > a").attr("href");
                     String novelName = row.select("h3 > a").text();
                     list.add(new Novel(novelName, novelLink));
-//                    System.out.println(list.get(list.size()-1));
                     displayChapter();
                 }
             }
@@ -212,6 +266,7 @@ public class Browse {
     }
 
     private void setupDashboard() {
+        //redirects to library
         JButton library = new JButton();
         library.setIcon(new ImageIcon(new ImageIcon("./res/library.png").getImage().getScaledInstance(90, 90, 0)));
         library.setBounds(55, 5, 90, 90);
@@ -221,6 +276,14 @@ public class Browse {
         library.addActionListener(e -> refreshScreen(1));
         bot.add(library);
 
+        //label to explain in case the library icon is not clear enough
+        JLabel libraryLabel = new JLabel("Library");
+        libraryLabel.setBounds(55, 100, 100, 25);
+        libraryLabel.setForeground(Design.foreground);
+        libraryLabel.setFont(Design.novelTextFont);
+        bot.add(libraryLabel);
+
+        //redirects to browse screen, the current screen
         JButton window = new JButton();
         window.setIcon(new ImageIcon(new ImageIcon("./res/window.png").getImage().getScaledInstance(90, 90, 0)));
         window.setBounds(255, 5, 90, 90);
@@ -231,6 +294,14 @@ public class Browse {
 //        window.addActionListener(e -> refreshScreen(2));
         bot.add(window);
 
+        //label to explain in case the browse icon is not clear enough
+        JLabel windowLabel = new JLabel("Browse");
+        windowLabel.setBounds(255, 100, 100, 25);
+        windowLabel.setForeground(Design.foreground);
+        windowLabel.setFont(Design.novelTextFont);
+        bot.add(windowLabel);
+
+        //redirects to the recommend screen
         JButton recommend = new JButton();
         recommend.setIcon(new ImageIcon(new ImageIcon("./res/recommend.png").getImage().getScaledInstance(90, 90, 0)));
         recommend.setBounds(455, 5, 90, 90);
@@ -241,23 +312,35 @@ public class Browse {
         recommend.addActionListener(e -> refreshScreen(3));
         bot.add(recommend);
 
+        //label to explain in case the recommend icon is not clear enough
+        JLabel recommendLabel = new JLabel("Recommend");
+        recommendLabel.setBounds(455, 100, 100, 25);
+        recommendLabel.setForeground(Design.foreground);
+        recommendLabel.setFont(Design.novelTextFont);
+        bot.add(recommendLabel);
+
+        //highlight to show the user what screen they are currently on
         highlight = new JLabel();
         highlight.setIcon(new ImageIcon("./res/highlight-2.png"));
         highlight.setBounds(250, 0, 100, 100);
         bot.add(highlight);
     }
 
+    //used in conjunction with the swing worker to allow for "multi-threading"
     public void refreshScreen(int location) {
         setupWorker(location);
         worker.execute();
     }
 
+    //overloading ^^ to also include a novel parameter
     public void refreshScreen(int location, Novel novel) {
         novelPlaceHolder = novel;
         setupWorker(location);
         worker.execute();
     }
 
+    //overloading once again, but includes the logic associated with
+    //button presses (library button goes to library screen etc.)
     private void refreshScreen(int location, int random) {
         if(location==-1) { //displaying novel info
             NovelInfo.previousScreen = 2;
@@ -266,11 +349,11 @@ public class Browse {
         else if(location==0) { //view more
             loadChapters();
         }
-        else if(location==1) {
+        else if(location==1) { //go to library
             library.getPanel().setVisible(true);
             frame.setTitle(Misc.libraryTitle);
-        } else if(location==2) {
-        } else if(location==3) {
+        } else if(location==2) { //go to browse
+        } else if(location==3) { //go to recommmend
             if(recommend==null) {
                 recommend = new Recommend(frame, library, this);
             } else {
@@ -311,6 +394,24 @@ public class Browse {
                 }
             }
         };
+    }
+
+    //used to display the help screen
+    private void help() {
+        if(!clickHelp) { //show help screen
+            helpPanel.add(gif);
+            center.setVisible(false);
+            scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+            helpPanel.setVisible(true);
+            helpHighlight.setVisible(true);
+        } else { //show library screen
+            center.add(gif);
+            helpPanel.setVisible(false);
+            center.setVisible(true);
+            scroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+            helpHighlight.setVisible(false);
+        }
+        clickHelp = !clickHelp;
     }
 
     //used to limit the novel summary so that only a snippet is displayed
