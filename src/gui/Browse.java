@@ -139,7 +139,7 @@ public class Browse {
         top.add(jump);
 
         //shows the maximum chapter the user can jump too before an error occurs
-        JLabel max = new JLabel("/ 20");
+        JLabel max = new JLabel("/ 15");
         max.setForeground(Design.novelButtonBackground);
         max.setFont(Design.buttonTextFont);
         max.setBounds(355, 10, 75, 30);
@@ -253,6 +253,28 @@ public class Browse {
         click.setBounds(50, 50 + i*(novelHeight+50), 500, 200);
         click.addActionListener(e -> refreshScreen(-1, novel));
         center.add(click);
+
+        //list of faulty novels I found
+        String faulty[] = {
+            "The Desolate Era",
+            "Coiling Dragon",
+            "Unrivaled Tang Sect",
+            "The Great Ruler",
+            "Tensei Shitara Slime Datta Ken (WN)",
+            "The Legend of the Dragon King",
+            "The Lord's Empire",
+            "Immortal and Martial Dual Cultivation"
+        };
+        //checking if current novel is faulty, if so, change the contents and
+        //set remove access to viewing novel information screen
+        for(int j=0;j<faulty.length;j++) {
+            if(novel.getNovelName().equals(faulty[j])) {
+                click.setEnabled(false);
+                title.setText("FAULTY NOVEL ALERT");
+                summary.setText("<html>THERE ARE 6 FAULTY NOVELS THAT I FOUND." +
+                    " THIS IS ONE OF THEM. WEB SCRAPING IS HARD.</html>");
+            }
+        }
 
         //updating gif to be in the center of the screen is user scrolls
         gif.setBounds(250, (int)scroll.getViewport().getViewPosition().getY()+200, 100, 100);
@@ -368,7 +390,7 @@ public class Browse {
             if(WebScraping.isInteger(jump.getText())) {
                 int jumpCount = Integer.parseInt(jump.getText());
                 //if it is not, reset to the default value
-                if(jumpCount<1 || jumpCount>20) {
+                if(jumpCount<1 || jumpCount>15) {
                     amountPerLoad = 4;
                     jump.setText(Integer.toString(4));
                 } else {

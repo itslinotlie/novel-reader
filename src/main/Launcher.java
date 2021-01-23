@@ -41,9 +41,10 @@ import gui.StartScreen;
  * -File writing and reading
  *
  * Areas of concern:
- * -Large file size. NotoSansSC was one of the few fonts that supported chinese characters. This is so that
- * the author name does not look like a bunch of squares. However, because of this, the res/font-NotoSansSC is a
- * whopping 48MB...
+ * -There are the occasional faulty novels that are scraped. This results in the program creating null pointer errors
+ * around the novel (i.e. if novel 3 is faulty, novel 2 and novel 4 may act funky as well). I tried my best blacklisting them (there
+ * are 6 completely faulty novels or so). Some might not have been accounted for, but the majority of the novels work. (this is a web-scraping
+ * issue that is hard to completely fix)
  * -Some novels cannot be displayed properly. These are either in the form of partial chapters (which is not
  * 100% consistent -> 1, 1.5, 2, 3, 4, 4.5, etc. or volumes are used -> vol 1 chapter 1-24, vol 2 chapter 1-24
  * but then it becomes chapter 1333, 1334 later on, or sometimes chapters are missing from the website). Some of
@@ -56,6 +57,9 @@ import gui.StartScreen;
  * -Novels take an absurd amount of time to load. When loading the novel information with an already loaded novel,
  *  it takes a roughly second. To scrape new novels (used in the recommendation+browse screen) it takes
  * 2-3 seconds per novel to load and to display.
+ * -Large file size. NotoSansSC was one of the few fonts that supported chinese characters. This is so that
+ * the author name does not look like a bunch of squares. However, because of this, the res/font-NotoSansSC is a
+ * whopping 48MB...
  */
 public class Launcher {
     public static void main(String[] args) {

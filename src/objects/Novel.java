@@ -40,7 +40,7 @@ public class Novel {
     private void loadInformation() {
         String url = website + novelLink;
         String description = "", descriptionInfo[] = null;
-        int minChap = 0x3f3f3f3f, maxChap = -1;
+        int minChap = 1, maxChap = 6;
 
         try {
             //connects to the url and gets the html

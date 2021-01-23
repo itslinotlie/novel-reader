@@ -15,7 +15,7 @@ import java.io.IOException;
  * in a very long load time ):
  */
 public class WebScraping {
-    public static String errorMessage = ">>>>>>>>>> -1 <<<<<<<<<<";
+    public static String errorMessage = "THIS CHAPTER/NOVEL IS FAULTY";
 
     //returns the url of a given chapter, if this is not possible the error message is displayed
     public static String getChapterUrl(Novel novel, int targetChapter) {

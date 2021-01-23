@@ -97,12 +97,12 @@ public class NovelDisplay {
         JLabel max = new JLabel("/"+novel.getChapterRange()[1]);
         max.setForeground(Design.novelButtonBackground);
         max.setFont(Design.buttonTextFont);
-        max.setBounds(265, 25, 75, 40);
+        max.setBounds(265, 25, 85, 40);
 
         //navigation buttons
         go = new JButton("GO");
         go.setFont(Design.buttonTextFont);
-        go.setBounds(340, 30, 80, 40);
+        go.setBounds(350, 30, 80, 40);
         go.setBackground(Design.novelButtonBackground);
         go.setForeground(Design.screenBackground);
         go.addMouseListener(new ButtonStyle());

@@ -185,7 +185,7 @@ public class Recommend {
             center.setPreferredSize(new Dimension(Misc.WIDTH,6*(novelHeight+50+50)));
             int index = 0;
 
-            //creating a new copy of the exisitng bookshelf
+            //creating a new copy of the existing bookshelf
             recommendations.clear();
             for(Novel novel:library.getBookshelf().getAllNovels()) {
                 recommendations.add(novel);
@@ -215,7 +215,7 @@ public class Recommend {
                 JLabel secondaryHeader = new JLabel("You might like:");
                 secondaryHeader.setForeground(Design.foreground);
                 secondaryHeader.setFont(Design.novelTextFont.deriveFont(22f));
-                secondaryHeader.setBounds(100, 25+50+novelHeight+index*(2*novelHeight+75+50+75), 400, 50);
+                secondaryHeader.setBounds(205, 25+50+novelHeight+index*(2*novelHeight+75+50+75), 400, 50);
                 center.add(secondaryHeader);
 
                 sideways = 0;

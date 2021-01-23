@@ -6,10 +6,11 @@ import javax.swing.text.PlainDocument;
 
 /**
  * This class modifies the default methods for PlainDocument This allows
- * customization for JTextAreas
+ * customization for JTextAreas to limit the amount of characters inputted
  */
 public class TextAreaLimit extends PlainDocument {
     private int limit;
+    //constructor to set the maximum limit allowed in the text field
     public TextAreaLimit(int limit) {
         this.limit = limit;
     }
