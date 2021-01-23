@@ -123,12 +123,14 @@ public class Browse {
         scroll.getVerticalScrollBar().setUnitIncrement(15);
         content.add(scroll);
 
+        //explains what the next JTextArea is
         JLabel jumpInformation = new JLabel("Novel(s) per load:");
         jumpInformation.setForeground(Design.foreground);
         jumpInformation.setFont(Design.buttonTextFont.deriveFont(18f));
         jumpInformation.setBounds(150, 0, 160, 50);
         top.add(jumpInformation);
 
+        //allows users to customize how many novels they want to load per button press
         jump = new JTextArea();
         jump.setBackground(Design.novelButtonBackground);
         jump.setForeground(Design.screenBackground);
