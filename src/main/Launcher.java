@@ -41,6 +41,9 @@ import gui.StartScreen;
  * -File writing and reading
  *
  * Areas of concern:
+ * -Large file size. NotoSansSC was one of the few fonts that supported chinese characters. This is so that
+ * the author name does not look like a bunch of squares. However, because of this, the res/font-NotoSansSC is a
+ * whopping 48MB...
  * -Some novels cannot be displayed properly. These are either in the form of partial chapters (which is not
  * 100% consistent -> 1, 1.5, 2, 3, 4, 4.5, etc. or volumes are used -> vol 1 chapter 1-24, vol 2 chapter 1-24
  * but then it becomes chapter 1333, 1334 later on, or sometimes chapters are missing from the website). Some of
