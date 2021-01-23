@@ -45,6 +45,10 @@ import gui.StartScreen;
  * around the novel (i.e. if novel 3 is faulty, novel 2 and novel 4 may act funky as well). I tried my best blacklisting them (there
  * are 6 completely faulty novels or so). Some might not have been accounted for, but the majority of the novels work. (this is a web-scraping
  * issue that is hard to completely fix)
+ * -There will be some times where the program will glitch due to faulty novels. This is occurs only during the
+ * recommend screen where new novels are being recommended. There is no physical blacklist for the recommend screen, which means
+ * that a faulty novel exists. If a funky novel exists, the novel info screen will act funky, with buttons overlapping and clicking on thumbnails will not
+ * be 100% reactive.
  * -Some novels cannot be displayed properly. These are either in the form of partial chapters (which is not
  * 100% consistent -> 1, 1.5, 2, 3, 4, 4.5, etc. or volumes are used -> vol 1 chapter 1-24, vol 2 chapter 1-24
  * but then it becomes chapter 1333, 1334 later on, or sometimes chapters are missing from the website). Some of

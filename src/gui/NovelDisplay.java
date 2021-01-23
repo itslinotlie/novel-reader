@@ -90,7 +90,7 @@ public class NovelDisplay {
         skip.setForeground(Design.screenBackground);
         skip.setFont(Design.buttonTextFont);
         skip.setDocument(new TextAreaLimit(4));
-        skip.setText(Integer.toString(novel.getChapterRange()[1]-1));
+        skip.setText(Integer.toString(1));
         skip.setBounds(200, 30, 60, 40);
 
         //shows the maximum chapter the user can jump too before an error occurs

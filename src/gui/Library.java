@@ -2,9 +2,6 @@ package gui;
 
 import objects.Bookshelf;
 import objects.Novel;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import tools.ButtonStyle;
 import tools.Design;
 import tools.Misc;
@@ -13,9 +10,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 /**
  * This creates the library screen, where users will be able to view their bookmarked novels.
