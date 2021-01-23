@@ -256,7 +256,6 @@ public class Browse {
                     String novelLink = row.select("h3 > a").attr("href");
                     String novelName = row.select("h3 > a").text();
                     list.add(new Novel(novelName, novelLink));
-                    System.out.println(list.get(list.size()-1));
                     displayChapter();
                 }
             }
@@ -345,7 +344,6 @@ public class Browse {
     private void refreshScreen(int location, int random) {
         if(location==-1) { //displaying novel info
             NovelInfo.previousScreen = 2;
-            System.out.println(novelPlaceHolder);
             novelInfo = new NovelInfo(frame, this, novelPlaceHolder, library, recommend);
         }
         else if(location==0) { //view more
