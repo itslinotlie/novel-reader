@@ -100,7 +100,7 @@ public class Library {
         JLabel libraryInfo = new JLabel("<html>"+Misc.libraryInfo+"</html>");
         libraryInfo.setForeground(Design.foreground);
         libraryInfo.setFont(Design.novelTextFont);
-        libraryInfo.setBounds(50, 50, 500, 300);
+        libraryInfo.setBounds(50, 50, 500, 400);
         helpPanel.add(libraryInfo);
 
         //annotated help screen
@@ -149,7 +149,6 @@ public class Library {
         novelHeight = (int)(Misc.novel.getThumbnailHeight()*scaleFactor);
 
         //panel to display personal library
-        content.setBackground(Color.green);
         content.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
         content.setLayout(new BorderLayout());
         frame.add(content);
@@ -321,7 +320,7 @@ public class Library {
             JLabel info = new JLabel("<html>"+Misc.emptyLibrary+"</html>");
             info.setForeground(Design.foreground);
             info.setFont(Design.novelTextFont);
-            info.setBounds(125, 100, 350, 300);
+            info.setBounds(50, 50, 500, 400);
             center.add(info);
         } else { //display novels
             for (int i = 0; i < bookshelf.size(); i++) {

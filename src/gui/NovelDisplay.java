@@ -89,7 +89,7 @@ public class NovelDisplay {
         skip.setBackground(Design.novelButtonBackground);
         skip.setForeground(Design.screenBackground);
         skip.setFont(Design.buttonTextFont);
-        skip.setDocument(new TextAreaLimit());
+        skip.setDocument(new TextAreaLimit(4));
         skip.setText(Integer.toString(novel.getChapterRange()[1]-1));
         skip.setBounds(200, 30, 60, 40);
 

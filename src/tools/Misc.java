@@ -37,22 +37,24 @@ public class Misc {
     public static String libraryInfo = "This is your library, the place where you can view your bookmarked novels. " +
         "Bookmarked novels will have their reading history tracked, which means that you will be able to resume " +
         "from your last read chapter if you click the \"Resume\" button in the novel information screen. To get to the " +
-        "novel information screen, you can click on the novel thumbnail from either your library, browse screen, or recommendation " +
-        "screen.\n" +
+        "novel information screen, you can click on the novel thumbnail from either your library (if you bookmark a novel)" +
+        ", browse screen, or recommendation screen.<br><br>" +
         "To browse titles, click on the browse icon (window) down below. To view recommended novels based " +
-        "on your selection, click on the recommend icon (thumbs-up) down below as well.\nClick the help buttton to go back " +
-        "to where you came from.";
+        "on your bookmarked novels, click on the recommend icon (thumbs-up) down below as well. Click the help button to go back " +
+        "to where you came from or the \"More Help\" button for more information.";
     public static String browseInfo = "This is where you can browse for new novels. By clicking on the \"View More\" button, " +
-        "you will be able to load more novels. These novels are the hottest novels on novelfull.com, the source of these novels. " +
-        "If a novel's thumbnail, title, author, or summary intrigues you, click on the novel thumbnail and the novel information will appear." +
-        " If you want to test read it before you add it to your library, you can read away. Just note that progress will not be tracked until " +
-        "the novel is added to your library.\n" +
+        "you will be able to load more novels. To change the amount of novels per load, edit the textfield above. Acceptable values include 1-20." +
+        " These novels are the hottest novels on novelfull.com, the source of these novels. If a novel's thumbnail, title, author, or summary intrigues you, " +
+        "click on the novel thumbnail and the novel information will appear. If you want to test read the novel before you add it to your library, you can " +
+        "read away. Just note that progress will not be tracked until the novel is added to your library.<br><br>" +
         "To go back to your library, click on the book icon (stack of books) down below. To view " +
-        "recommended novels based on your selection, click on the recommend icon (thumbs-up) down below as well.";
+        "recommended novels based on your bookmarked novels, click on the recommend icon (thumbs-up) down below as well. Click the help button to go back" +
+        " to where you came from or the \"More Help\" button for more information.";
     public static String recommendInfo = "This is where novel recommendations are made based on the novels in your library. " +
         "For the recommendation to be useful, you are required to have a minimum of 5 novels in your library with a total of at " +
         "least 3 unique genres. Recommended novels will never exist in your current library. The algorithm finds the most commonly " +
-        "read genres and web-scrapes for the hottest novels related to that category.\n" +
+        "read genres and web-scrapes for the hottest novels related to that category.<br><br>" +
         "Everytime the recommended page is loaded, a new set of recommendations are made. To go back to your library, click on the book " +
-        "icon (stack of books) down below. To browse titles click on the browse icon (window) down below.";
+        "icon (stack of books) down below. To browse titles click on the browse icon (window) down below. Click the help button to go back to " +
+        "where you came from or the \"More Help\" button for more information.";
 }

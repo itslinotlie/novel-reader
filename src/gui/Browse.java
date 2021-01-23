@@ -4,9 +4,7 @@ import objects.Novel;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import tools.ButtonStyle;
-import tools.Design;
-import tools.Misc;
+import tools.*;
 
 import javax.swing.*;
 import java.awt.*;
@@ -21,11 +19,12 @@ import java.util.ArrayList;
  */
 public class Browse {
     private JFrame frame;
-    public JPanel content = new JPanel();
+    private JPanel content = new JPanel();
     private JPanel top, center, bot, helpPanel;
     private JLabel gif, highlight, helpHighlight;
     private JButton viewMore, help;
     private JScrollPane scroll;
+    private JTextArea jump;
     private SwingWorker worker = null; //allows "multi-threading"
 
     private ArrayList<Novel> list = new ArrayList();
@@ -85,8 +84,7 @@ public class Browse {
         JLabel browseInfo = new JLabel("<html>"+Misc.browseInfo+"</html>");
         browseInfo.setForeground(Design.foreground);
         browseInfo.setFont(Design.novelTextFont);
-        browseInfo.setBorder(BorderFactory.createLineBorder(Color.white));
-        browseInfo.setBounds(50, 50, 500, 400);
+        browseInfo.setBounds(50, 50, 500, 500);
         helpPanel.add(browseInfo);
 
         //annotated help screen
@@ -125,6 +123,28 @@ public class Browse {
         scroll.getVerticalScrollBar().setUnitIncrement(15);
         content.add(scroll);
 
+        JLabel jumpInformation = new JLabel("Novel(s) per load:");
+        jumpInformation.setForeground(Design.foreground);
+        jumpInformation.setFont(Design.buttonTextFont.deriveFont(18f));
+        jumpInformation.setBounds(150, 0, 160, 50);
+        top.add(jumpInformation);
+
+        jump = new JTextArea();
+        jump.setBackground(Design.novelButtonBackground);
+        jump.setForeground(Design.screenBackground);
+        jump.setFont(Design.buttonTextFont);
+        jump.setDocument(new TextAreaLimit(2));
+        jump.setText(Integer.toString(amountPerLoad));
+        jump.setBounds(310, 10, 40, 30);
+        top.add(jump);
+
+        //shows the maximum chapter the user can jump too before an error occurs
+        JLabel max = new JLabel("/ 20");
+        max.setForeground(Design.novelButtonBackground);
+        max.setFont(Design.buttonTextFont);
+        max.setBounds(355, 10, 75, 30);
+        top.add(max);
+
         //loads up initial novels
         loadChapters();
 
@@ -151,7 +171,6 @@ public class Browse {
         novelHeight = (int)(Misc.novel.getThumbnailHeight()*scaleFactor);
 
         //panel to display the mangas
-        content.setBackground(Color.GREEN);
         content.setBounds(0, 0, Misc.WIDTH, 1000);
         content.setLayout(new BorderLayout());
         frame.add(content);
@@ -287,7 +306,6 @@ public class Browse {
         JButton window = new JButton();
         window.setIcon(new ImageIcon(new ImageIcon("./res/window.png").getImage().getScaledInstance(90, 90, 0)));
         window.setBounds(255, 5, 90, 90);
-        window.setBorder(BorderFactory.createLineBorder(Color.white));
         window.setBackground(Design.novelButtonBackground);
         window.addMouseListener(new ButtonStyle());
         window.setFocusable(false);
@@ -305,7 +323,6 @@ public class Browse {
         JButton recommend = new JButton();
         recommend.setIcon(new ImageIcon(new ImageIcon("./res/recommend.png").getImage().getScaledInstance(90, 90, 0)));
         recommend.setBounds(455, 5, 90, 90);
-        recommend.setBorder(BorderFactory.createLineBorder(Color.white));
         recommend.setBackground(Design.novelButtonBackground);
         recommend.addMouseListener(new ButtonStyle());
         recommend.setFocusable(false);
@@ -347,6 +364,17 @@ public class Browse {
             novelInfo = new NovelInfo(frame, this, novelPlaceHolder, library, recommend);
         }
         else if(location==0) { //view more
+            //checks if the text is a valid number
+            if(WebScraping.isInteger(jump.getText())) {
+                int jumpCount = Integer.parseInt(jump.getText());
+                //if it is not, reset to the default value
+                if(jumpCount<1 || jumpCount>20) {
+                    amountPerLoad = 4;
+                    jump.setText(Integer.toString(4));
+                } else {
+                    amountPerLoad = jumpCount;
+                }
+            }
             loadChapters();
         }
         else if(location==1) { //go to library
@@ -385,7 +413,7 @@ public class Browse {
                 else if(location==0) {
                     viewMore.setBounds(200, 50 + list.size() * (novelHeight + 50), 200, 50);
                     viewMore.setVisible(true);
-                    viewMore.setEnabled(page > 7 ? false : true); //only 7 pages for hot novels
+                    viewMore.setEnabled(page > 6 ? false : true); //only 7 pages for hot novels
                 } else if(location==3) {
                     content.setVisible(false);
                     recommend.getPanel().setVisible(true);

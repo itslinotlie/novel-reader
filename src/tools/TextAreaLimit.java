@@ -9,13 +9,16 @@ import javax.swing.text.PlainDocument;
  * customization for JTextAreas
  */
 public class TextAreaLimit extends PlainDocument {
-
+    private int limit;
+    public TextAreaLimit(int limit) {
+        this.limit = limit;
+    }
     // this changes the maximum size allowed for JTextArea
-    // if the inserted length + existing length is under 4 (max length of chapter #)
-    // since there is no chapter 10k+, the character will be inserted, else, nothing occurs
+    // if the inserted length + existing length is under 4 (max length of chapter #) for chapters
+    // or two for the browse screen novel per load, the character will be inserted, else, nothing occurs
     @Override
     public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
-        if ((getLength() + str.length()) <= 4) {
+        if ((getLength() + str.length()) <= limit) {
             super.insertString(offset, str, attr);
         }
     }

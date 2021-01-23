@@ -87,7 +87,7 @@ public class Recommend {
         JLabel recommendInfo = new JLabel("<html>"+Misc.recommendInfo+"</html>");
         recommendInfo.setForeground(Design.foreground);
         recommendInfo.setFont(Design.novelTextFont);
-        recommendInfo.setBounds(50, 50, 500, 300);
+        recommendInfo.setBounds(50, 50, 500, 400);
         helpPanel.add(recommendInfo);
 
         //annotated help screen
@@ -137,7 +137,6 @@ public class Recommend {
 
         //panel to display personal library
         content.setVisible(false);
-        content.setBackground(Color.green);
         content.setBounds(0, 0, Misc.WIDTH, Misc.HEIGHT);
         content.setLayout(new BorderLayout());
         frame.add(content);
@@ -236,7 +235,7 @@ public class Recommend {
             JLabel info = new JLabel("<html>"+Misc.notEnoughTitles+"</html>");
             info.setForeground(Design.foreground);
             info.setFont(Design.novelTextFont);
-            info.setBounds(125, 100, 350, 200);
+            info.setBounds(50, 50, 500, 400);
             center.add(info);
         }
     }
