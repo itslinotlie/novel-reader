@@ -30,4 +30,17 @@ Recommendations can be found under the recommendation screen. Recommendations wi
 
 The heart of the application. The place where you will be reading the contents of the web novels. Navigate between chapters with the back/next buttons, or jump straight to a chapter number with the text box above. Scraped straight from novelfull.com, the contents of the chapters are 100% the same. 
 
+### Challenges I ran into
 
+For the past few group projects, I always made an emphasis to avoid the GUI side of coding as much as possilbe. As a logical thinker, the GUI never made any sense. Add components one way and the desired results are shown. Re-order the code and everything instantly breaks. Another drawdown was how outdated and cluncky the Java Swing library was. Programming felt very outdated with the blocky and restrictive componenets. This meant that I was very inexperienced with the Swing library when I had to create a functional GUI. Solo ):
+
+Another annoying problem was the web scraping protion of the project. 90% of the novels scraped from novelfull.com follow the a set format. Chapters are listed by numbers with an ocassional chapter name. However, some novels have irregular naming (i.e. Volume 1, Chapter 1-24, ..., Chapter 1333, 1334, etc.) and other problems which ruined my algorithm. For many cases, I was able to go around these issues; however, there are a handful of novels that when opened, will ruin the program (very funky things start to occur). From the browse screen, I was able to blacklist ~6 novels, but the novels being recommended are not handpicked, meaning that they could also be buggy, ruining the user experience. The rough fix would be to restart the program and avoid clicking on buggy novels. 
+
+### Accomplishments I'm proud of
+
+- Using an external Java library (Jsoup)
+- Learning how to web-scrape (it sounds more complicated than it really is)
+- Using Java's SwingWorker to "multi-thread"
+- Using the Swing JScrollPane to allow for "infinite scrolling"
+- Creating a dashboard that alternates which panels to display
+- Actually creating something that works with Java's Swing library
